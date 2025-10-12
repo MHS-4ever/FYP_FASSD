@@ -1,0 +1,10 @@
+DataSet/
+data/raw/
+*.pyc
+__pycache__/
+models_saved/
+.ipynb_checkpoints/
+*.log
+reports/logs/
+env/
+.vscode/
