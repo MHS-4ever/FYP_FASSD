@@ -7,3 +7,5 @@ __pycache__/
 reports/logs/
 env/
 .vscode/
+data/features/lfcc
+data/features/logmel
