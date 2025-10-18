@@ -1,144 +1,131 @@
-import os
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import pandas as pd
+import os, argparse
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
+import torch, torch.nn as nn, torch.optim as optim
 from torch.utils.data import DataLoader
-from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+
 from data_loading.dataset_loader import FeatureDataset
 from models.baseline_cnn import LCNNBaseline
-from data_loading.streaming_dataset_loader import StreamingFeatureDataset
-
-# ------------------------------------------------------------
-# ⚙️ CONFIGURATION
-# ------------------------------------------------------------
-manifest = r"D:\UNI\FYP\data\features\features_manifest_labeled.csv"
-feature_type = "lfcc"       # or "mel"
-batch_size, epochs, lr = 64, 6, 1e-3
-device = "cuda" if torch.cuda.is_available() else "cpu"
-save_path = r"D:\UNI\FYP\models_saved\baseline_cnn.pth"
-os.makedirs(os.path.dirname(save_path), exist_ok=True)
-
-# ------------------------------------------------------------
-# 📂 LOAD DATA (streaming-safe)
-# ------------------------------------------------------------
-from data_loading.streaming_dataset_loader import StreamingFeatureDataset
-
-df = pd.read_csv(manifest)
-df = df[df["label"].isin(["bonafide", "spoof"])].reset_index(drop=True)
-
-# Stratified 80/20 split
-bon = df[df.label == "bonafide"]
-spf = df[df.label == "spoof"]
-train_df = pd.concat([
-    bon.sample(frac=0.8, random_state=42),
-    spf.sample(frac=0.8, random_state=42)
-])
-val_df = df.drop(train_df.index).reset_index(drop=True)
-train_df = train_df.reset_index(drop=True)
-
-# --- STREAMING DATALOADERS ---
-train_ds = StreamingFeatureDataset(train_df, feature_type=("lfcc" if feature_type == "lfcc" else "mel"), shuffle=True)
-val_ds   = StreamingFeatureDataset(val_df,   feature_type=("lfcc" if feature_type == "lfcc" else "mel"), shuffle=False)
-
-train_dl = DataLoader(train_ds, batch_size=batch_size)
-val_dl   = DataLoader(val_ds,   batch_size=batch_size)
+from utils_metrics import eer_and_auc, confusion
 
 
-# ------------------------------------------------------------
-# 🧠 MODEL + OPTIMIZER
-# ------------------------------------------------------------
-model = LCNNBaseline().to(device)
-criterion = nn.CrossEntropyLoss()
-optimzr = optim.Adam(model.parameters(), lr=lr)
+def parse_args():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--manifest", default=r"D:\UNI\FYP\data\features\features_manifest_labeled.csv")
+    ap.add_argument("--feature_type", choices=["lfcc", "mel"], default="lfcc")
+    ap.add_argument("--epochs", type=int, default=8)
+    ap.add_argument("--batch_size", type=int, default=64)
+    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--target_T", type=int, default=400)
+    ap.add_argument("--val_size", type=float, default=0.2)
+    ap.add_argument("--save", default=r"D:\UNI\FYP\models_saved\baseline_cnn.pth")
+    ap.add_argument("--num_workers", type=int, default=0)  # set >0 only if stable
+    return ap.parse_args()
 
-# ------------------------------------------------------------
-# 📊 METRIC FUNCTION
-# ------------------------------------------------------------
-def evaluate(model, loader):
+
+@torch.no_grad()
+def evaluate(model, loader, device):
     model.eval()
-    all_y, all_s = [], []
-    with torch.no_grad():
-        for x, y in loader:
+    ys, ps, yh = [], [], []
+    for x, y in tqdm(loader, desc="Evaluating", leave=False):
+        x = x.to(device)
+        logits = model(x)
+        prob1 = torch.softmax(logits, dim=1)[:, 1]
+        ys.append(y.numpy())
+        ps.append(prob1.cpu().numpy())
+        yh.append((prob1.cpu().numpy() >= 0.5).astype(int))
+    y_true = np.concatenate(ys).astype(int)
+    y_scores = np.concatenate(ps)
+    y_hat = np.concatenate(yh).astype(int)
+    eer, roc_auc = eer_and_auc(y_true, y_scores)
+    tn, fp, fn, tp = confusion(y_true, y_hat)
+    acc = (tp + tn) / max(1, (tp + tn + fp + fn))
+    return eer, roc_auc, acc, (tn, fp, fn, tp)
+
+
+def main():
+    args = parse_args()
+    os.makedirs(os.path.dirname(args.save), exist_ok=True)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"🧠 Using device: {device}")
+
+    # -------- data
+    df = pd.read_csv(args.manifest)
+    df = df[df["label"].isin(["bonafide", "spoof"])].reset_index(drop=True)
+    print(f"📄 Loaded manifest with {len(df)} samples")
+
+    # stratified split
+    train_df, val_df = train_test_split(
+        df, test_size=args.val_size, stratify=df["label"], random_state=42
+    )
+    print(f"📊 Train: {len(train_df)} | Val: {len(val_df)}")
+
+    print("🔄 Initializing datasets...")
+    train_ds = FeatureDataset(train_df, feature_type=args.feature_type, target_T=args.target_T)
+    val_ds = FeatureDataset(val_df, feature_type=args.feature_type, target_T=args.target_T)
+
+    print("🧾 Building DataLoaders...")
+    train_dl = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
+                          num_workers=args.num_workers, pin_memory=True)
+    val_dl = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False,
+                        num_workers=args.num_workers, pin_memory=True)
+
+    print("✅ DataLoaders ready.\n")
+
+    # class imbalance weights
+    counts = train_df["label"].value_counts()
+    w_spoof = counts["bonafide"] / (counts["spoof"] + 1e-6)
+    w_bona = 1.0
+    class_weights = torch.tensor([w_spoof, w_bona], dtype=torch.float32).to(device)
+
+    model = LCNNBaseline().to(device)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    optimizer = optim.AdamW(model.parameters(), lr=args.lr)
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
+
+    scaler = torch.amp.GradScaler("cuda" if device == "cuda" else "cpu")
+
+    best_eer = 1.0
+    for ep in range(1, args.epochs + 1):
+        model.train()
+        total_loss = 0.0
+        loop = tqdm(train_dl, desc=f"Epoch {ep}/{args.epochs} [Training]", leave=True)
+
+        for x, y in loop:
             x, y = x.to(device), y.to(device)
-            logits = model(x)
-            probs = torch.softmax(logits, dim=1)[:, 1]  # Probability of bonafide
-            all_y.append(y.cpu().numpy())
-            all_s.append(probs.cpu().numpy())
+            optimizer.zero_grad(set_to_none=True)
+            with torch.amp.autocast("cuda" if device == "cuda" else "cpu"):
+                logits = model(x)
+                loss = criterion(logits, y)
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+            total_loss += loss.item()
+            loop.set_postfix(loss=f"{loss.item():.4f}")
 
-    y = np.concatenate(all_y)
-    s = np.concatenate(all_s)
+        scheduler.step()
 
-    fpr, tpr, _ = roc_curve(y, s, pos_label=1)
-    fnr = 1 - tpr
-    idx = np.nanargmin(np.abs(fnr - fpr))
-    eer = (fnr[idx] + fpr[idx]) / 2
-    return eer, auc(fpr, tpr)
+        # Evaluate after each epoch
+        eer, roc_auc, acc, cm = evaluate(model, val_dl, device)
+        print(f"📈 Epoch {ep:02d} | TrainLoss {total_loss/len(train_dl):.4f} "
+              f"| ValEER {eer*100:.2f}% | AUC {roc_auc:.3f} | Acc {acc*100:.2f}% "
+              f"| CM={cm}")
 
-# ------------------------------------------------------------
-# 🚀 TRAINING LOOP
-# ------------------------------------------------------------
-train_losses, val_eers, val_aucs = [], [], []
+        # Save best model (by EER)
+        if eer < best_eer:
+            best_eer = eer
+            torch.save({"model": model.state_dict(),
+                        "args": vars(args),
+                        "best_val_eer": best_eer}, args.save)
+            print(f"💾 Best model saved (EER {best_eer*100:.2f}%) → {args.save}")
 
-print(f"Starting training on {device}...\n")
-for ep in range(1, epochs + 1):
-    model.train()
-    total_loss = 0.0
+    print("\n✅ Training complete.")
+    print(f"🏁 Best validation EER: {best_eer*100:.2f}%")
+    if os.path.exists(args.save):
+        print(f"📂 Checkpoint saved at: {args.save}")
 
-    for x, y in train_dl:
-        x, y = x.to(device), y.to(device)
-        optimzr.zero_grad()
-        loss = criterion(model(x), y)
-        loss.backward()
-        optimzr.step()
-        total_loss += loss.item()
 
-    # Evaluate each epoch
-    avg_loss = total_loss / len(train_dl)
-    eer, roc_auc = evaluate(model, val_dl)
-
-    train_losses.append(avg_loss)
-    val_eers.append(eer * 100)
-    val_aucs.append(roc_auc)
-
-    print(f"Epoch {ep:02d} | Train Loss: {avg_loss:.4f} | Val EER: {eer*100:.2f}% | ROC-AUC: {roc_auc:.3f}")
-
-# ------------------------------------------------------------
-# 💾 SAVE MODEL
-# ------------------------------------------------------------
-torch.save(model.state_dict(), save_path)
-print(f"\n✅ Model training complete. Saved to: {save_path}")
-
-# ------------------------------------------------------------
-# 📈 PLOT METRICS
-# ------------------------------------------------------------
-plt.figure(figsize=(10, 5))
-
-# Training Loss
-plt.subplot(1, 2, 1)
-plt.plot(train_losses, label="Train Loss", marker="o")
-plt.title("Training Loss per Epoch")
-plt.xlabel("Epoch")
-plt.ylabel("Loss")
-plt.grid(True)
-plt.legend()
-
-# Validation EER + ROC-AUC
-plt.subplot(1, 2, 2)
-plt.plot(val_eers, label="Validation EER (%)", marker="o", color="r")
-plt.plot(val_aucs, label="Validation ROC-AUC", marker="s", color="g")
-plt.title("Validation Performance per Epoch")
-plt.xlabel("Epoch")
-plt.ylabel("Metric Value")
-plt.grid(True)
-plt.legend()
-
-plt.tight_layout()
-plot_path = r"D:\UNI\FYP\reports\figures\training_curves.png"
-os.makedirs(os.path.dirname(plot_path), exist_ok=True)
-plt.savefig(plot_path)
-plt.show()
-
-print(f"\n📊 Training plots saved to: {plot_path}")
+if __name__ == "__main__":
+    main()
