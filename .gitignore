@@ -9,3 +9,7 @@ env/
 .vscode/
 data/features/lfcc
 data/features/logmel
+data/noise_rir/musan
+data/noise_rir/rir
+data/features_augmented/lfcc
+data/features_augmented/logmel
