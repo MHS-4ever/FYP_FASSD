@@ -27,25 +27,65 @@ print(f"Loaded {len(df)} files for augmentation")
 # ------------------------------
 def add_noise(audio, snr_db=10):
     """Add random MUSAN noise to signal at target SNR."""
-    noise_dirs = [os.path.join(musan_root, d) for d in os.listdir(musan_root)]
-    noise_file = random.choice([os.path.join(nd, f) for nd in noise_dirs for f in os.listdir(nd)])
-    noise, _ = librosa.load(noise_file, sr=16000)
-    if len(noise) < len(audio):
-        noise = np.tile(noise, int(np.ceil(len(audio)/len(noise))))
-    noise = noise[:len(audio)]
-    sig_power = np.mean(audio**2)
-    noise_power = np.mean(noise**2)
-    scale = np.sqrt(sig_power / (10**(snr_db/10) * noise_power))
-    noisy = audio + noise * scale
-    return noisy
+    try:
+        if not os.path.exists(musan_root):
+            return audio
+
+        # Recursively find all wav files
+        all_noise_files = []
+        for root, _, files in os.walk(musan_root):
+            for f in files:
+                if f.lower().endswith(".wav"):
+                    all_noise_files.append(os.path.join(root, f))
+
+        if len(all_noise_files) == 0:
+            return audio  # no valid wav files found
+
+        noise_file = random.choice(all_noise_files)
+        noise, _ = librosa.load(noise_file, sr=16000)
+
+        # Pad or trim noise
+        if len(noise) < len(audio):
+            noise = np.tile(noise, int(np.ceil(len(audio)/len(noise))))
+        noise = noise[:len(audio)]
+
+        # Adjust power
+        sig_power = np.mean(audio ** 2)
+        noise_power = np.mean(noise ** 2)
+        if noise_power == 0:
+            return audio
+        scale = np.sqrt(sig_power / (10 ** (snr_db / 10) * noise_power))
+        noisy = audio + noise * scale
+        return noisy
+    except Exception as e:
+        print(f"[Noise error] {e}")
+        return audio
 
 def apply_rir(audio):
     """Simulate room impulse response (reverberation)."""
-    rir_files = [os.path.join(rir_root, f) for f in os.listdir(rir_root) if f.endswith('.wav')]
-    rir_file = random.choice(rir_files)
-    rir, _ = librosa.load(rir_file, sr=16000)
-    rir = rir / np.sqrt(np.sum(rir**2))
-    return signal.convolve(audio, rir, mode='full')[:len(audio)]
+    try:
+        if not os.path.exists(rir_root):
+            return audio
+
+        # Recursively find all wav files
+        rir_files = []
+        for root, _, files in os.walk(rir_root):
+            for f in files:
+                if f.lower().endswith(".wav"):
+                    rir_files.append(os.path.join(root, f))
+
+        if len(rir_files) == 0:
+            return audio
+
+        rir_file = random.choice(rir_files)
+        rir, _ = librosa.load(rir_file, sr=16000)
+        rir = rir / np.sqrt(np.sum(rir ** 2) + 1e-8)
+
+        reverbed = signal.convolve(audio, rir, mode="full")[:len(audio)]
+        return reverbed
+    except Exception as e:
+        print(f"[RIR error] {e}")
+        return audio
 
 def random_gain(audio):
     """Random volume scaling."""
