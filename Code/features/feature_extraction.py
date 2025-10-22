@@ -20,8 +20,8 @@ from tqdm import tqdm
 # ------------------------------------------------------------
 # 🔧 CONFIGURATION
 # ------------------------------------------------------------
-manifest_path = r"D:\UNI\FYP\data\manifests\asvspoof2021_df_manifest.csv"
-save_root = r"D:\UNI\FYP\data\features"
+manifest_path = r"E:\FYP\data\manifests\asvspoof2021_df_manifest.csv"
+save_root = r"E:\FYP\data\features"
 os.makedirs(save_root, exist_ok=True)
 
 # Toggle for quick tests (True = process only first 100 files)

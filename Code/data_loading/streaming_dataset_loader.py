@@ -34,6 +34,6 @@ class StreamingFeatureDataset(IterableDataset):
             # mmap_mode="r" → loads from disk lazily
             x = np.load(feat_path, mmap_mode="r")
             x = self._pad_or_trim(x)
-            x = torch.from_numpy(x).unsqueeze(0).float()
+            x = torch.from_numpy(np.copy(x)).unsqueeze(0).float()
             y = torch.tensor(label).long()
             yield x, y

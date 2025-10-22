@@ -13,3 +13,4 @@ data/noise_rir/musan
 data/noise_rir/rir
 data/features_augmented/lfcc
 data/features_augmented/logmel
+data/features_merged/features_manifest_combined.csv

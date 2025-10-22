@@ -22,11 +22,11 @@ import torch.nn.functional as F
 # ------------------------------
 # CONFIG PATHS
 # ------------------------------
-musan_root    = r"D:\UNI\FYP\data\noise_rir\musan"
-rir_root      = r"D:\UNI\FYP\data\noise_rir\rir"
-manifest_in   = r"D:\UNI\FYP\data\features\features_manifest_labeled.csv"
-base_audio_dir= r"D:\UNI\FYP\DataSet\English\DeepFake (DF)\DF_clips"
-output_dir    = r"D:\UNI\FYP\data\features_augmented"
+musan_root    = r"E:\FYP\data\noise_rir\musan"
+rir_root      = r"E:\FYP\data\noise_rir\rir"
+manifest_in   = r"E:\FYP\data\features\features_manifest_labeled.csv"
+base_audio_dir= r"E:\FYP\DataSet\English\DeepFake (DF)\DF_clips"
+output_dir    = r"E:\FYP\data\features_augmented"
 checkpoint_fp = os.path.join(output_dir, "augmentation_checkpoint.csv")
 
 os.makedirs(output_dir, exist_ok=True)

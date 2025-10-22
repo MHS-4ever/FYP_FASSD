@@ -20,10 +20,10 @@ from tqdm import tqdm
 # ------------------------------------------------------------
 # 🔧 PATHS – update this if your folder names differ
 # ------------------------------------------------------------
-base_path = r"D:\UNI\FYP\DataSet\English\DeepFake (DF)"
+base_path = r"E:\FYP\DataSet\English\DeepFake (DF)"
 clips_dir = os.path.join(base_path, "DF_clips")
 trl_file = os.path.join(base_path, "ASVspoof2021.DF.cm.eval.trl.txt")
-output_dir = r"D:\UNI\FYP\data\manifests"
+output_dir = r"E:\FYP\data\manifests"
 os.makedirs(output_dir, exist_ok=True)
 output_csv = os.path.join(output_dir, "asvspoof2021_df_manifest.csv")
 
