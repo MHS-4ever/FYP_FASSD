@@ -24,9 +24,15 @@ def parse_args():
 
 
 @torch.no_grad()
-def evaluate(manifest_path, model, args, device, tag="Clean"):
+def evaluate(manifest_path, model, args, device, tag="Clean", source_filter=None):
     print(f"\n[EVAL] Evaluating on {tag} dataset:")
     df = pd.read_csv(manifest_path)
+    
+    # Filter by source if specified (for combined manifests)
+    if source_filter and "source" in df.columns:
+        df = df[df["source"] == source_filter].reset_index(drop=True)
+        print(f"[FILTER] Filtered to '{source_filter}' samples: {len(df)}")
+    
     df = df[df["label"].isin(["bonafide", "spoof"])].reset_index(drop=True)
 
     ds = StreamingFeatureDataset(
@@ -88,14 +94,17 @@ def main():
     print(f"[OK] Loaded model checkpoint: {args.ckpt}")
 
     # --- Evaluate both datasets
-    paths = {
-        "Clean": r"E:\FYP\data\features\features_manifest_labeled.csv",
-        "Augmented": r"E:\FYP\data\features_merged\features_manifest_combined.csv",
-    }
+    # Use combined manifest but filter by source to ensure correct HDF5 file
+    combined_manifest = r"E:\FYP\data\features_merged\features_manifest_combined.csv"
+    
+    eval_configs = [
+        ("Clean", combined_manifest, "clean"),
+        ("Augmented", combined_manifest, "augmented"),
+    ]
 
     results = []
-    for tag, manifest in paths.items():
-        res = evaluate(manifest, model, args, device, tag)
+    for tag, manifest, source_filter in eval_configs:
+        res = evaluate(manifest, model, args, device, tag, source_filter)
         results.append(res)
 
     # --- Create results table
