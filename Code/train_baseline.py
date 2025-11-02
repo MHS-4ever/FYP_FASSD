@@ -86,7 +86,7 @@ def plot_learning_curves(logs, out_dir, feature_type):
     out_path = os.path.join(out_dir, f"learning_curves_{feature_type}.png")
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"📊 Learning curve saved → {out_path}")
+    print(f"[PLOT] Learning curve saved -> {out_path}")
 
 # ---------------------------------------------------------------------
 # Main
@@ -101,20 +101,21 @@ def main():
     # CUDA setup
     torch.backends.cudnn.benchmark = True
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"🧠 Using device: {device} (CUDA available: {torch.cuda.is_available()})")
+    print(f"[GPU] Using device: {device} (CUDA available: {torch.cuda.is_available()})")
 
     # -------- Load & split
     df = pd.read_csv(args.manifest)
     df = df[df["label"].isin(["bonafide", "spoof"])].reset_index(drop=True)
-    print(f"📄 Loaded manifest with {len(df)} samples")
+    print(f"[DATA] Loaded manifest with {len(df)} samples")
+    print(f"[DATA] Label distribution:\n{df['label'].value_counts()}")
 
     train_df, val_df = train_test_split(
         df, test_size=args.val_size, stratify=df["label"], random_state=42
     )
-    print(f"📊 Train: {len(train_df)} | Val: {len(val_df)}")
+    print(f"[SPLIT] Train: {len(train_df)} | Val: {len(val_df)}")
 
     # -------- Datasets & Loaders
-    print("🔄 Initializing streaming datasets...")
+    print("[LOADER] Initializing streaming datasets...")
     train_ds = StreamingFeatureDataset(
         train_df, feature_type=args.feature_type, max_frames=args.target_T, shuffle=True
     )
@@ -138,13 +139,17 @@ def main():
         persistent_workers=args.persistent_workers,
         prefetch_factor=max(2, args.prefetch_factor // 2),
     )
-    print("✅ DataLoaders ready.\n")
+    print("[OK] DataLoaders ready.\n")
 
     # -------- Class weights (imbalanced data)
+    # Dataset labels: 0=bonafide (minority), 1=spoof (majority)
+    # Give higher weight to minority class to balance the loss
     counts = train_df["label"].value_counts()
-    w_spoof = counts["bonafide"] / (counts["spoof"] + 1e-6)
-    w_bona = 1.0
-    class_weights = torch.tensor([w_spoof, w_bona], dtype=torch.float32, device=device)
+    total = len(train_df)
+    weight_bonafide = total / (2.0 * counts["bonafide"])  # Higher weight for minority
+    weight_spoof = total / (2.0 * counts["spoof"])  # Lower weight for majority
+    class_weights = torch.tensor([weight_bonafide, weight_spoof], dtype=torch.float32, device=device)
+    print(f"[INFO] Class weights: bonafide={weight_bonafide:.4f}, spoof={weight_spoof:.4f}")
 
     # -------- Model / Optim
     model = LCNNBaseline().to(device)
@@ -156,7 +161,7 @@ def main():
     best_eer = 1.0
     logs = {"train_loss": [], "val_eer": [], "val_auc": [], "val_acc": []}
 
-    print("\n🚀 Starting training...\n")
+    print("\n[TRAIN] Starting training...\n")
 
     # We can’t safely use len(train_dl) with Iterable-style datasets.
     steps_per_epoch = int(np.ceil(len(train_df) / args.batch_size))
@@ -204,7 +209,7 @@ def main():
         logs["val_acc"].append(acc)
 
         print(
-            f"📈 Epoch {ep:02d} | TrainLoss {avg_loss:.4f} | "
+            f"[METRICS] Epoch {ep:02d} | TrainLoss {avg_loss:.4f} | "
             f"ValEER {eer*100:.2f}% | AUC {roc_auc:.3f} | "
             f"Acc {acc*100:.2f}% | CM={cm}"
         )
@@ -216,13 +221,13 @@ def main():
                 {"model": model.state_dict(), "args": vars(args), "best_val_eer": best_eer},
                 args.save,
             )
-            print(f"💾 Best model saved (EER {best_eer*100:.2f}%) → {args.save}")
+            print(f"[SAVE] Best model saved (EER {best_eer*100:.2f}%) -> {args.save}")
 
     # -------- Finish
-    print("\n✅ Training complete.")
-    print(f"🏁 Best validation EER: {best_eer*100:.2f}%")
+    print("\n[OK] Training complete.")
+    print(f"[RESULTS] Best validation EER: {best_eer*100:.2f}%")
     if os.path.exists(args.save):
-        print(f"📂 Checkpoint saved at: {args.save}")
+        print(f"[SAVE] Checkpoint saved at: {args.save}")
 
     plot_learning_curves(logs, args.plot_dir, args.feature_type)
 

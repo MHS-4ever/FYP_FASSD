@@ -14,7 +14,7 @@ from utils_metrics import eer_and_auc, confusion
 
 def parse_args():
     ap = argparse.ArgumentParser("Evaluate LCNN baseline on clean & augmented datasets")
-    ap.add_argument("--ckpt", default=r"E:\FYP\models_saved\baseline_cnn_robust.pth")
+    ap.add_argument("--ckpt", default=r"E:\FYP\models_saved\baseline_cnn_robust_fixed.pth")
     ap.add_argument("--feature_type", choices=["lfcc", "mel"], default="lfcc")
     ap.add_argument("--target_T", type=int, default=400)
     ap.add_argument("--batch_size", type=int, default=512)
@@ -25,7 +25,7 @@ def parse_args():
 
 @torch.no_grad()
 def evaluate(manifest_path, model, args, device, tag="Clean"):
-    print(f"\n🔍 Evaluating on {tag} dataset:")
+    print(f"\n[EVAL] Evaluating on {tag} dataset:")
     df = pd.read_csv(manifest_path)
     df = df[df["label"].isin(["bonafide", "spoof"])].reset_index(drop=True)
 
@@ -58,7 +58,7 @@ def evaluate(manifest_path, model, args, device, tag="Clean"):
     tn, fp, fn, tp = confusion(y_true, y_pred)
     acc = (tp + tn) / max(1, (tp + tn + fp + fn))
 
-    print(f"✅ {tag} Results → EER: {eer*100:.2f}%, AUC: {roc_auc:.3f}, Acc: {acc*100:.2f}%")
+    print(f"[OK] {tag} Results -> EER: {eer*100:.2f}%, AUC: {roc_auc:.3f}, Acc: {acc*100:.2f}%")
     return {
         "dataset": tag,
         "samples": len(df),
@@ -76,21 +76,21 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
-        print(f"🧠 Using GPU: {torch.cuda.get_device_name(0)}")
+        print(f"[GPU] Using GPU: {torch.cuda.get_device_name(0)}")
     else:
-        print("⚠️ CUDA not available — running on CPU (this will be slow).")
+        print("[WARNING] CUDA not available - running on CPU (this will be slow).")
 
     # --- Model
     model = LCNNBaseline().to(device)
-    ckpt = torch.load(args.ckpt, map_location=device)
+    ckpt = torch.load(args.ckpt, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model"])
     model.eval()
-    print(f"✅ Loaded model checkpoint: {args.ckpt}")
+    print(f"[OK] Loaded model checkpoint: {args.ckpt}")
 
     # --- Evaluate both datasets
     paths = {
-        "Clean": r"E:\FYP\data\features_merged\features_manifest_combined.csv",
-        "Augmented": r"E:\FYP\data\features_merged\features_manifest_combined.csv",  # same file but used as noisy test
+        "Clean": r"E:\FYP\data\features\features_manifest_labeled.csv",
+        "Augmented": r"E:\FYP\data\features_merged\features_manifest_combined.csv",
     }
 
     results = []
@@ -102,17 +102,17 @@ def main():
     df = pd.DataFrame(results)
     os.makedirs(os.path.dirname(args.output_csv), exist_ok=True)
     df.to_csv(args.output_csv, index=False)
-    print(f"\n💾 Saved comparison table → {args.output_csv}\n")
+    print(f"\n[SAVE] Saved comparison table -> {args.output_csv}\n")
 
     table = tabulate(
         df[["dataset", "eer", "auc", "acc"]],
-        headers=["Dataset", "EER ↓", "AUC ↑", "ACC ↑"],
+        headers=["Dataset", "EER (lower)", "AUC (higher)", "ACC (higher)"],
         tablefmt="github",
         showindex=False,
     )
-    print("📊 Evaluation Comparison:\n")
+    print("[RESULTS] Evaluation Comparison:\n")
     print(table)
-    print("\n✅ Robustness Evaluation Complete.")
+    print("\n[OK] Robustness Evaluation Complete.")
 
 
 if __name__ == "__main__":
