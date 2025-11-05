@@ -37,7 +37,9 @@ class StreamingFeatureDataset(Dataset):
         else:
             self.base_dir = r"E:\FYP\data\features"
 
-        self.h5_path = os.path.join(self.base_dir, f"{feature_type}_packed.h5")
+        # Map feature_type to actual HDF5 filename (mel -> logmel)
+        h5_feature_name = "logmel" if feature_type == "mel" else feature_type
+        self.h5_path = os.path.join(self.base_dir, f"{h5_feature_name}_packed.h5")
         self.h5_mode = os.path.exists(self.h5_path)
         self.h5_path_to_open = self.h5_path if self.h5_mode else None
 
