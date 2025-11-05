@@ -9,12 +9,15 @@ from tabulate import tabulate
 
 from data_loading.streaming_dataset_loader import StreamingFeatureDataset
 from models.baseline_cnn import LCNNBaseline
+from models.resnet_cnn import DeepResNetCNN
 from utils_metrics import eer_and_auc, confusion
 
 
 def parse_args():
-    ap = argparse.ArgumentParser("Evaluate LCNN baseline on clean & augmented datasets")
+    ap = argparse.ArgumentParser("Evaluate models on clean & augmented datasets")
     ap.add_argument("--ckpt", default=r"E:\FYP\models_saved\baseline_cnn_robust_fixed.pth")
+    ap.add_argument("--model_type", choices=["baseline", "resnet"], default="baseline", 
+                    help="Model architecture: baseline (LCNN) or resnet (Deep ResNet CNN)")
     ap.add_argument("--feature_type", choices=["lfcc", "mel"], default="lfcc")
     ap.add_argument("--target_T", type=int, default=400)
     ap.add_argument("--batch_size", type=int, default=512)
@@ -87,7 +90,13 @@ def main():
         print("[WARNING] CUDA not available - running on CPU (this will be slow).")
 
     # --- Model
-    model = LCNNBaseline().to(device)
+    if args.model_type == "resnet":
+        model = DeepResNetCNN().to(device)
+        print("[MODEL] Using Deep ResNet CNN architecture")
+    else:
+        model = LCNNBaseline().to(device)
+        print("[MODEL] Using LCNN Baseline architecture")
+    
     ckpt = torch.load(args.ckpt, map_location=device, weights_only=False)
     model.load_state_dict(ckpt["model"])
     model.eval()

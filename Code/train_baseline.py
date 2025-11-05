@@ -28,6 +28,12 @@ def parse_args():
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--target_T", type=int, default=400)
     ap.add_argument("--val_size", type=float, default=0.2)
+    
+    # Fast training options
+    ap.add_argument("--eval_subset", type=float, default=0.15, 
+                    help="Fraction of validation set to use for quick eval during training (default: 0.15 = 15%)")
+    ap.add_argument("--full_eval_interval", type=int, default=5, 
+                    help="Perform full validation every N epochs (default: 5). Set to 0 to disable.")
 
     ap.add_argument("--save", default=r"E:\FYP\models_saved\baseline_cnn_robust.pth")
     ap.add_argument("--plot_dir", default=r"E:\FYP\reports\figures")
@@ -43,12 +49,22 @@ def parse_args():
 # Evaluation
 # ---------------------------------------------------------------------
 @torch.no_grad()
-def evaluate(model, loader, device):
+def evaluate(model, loader, device, max_batches=None, desc="Evaluating"):
+    """
+    Evaluate model on validation set.
+    
+    Args:
+        max_batches: If set, only evaluate on first N batches for speed.
+                     Use for quick checks during training. Set to None for full eval.
+    """
     model.eval()
     ys, ps, yh = [], [], []
 
-    loop = tqdm(loader, desc="Evaluating", leave=False, dynamic_ncols=True)
-    for x, y in loop:
+    loop = tqdm(loader, desc=desc, leave=False, dynamic_ncols=True, colour="cyan")
+    for batch_idx, (x, y) in enumerate(loop):
+        if max_batches and batch_idx >= max_batches:
+            break
+            
         x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
         logits = model(x)
         prob1 = torch.softmax(logits, dim=1)[:, 1]
@@ -100,6 +116,8 @@ def main():
 
     # CUDA setup
     torch.backends.cudnn.benchmark = True
+    torch.backends.cuda.matmul.allow_tf32 = True  # Enable TF32 for matmul (faster on Ampere+)
+    torch.backends.cudnn.allow_tf32 = True         # Enable TF32 for cuDNN (faster convolutions)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"[GPU] Using device: {device} (CUDA available: {torch.cuda.is_available()})")
 
@@ -161,10 +179,17 @@ def main():
     best_eer = 1.0
     logs = {"train_loss": [], "val_eer": [], "val_auc": [], "val_acc": []}
 
-    print("\n[TRAIN] Starting training...\n")
+    print("\n[TRAIN] Starting training...")
+    print(f"[INFO] Quick eval on {args.eval_subset*100:.0f}% of validation set per epoch")
+    if args.full_eval_interval > 0:
+        print(f"[INFO] Full validation every {args.full_eval_interval} epochs")
+    print()
 
-    # We can’t safely use len(train_dl) with Iterable-style datasets.
+    # We can't safely use len(train_dl) with Iterable-style datasets.
     steps_per_epoch = int(np.ceil(len(train_df) / args.batch_size))
+    
+    # Calculate max batches for quick evaluation
+    quick_eval_batches = max(1, int(len(val_dl) * args.eval_subset))
 
     for ep in range(1, args.epochs + 1):
         model.train()
@@ -201,15 +226,24 @@ def main():
         avg_loss = total_loss / max(1, bidx)
         scheduler.step()
 
-        # -------- Validation
-        eer, roc_auc, acc, cm = evaluate(model, val_dl, device)
+        # -------- Validation (quick eval on subset or full eval at intervals)
+        is_full_eval = args.full_eval_interval > 0 and ep % args.full_eval_interval == 0
+        is_last_epoch = ep == args.epochs
+        
+        if is_full_eval or is_last_epoch:
+            eer, roc_auc, acc, cm = evaluate(model, val_dl, device, max_batches=None, desc="Full Validation")
+            eval_tag = "[FULL]"
+        else:
+            eer, roc_auc, acc, cm = evaluate(model, val_dl, device, max_batches=quick_eval_batches, desc="Quick Validation")
+            eval_tag = "[QUICK]"
+        
         logs["train_loss"].append(avg_loss)
         logs["val_eer"].append(eer)
         logs["val_auc"].append(roc_auc)
         logs["val_acc"].append(acc)
 
         print(
-            f"[METRICS] Epoch {ep:02d} | TrainLoss {avg_loss:.4f} | "
+            f"[METRICS] {eval_tag} Epoch {ep:02d} | TrainLoss {avg_loss:.4f} | "
             f"ValEER {eer*100:.2f}% | AUC {roc_auc:.3f} | "
             f"Acc {acc*100:.2f}% | CM={cm}"
         )

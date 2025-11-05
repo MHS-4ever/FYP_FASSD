@@ -34,23 +34,34 @@
 - ✅ Streaming HDF5 dataset loader
 - ✅ **Fixed critical class weight bug** (Nov 1, 2025)
 - ✅ **Fixed Unicode console issues** (Nov 1, 2025)
-- ✅ **Models retrained with fixed code** (Nov 3, 2025)
-- ✅ **Evaluation complete** - EER: 9.68% (clean), 15.71% (augmented)
+- ✅ **LFCC models trained & evaluated** (Nov 3, 2025)
+  - Clean: EER 9.68%, AUC 0.965
+  - Robust: EER 15.71% (augmented test)
+
+### Phase 4.1: Log-Mel Feature Experiments ✅
+
+- ✅ **Mel models trained & evaluated** (Nov 5, 2025)
+  - Mel Robust (WINNER): EER 9.69% (clean), 15.25% (augmented)
+  - Mel Clean: EER 8.57% (clean), 36.33% (augmented) - overfitted
+- ✅ **Key Finding**: Mel features outperform LFCC by 0.46% on augmented test
+- ✅ **Best model selected**: `baseline_cnn_mel_robust.pth`
 
 ---
 
 ## 🔄 Current Phase: Phase 4 - Advanced Models & Features
 
-### 4.1: Experiment with Different Features
+### 4.1: Experiment with Different Features ✅ COMPLETE
 
-**Options:**
+**Completed:**
 
-1. **Log-Mel Spectrograms**
+1. ✅ **Log-Mel Spectrograms**
+   - Trained LCNN on mel features (clean + robust models)
+   - **Result**: Mel outperforms LFCC (15.25% vs 15.71% EER on augmented test)
+   - **Winner**: `baseline_cnn_mel_robust.pth`
 
-   - Train LCNN on mel features instead of LFCC
-   - Compare performance with LFCC baseline
+**Future Options:**
 
-2. **Feature Fusion**
+2. **Feature Fusion** (optional)
 
    - Combine LFCC + Log-Mel in dual-stream architecture
    - Concat or attention-based fusion
@@ -60,14 +71,17 @@
    - Constant-Q Transform (CQT)
    - Raw waveform with learnable front-end
 
-### 4.2: Advanced Architectures
+**Decision**: Proceed with Mel features for advanced architectures
 
-**Options:**
+### 4.2: Advanced Architectures ⏳ NEXT
 
-1. **Deeper CNN**
+**Priority: Deeper CNN with ResNet-style architecture**
 
-   - ResNet-style skip connections
-   - Increase model capacity
+1. **Deeper CNN** ← START HERE
+
+   - Implement ResNet-style skip connections
+   - Increase model capacity (more layers)
+   - Goal: Improve on 15.25% EER baseline
 
 2. **RNN/LSTM**
 
@@ -128,9 +142,10 @@
 
 ### Scope 1: AI vs Human Voice Detection ✅
 
-**Status:** Baseline ready (after retraining)  
-**Model:** LCNN on LFCC features  
-**Next:** Improve with better architectures
+**Status:** Strong baseline achieved  
+**Best Model:** LCNN on Mel features (`baseline_cnn_mel_robust.pth`)  
+**Performance:** EER 9.69% (clean), 15.25% (augmented)  
+**Next:** Implement deeper CNN to improve further
 
 ### Scope 2: Voice Replacement Detection 🔄
 
@@ -156,10 +171,10 @@
 
 | Phase | Task                      | Est. Time | Status         |
 | ----- | ------------------------- | --------- | -------------- |
-| 3.1   | Retrain baseline models   | 1-2 hours | ✅ Complete    |
-| 3.2   | Validate fixed models     | 30 min    | ✅ Complete    |
-| 4.1   | Train Log-Mel model       | 1 hour    | ⏳ In Progress |
-| 4.2   | Implement deeper CNN      | 2-3 hours | ❌ Not started |
+| 3.1   | Retrain LFCC models       | 1-2 hours | ✅ Complete    |
+| 3.2   | Validate LFCC models      | 30 min    | ✅ Complete    |
+| 4.1   | Train & eval Mel models   | 2 hours   | ✅ Complete    |
+| 4.2   | Implement deeper CNN      | 2-3 hours | ⏳ Next        |
 | 4.3   | Environmental features    | 4-6 hours | ❌ Not started |
 | 4.4   | Multi-task learning       | 6-8 hours | ❌ Not started |
 | 5.0   | Final evaluation & report | 3-4 hours | ❌ Not started |
@@ -176,8 +191,8 @@
 
 ### Short-term (This Week)
 
-4. ⏳ Train Log-Mel baseline for comparison
-5. ⏳ Implement ResNet-style deeper CNN
+4. ✅ Train Log-Mel baseline for comparison
+5. ⏳ Implement ResNet-style deeper CNN ← CURRENT
 6. ⏳ Analyze error cases (false positives/negatives)
 
 ### Medium-term (Next 2 Weeks)
@@ -221,9 +236,9 @@
 
 ### Required Outputs
 
-1. ✅ Working codebase (95% complete)
-2. ✅ Trained baseline models (LFCC-based)
-3. ⏳ Evaluation metrics & comparison (in progress)
+1. ✅ Working codebase (97% complete)
+2. ✅ Trained baseline models (LFCC + Mel, 4 models total)
+3. ✅ Evaluation metrics & comparison complete
 4. ❌ Project report/thesis
 5. ❌ Presentation slides
 6. ❌ Demo application (optional)
@@ -238,5 +253,5 @@
 
 ---
 
-**Last Updated:** November 3, 2025  
-**Next Review:** After Log-Mel model training completion
+**Last Updated:** November 5, 2025  
+**Next Review:** After ResNet-style deeper CNN implementation
