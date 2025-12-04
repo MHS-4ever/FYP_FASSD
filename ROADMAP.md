@@ -58,7 +58,11 @@
 
 ---
 
-## 🔄 Current Phase: Phase 4 - Advanced Models & Features
+## 🔄 Current Phase: Phase 4.3 - Environmental Detection (CRITICAL PIVOT)
+
+**⚠️ IMPORTANT DISCOVERY:** Current ResNet CNN (2.61% EER on ASVspoof) fails on real-world audio due to domain mismatch. Model only detects synthetic artifacts, not environmental inconsistencies.
+
+**PROJECT GOAL CLARIFIED:** Detect deepfakes using environmental acoustic analysis, not just synthetic artifacts. This requires implementing Phase 4.3 environmental features.
 
 ### 4.1: Experiment with Different Features ✅ COMPLETE
 
@@ -109,29 +113,49 @@
 **Decision**: Current ResNet CNN performance (2.61% EER) exceeds requirements.  
 **Recommendation**: Proceed to Phase 4.3 (Environmental Features)
 
-### 4.3: Environmental Feature Detection ⏳ NEXT
+### 4.3: Environmental Feature Detection ⏳ CURRENT - CRITICAL
 
-**For Scope Goal #2 & #3:** ← START HERE
+**Status:** **REQUIRED FOR PROJECT SUCCESS**
 
-**Voice Replacement Detection:**
+**Problem Discovered:** ResNet CNN trained on ASVspoof achieves excellent performance on test set (2.61% EER) but **fails completely on real-world audio** (100% false positives on Trump recordings). Model only detects synthetic artifacts, NOT environmental inconsistencies.
 
-- Extract environmental acoustic features:
-  - Background noise patterns
-  - Reverb characteristics (RT60)
-  - Frequency response differences
+**Solution Required:** Build environmental acoustic analysis system
 
-**Replay Detection:**
+**Environmental Features to Implement:**
 
-- Detect replay artifacts:
-  - Double reverberation
-  - Speaker frequency response
-  - Channel mismatch indicators
+1. **Room Acoustics Analysis:**
+   - Reverberation time (RT60)
+   - Room size estimation
+   - Direct-to-reverberant ratio
+   - Early reflections
 
-**Implementation:**
+2. **Background Noise Analysis:**
+   - Signal-to-noise ratio (SNR)
+   - Noise spectral profile
+   - Background consistency
+   - "Too clean" detection (AI indicator)
 
-1. Extract environment-specific features
-2. Train binary classifier: genuine vs replaced/replayed
-3. Combine with deepfake detector for multi-task model
+3. **Channel Characteristics:**
+   - Frequency response
+   - Microphone characteristics
+   - Compression artifacts
+   - Bandwidth analysis
+
+4. **Temporal Consistency:**
+   - Environmental stability
+   - Background changes
+   - Segment-wise consistency
+
+**Implementation Plan:**
+1. Build environmental feature extractor (Week 1)
+2. Train anomaly detector on bonafide acoustics (Week 1-2)
+3. Create hybrid system (synthetic + environmental) (Week 2)
+4. Add explainable AI component (Week 2-3)
+5. Validate on Trump test set (Week 3)
+
+**Target:** Correctly classify real-world audio by analyzing environmental acoustics, not just synthetic artifacts
+
+**Timeline:** 2-3 weeks
 
 ### 4.4: Multi-Task Learning (Advanced)
 
@@ -151,13 +175,17 @@
 
 ## 🎯 Scope Alignment
 
-### Scope 1: AI vs Human Voice Detection ✅ **COMPLETE**
+### Scope 1: AI vs Human Voice Detection ⚠️ **PARTIAL - NEEDS ENVIRONMENTAL MODULE**
 
-**Status:** **PRODUCTION READY - OUTSTANDING SUCCESS**  
-**Best Model:** Deep ResNet CNN on Mel features (`resnet_cnn_mel_robust.pth`)  
-**Performance:** EER 0.57% (clean), 2.61% (augmented) ⭐  
-**Achievement:** 83% improvement over baseline, near-perfect accuracy  
-**Next:** Deploy or extend to Scopes 2 & 3
+**Status:** **Works on ASVspoof, fails on real-world audio**  
+**Current Model:** Deep ResNet CNN on Mel features (`resnet_cnn_mel_robust.pth`)  
+**Performance:** 
+- ASVspoof test: EER 0.57% (clean), 2.61% (augmented) ✅
+- Real-world (Trump): 100% false positives ❌
+
+**Problem:** Model only detects synthetic artifacts, not environmental inconsistencies  
+**Solution:** Build environmental acoustic analyzer (Phase 4.3 - IN PROGRESS)  
+**Target:** Detect deepfakes by environmental analysis, not just synthetic patterns
 
 ### Scope 2: Voice Replacement Detection 🔄
 
@@ -186,8 +214,8 @@
 | 3.1   | Retrain LFCC models       | 1-2 hours    | ✅ Complete               |
 | 3.2   | Validate LFCC models      | 30 min       | ✅ Complete               |
 | 4.1   | Train & eval Mel models   | 2 hours      | ✅ Complete               |
-| 4.2   | **Train ResNet CNN**      | **11 hours** | ✅ **Complete - SUCCESS** |
-| 4.3   | Environmental features    | 4-6 hours    | ⏳ **Next**               |
+| 4.2   | **Train ResNet CNN**      | **11 hours** | ✅ Complete (works on ASVspoof) |
+| 4.3   | **Environmental features** | **2-3 weeks** | ⏳ **CRITICAL - IN PROGRESS** |
 | 4.4   | Multi-task learning       | 6-8 hours    | ❌ Not started            |
 | 5.0   | Final evaluation & report | 3-4 hours    | ❌ Not started            |
 
@@ -274,10 +302,11 @@
 
 ## 🎉 Recent Achievements
 
-**November 8, 2025** - **Phase 4.2 Complete - OUTSTANDING SUCCESS!**
+**November 8, 2025** - **Phase 4.2 Complete + Critical Discovery**
 
-- ✅ ResNet CNN achieved 0.57% clean EER, 2.61% augmented EER
+- ✅ ResNet CNN achieved 0.57% clean EER, 2.61% augmented EER on ASVspoof
 - ✅ 83% improvement over baseline (15.25% → 2.61%)
-- ✅ Near-perfect accuracy (99.36% clean, 97.65% augmented)
-- ✅ Production-ready model - competitive with state-of-the-art
-- ✅ Scope 1 (AI vs Human Detection) **COMPLETE**
+- ❌ **CRITICAL FINDING:** Model fails on real-world audio (100% FP on Trump test)
+- 🔍 **Root Cause:** Model only detects synthetic artifacts, not environmental inconsistencies
+- 🎯 **Action Required:** Implement environmental acoustic analysis (Phase 4.3)
+- 📊 **Research Value:** Demonstrates domain adaptation challenge in deepfake detection

@@ -1,0 +1,9 @@
+test_date,description,filename,prediction,confidence,spoof_probability
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_f1.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_f2.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r1.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r2.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r3.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r4.wav,FAKE (AI-Generated),99.99%,0.9999
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r5.wav,FAKE (AI-Generated),100.00%,1.0000
+2025-12-02 18:50:33,Trump voice - Real vs AI-generated audio test,trump_r6.wav,FAKE (AI-Generated),100.00%,1.0000
