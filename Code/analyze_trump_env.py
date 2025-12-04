@@ -59,6 +59,17 @@ def main():
             suspicious_indicators += 1
             print("  ⚠️ No natural reverberation")
         
+        if features['rt60'] > 5.0:  # STRONG INDICATOR
+            suspicious_indicators += 2  # Double weight - very suspicious
+            print(f"  ⚠️⚠️ RT60 abnormally high ({features['rt60']:.1f}s - STRONG AI indicator)")
+        elif features['rt60'] > 3.0:
+            suspicious_indicators += 1
+            print(f"  ⚠️ RT60 high ({features['rt60']:.1f}s - suspicious)")
+        
+        if features['background_consistency'] < 0.3:
+            suspicious_indicators += 1
+            print("  ⚠️ Background inconsistent")
+        
         if suspicious_indicators == 0:
             print("  ✅ Environmental features appear natural")
         
