@@ -140,13 +140,15 @@ def extract_from_audio_dir(audio_dir, label, max_samples=500):
 
 def main():
     # Configuration
-    BONAFIDE_AUDIO_DIR = r"E:\FYP\DataSet\English\ASVspoof2021_DF_eval\flac"  # Update with actual path
+    BONAFIDE_AUDIO_DIR = r"E:\FYP\DataSet\English\ASVspoof2021_LA_eval\LA_clips"  # Real/bonafide samples
+    SPOOF_AUDIO_DIR = r"E:\FYP\DataSet\English\ASVspoof2021_DF_eval\DF_clips"  # Fake/synthetic samples (for testing)
     OUTPUT_DIR = r"E:\FYP\models_saved"
     MODEL_NAME = "environment_detector.pkl"
     SCALER_NAME = "environment_scaler.pkl"
     
     # Training parameters
     MAX_TRAIN_SAMPLES = 5000  # Use 5000 samples for training (fast)
+    MAX_TEST_SAMPLES = 1000  # Use 1000 samples for testing
     CONTAMINATION = 0.1  # Expected proportion of outliers
     
     print("="*80)
@@ -156,13 +158,11 @@ def main():
     
     # Check if we can access audio files
     if not os.path.exists(BONAFIDE_AUDIO_DIR):
-        print(f"[WARN] Audio directory not found: {BONAFIDE_AUDIO_DIR}")
-        print("[INFO] Using Trump test audios for demonstration...")
-        
-        # Fallback: Use Trump real audios as "bonafide" training set
-        BONAFIDE_AUDIO_DIR = r"E:\FYP\testing_audios"
-        print(f"[INFO] Using: {BONAFIDE_AUDIO_DIR}")
-        print("[WARN] This is for DEMO only - should train on full ASVspoof dataset!")
+        print(f"[ERROR] Bonafide audio directory not found: {BONAFIDE_AUDIO_DIR}")
+        print("[INFO] Please check the dataset path.")
+        return
+    
+    print(f"[OK] Bonafide audio directory found: {BONAFIDE_AUDIO_DIR}")
     
     # Extract features from bonafide samples
     print("\n[STEP 1] Extracting environmental features from BONAFIDE samples...")
@@ -224,40 +224,72 @@ def main():
     print(f"[SAVE] Model saved: {model_path}")
     print(f"[SAVE] Scaler saved: {scaler_path}")
     
-    # Test on Trump audios
-    print("\n[STEP 6] Testing on Trump audios...")
-    test_dir = r"E:\FYP\testing_audios"
-    X_test, y_test, test_files = extract_from_audio_dir(test_dir, label=-1, max_samples=None)
+    # Test on spoof samples
+    print("\n[STEP 6] Testing on SPOOF samples...")
+    if os.path.exists(SPOOF_AUDIO_DIR):
+        X_spoof, y_spoof, spoof_files = extract_from_audio_dir(
+            SPOOF_AUDIO_DIR, 
+            label=1,  # Spoof samples
+            max_samples=MAX_TEST_SAMPLES
+        )
+        
+        if X_spoof is not None:
+            X_spoof_scaled = scaler.transform(X_spoof)
+            spoof_pred = model.predict(X_spoof_scaled)
+            spoof_scores = model.score_samples(X_spoof_scaled)
+            
+            # Anomaly detector: -1 = anomaly (fake), 1 = normal (real)
+            # For spoof samples, we expect -1 (anomaly)
+            n_detected_fake = np.sum(spoof_pred == -1)
+            n_false_negative = np.sum(spoof_pred == 1)  # Should be fake but predicted as normal
+            
+            print("\n" + "="*80)
+            print("SPOOF SAMPLE TEST RESULTS")
+            print("="*80)
+            print(f"[INFO] Tested on {len(spoof_files)} spoof samples")
+            print(f"[INFO] Detected as FAKE (anomaly): {n_detected_fake}/{len(spoof_files)} ({n_detected_fake/len(spoof_files)*100:.1f}%)")
+            print(f"[INFO] False Negatives (missed): {n_false_negative}/{len(spoof_files)} ({n_false_negative/len(spoof_files)*100:.1f}%)")
+            print(f"[INFO] Anomaly score range: [{spoof_scores.min():.3f}, {spoof_scores.max():.3f}]")
+            print("="*80)
     
-    if X_test is not None:
-        X_test_scaled = scaler.transform(X_test)
-        test_pred = model.predict(X_test_scaled)
-        test_scores = model.score_samples(X_test_scaled)
+    # Test on Trump audios (if available)
+    print("\n[STEP 7] Testing on Trump audios (if available)...")
+    test_dir = r"E:\FYP\testing_audios"
+    if os.path.exists(test_dir):
+        X_test, y_test, test_files = extract_from_audio_dir(test_dir, label=-1, max_samples=None)
         
-        print("\n" + "="*80)
-        print("TRUMP AUDIO TEST RESULTS")
-        print("="*80)
-        
-        for i, filename in enumerate(test_files):
-            pred_label = "NORMAL (Real)" if test_pred[i] == 1 else "ANOMALY (Fake)"
-            score = test_scores[i]
+        if X_test is not None:
+            X_test_scaled = scaler.transform(X_test)
+            test_pred = model.predict(X_test_scaled)
+            test_scores = model.score_samples(X_test_scaled)
             
-            # Determine if actually real or fake
-            actual = "REAL" if 'r' in filename and 'trump_r' in filename else "FAKE"
-            correct = "✅" if (test_pred[i] == 1 and actual == "REAL") or (test_pred[i] == -1 and actual == "FAKE") else "❌"
+            print("\n" + "="*80)
+            print("TRUMP AUDIO TEST RESULTS")
+            print("="*80)
             
-            print(f"{correct} {filename:20s} | {pred_label:18s} | Score: {score:6.3f} | Actual: {actual}")
-        
-        # Accuracy
-        correct_count = sum([
-            1 for i, f in enumerate(test_files) 
-            if (test_pred[i] == 1 and 'trump_r' in f) or (test_pred[i] == -1 and 'trump_f' in f)
-        ])
-        accuracy = correct_count / len(test_files) * 100
-        
-        print("\n" + "="*80)
-        print(f"[RESULTS] Accuracy on Trump test: {correct_count}/{len(test_files)} = {accuracy:.1f}%")
-        print("="*80)
+            for i, filename in enumerate(test_files):
+                pred_label = "NORMAL (Real)" if test_pred[i] == 1 else "ANOMALY (Fake)"
+                score = test_scores[i]
+                
+                # Determine if actually real or fake
+                actual = "REAL" if 'r' in filename.lower() and 'trump_r' in filename.lower() else "FAKE"
+                correct = "✅" if (test_pred[i] == 1 and actual == "REAL") or (test_pred[i] == -1 and actual == "FAKE") else "❌"
+                
+                print(f"{correct} {filename:20s} | {pred_label:18s} | Score: {score:6.3f} | Actual: {actual}")
+            
+            # Accuracy
+            correct_count = sum([
+                1 for i, f in enumerate(test_files) 
+                if (test_pred[i] == 1 and 'trump_r' in f.lower()) or (test_pred[i] == -1 and 'trump_f' in f.lower())
+            ])
+            accuracy = correct_count / len(test_files) * 100 if len(test_files) > 0 else 0
+            
+            print("\n" + "="*80)
+            print(f"[RESULTS] Accuracy on Trump test: {correct_count}/{len(test_files)} = {accuracy:.1f}%")
+            print("="*80)
+    else:
+        print(f"[INFO] Trump test directory not found: {test_dir}")
+        print("[INFO] Skipping Trump audio test")
     
     print("\n[SUCCESS] Environmental detector training complete!")
     print("\nNext step: Combine with ResNet CNN for hybrid detection")
@@ -266,5 +298,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
