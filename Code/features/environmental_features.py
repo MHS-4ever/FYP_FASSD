@@ -95,12 +95,15 @@ class EnvironmentalFeatureExtractor:
             # Use autocorrelation to estimate direct vs reverberant energy
             autocorr = librosa.autocorrelate(y)
             if len(autocorr) > 100:
-                direct_energy = np.sum(autocorr[:50])
-                reverb_energy = np.sum(autocorr[50:200])
-                drr = direct_energy / max(reverb_energy, 1e-6)
-                return float(np.log10(drr + 1))
+                direct_energy = np.sum(np.abs(autocorr[:50]))  # Use absolute value
+                reverb_energy = np.sum(np.abs(autocorr[50:200]))  # Use absolute value
+                reverb_energy = max(reverb_energy, 1e-6)  # Avoid division by zero
+                drr = direct_energy / reverb_energy
+                # Ensure drr + 1 > 0 for log10
+                drr_value = max(drr, -0.99)  # Clamp to avoid log10(<=0)
+                return float(np.log10(drr_value + 1))
             return 0.0
-        except:
+        except Exception as e:
             return 0.0
     
     def compute_snr(self, y):
