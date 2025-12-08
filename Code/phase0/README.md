@@ -7,11 +7,14 @@ This directory contains scripts for automated data collection for Phase 0.
 **Goal**: Collect 10,000+ real-world audio samples using automated methods.
 
 **Strategy**:
-1. Download public datasets (VoxCeleb, Common Voice, VCTK)
+
+1. Download public datasets (LibriSpeech, VCTK, optional VoxCeleb1)
 2. Automated YouTube downloading
 3. Small manual collection (300-500 clips)
 4. Generate fake audio with TTS
 5. Process and verify all audio
+
+**⚠️ Important**: VoxCeleb2 (300+ GB) and Common Voice (no longer public) are NOT used.
 
 ## 🚀 Quick Start
 
@@ -27,19 +30,36 @@ pip install tortoise-tts  # For Tortoise TTS
 
 ### Step 2: Download Public Datasets (Manual)
 
-**VoxCeleb:**
-- Visit: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/
-- Download VoxCeleb1 and/or VoxCeleb2
-- Extract to `data/realworld/public_datasets/voxceleb/`
+**⭐ LibriSpeech (RECOMMENDED - Works perfectly):**
 
-**Common Voice:**
-- Visit: https://commonvoice.mozilla.org/
-- Download dataset (choose language)
-- Extract to `data/realworld/public_datasets/commonvoice/`
+```bash
+# Download train-clean-100 (6.3 GB, 251 speakers)
+wget http://www.openslr.org/resources/12/train-clean-100.tar.gz
+tar -xzf train-clean-100.tar.gz
+# Extract to: data/realworld/public_datasets/librispeech/
+```
 
-**VCTK:**
+- **Why it works**: Small size, no login, no restrictions, stable server
+- **URL**: http://www.openslr.org/12/
+
+**⭐ VCTK (RECOMMENDED - Works perfectly):**
+
 - Visit: https://datashare.ed.ac.uk/handle/10283/3443
-- Download and extract to `data/realworld/public_datasets/vctk/`
+- Download (~10 GB, 110 speakers)
+- Extract to `data/realworld/public_datasets/vctk/`
+- **Why it works**: Manageable size, stable academic server, no restrictions
+
+**VoxCeleb1 (Optional - if you have space):**
+
+- Visit: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/voxceleb1/
+- Download VoxCeleb1 (if available and manageable)
+- Extract to `data/realworld/public_datasets/voxceleb1/`
+- **Note**: VoxCeleb2 is 300+ GB - skip it
+
+**⚠️ NOT AVAILABLE:**
+
+- ❌ **VoxCeleb2**: Too large (300+ GB), requires Git LFS, not feasible
+- ❌ **Common Voice**: No longer publicly available, requires login/approval
 
 ### Step 3: Download YouTube Audio (Automated)
 
@@ -87,54 +107,64 @@ python Code/phase0/verify_realworld_data.py --manifest data/realworld/manifest_r
 ## 📁 Scripts Description
 
 ### `download_youtube.py`
+
 - Downloads audio from YouTube videos
 - Supports broadcast, podcast, and social media domains
 - Automatically splits long videos into clips
 - Uses `yt-dlp` for downloading
 
 **Usage:**
+
 ```bash
 python download_youtube.py --domain broadcast --max_videos 300
 ```
 
 ### `generate_fake_audio.py`
+
 - Generates fake audio using TTS models
 - Supports XTTS v2, Tortoise TTS, or simple placeholder
 - Creates both TTS and replay-simulated fake audio
 
 **Usage:**
+
 ```bash
 python generate_fake_audio.py --num_clips 3000 --method xtts
 ```
 
 ### `process_audio.py`
+
 - Converts audio to WAV format
 - Resamples to 16kHz
 - Truncates/pads to desired duration (1-10 seconds)
 - Normalizes audio levels
 
 **Usage:**
+
 ```bash
 python process_audio.py --input_dir data/realworld --output_dir data/realworld/processed
 ```
 
 ### `create_realworld_manifest.py`
+
 - Scans processed audio directory
 - Creates manifest CSV with metadata
 - Infers domain, dataset, label from file paths
 - Extracts speaker IDs and durations
 
 **Usage:**
+
 ```bash
 python create_realworld_manifest.py --data_dir data/realworld/processed --output data/realworld/manifest_realworld.csv
 ```
 
 ### `verify_realworld_data.py`
+
 - Verifies audio quality
 - Checks duration, sample rate, corruption
 - Generates quality report JSON
 
 **Usage:**
+
 ```bash
 python verify_realworld_data.py --manifest data/realworld/manifest_realworld.csv
 ```
@@ -145,9 +175,9 @@ python verify_realworld_data.py --manifest data/realworld/manifest_realworld.csv
 data/
 └── realworld/
     ├── public_datasets/
-    │   ├── voxceleb/
-    │   ├── commonvoice/
-    │   └── vctk/
+    │   ├── librispeech/    # LibriSpeech dataset
+    │   ├── vctk/           # VCTK dataset
+    │   └── voxceleb1/      # VoxCeleb1 (optional)
     ├── youtube/
     │   ├── broadcast/
     │   ├── podcast/
@@ -174,21 +204,25 @@ data/
 ## 🔧 Troubleshooting
 
 ### YouTube download fails
+
 - Check internet connection
 - Verify `yt-dlp` is installed: `pip install yt-dlp`
 - Try with `--verbose` flag for debugging
 
 ### TTS generation fails
+
 - Install TTS library: `pip install TTS`
 - For XTTS, download model first (automatic on first use)
 - Use `--method simple` as fallback
 
 ### Audio processing slow
+
 - Use `--recursive False` to process single directory
 - Process in batches if needed
 - Check available disk space
 
 ### Manifest creation errors
+
 - Verify audio files exist at specified paths
 - Check file permissions
 - Ensure files are WAV format
@@ -203,6 +237,7 @@ For manual collection (300-500 clips):
 4. **Social media**: Download manually from platforms (with permission)
 
 Save manual recordings to `data/realworld/manual/` with subdirectories:
+
 - `phone/` - Phone recordings
 - `room/` - Room recordings
 - `outdoor/` - Outdoor recordings
@@ -221,4 +256,3 @@ Then process with `process_audio.py` and include in manifest.
 ---
 
 **Estimated Time**: 2-3 days (mostly automated, minimal manual work)
-

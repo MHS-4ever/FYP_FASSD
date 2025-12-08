@@ -26,10 +26,14 @@ def infer_domain_from_path(filepath):
         return "podcast"
     elif "phone" in path_lower or "call" in path_lower:
         return "phone"
-    elif "social" in path_lower or "tiktok" in path_lower or "youtube" in path_lower:
+    elif "social" in path_lower or "tiktok" in path_lower:
         return "social"
     elif "studio" in path_lower or "vctk" in path_lower:
         return "studio"
+    elif "librispeech" in path_lower or "read" in path_lower:
+        return "read_speech"  # LibriSpeech is read speech
+    elif "voxceleb" in path_lower:
+        return "broadcast"  # VoxCeleb is from YouTube interviews
     else:
         return "unknown"
 
@@ -38,12 +42,12 @@ def infer_dataset_from_path(filepath):
     """Infer dataset source from file path."""
     path_lower = str(filepath).lower()
     
-    if "voxceleb" in path_lower:
-        return "voxceleb"
-    elif "commonvoice" in path_lower or "common_voice" in path_lower:
-        return "commonvoice"
+    if "librispeech" in path_lower:
+        return "librispeech"
     elif "vctk" in path_lower:
         return "vctk"
+    elif "voxceleb" in path_lower or "voxceleb1" in path_lower:
+        return "voxceleb1"
     elif "youtube" in path_lower:
         return "youtube"
     elif "synthetic" in path_lower or "tts" in path_lower or "fake" in path_lower:

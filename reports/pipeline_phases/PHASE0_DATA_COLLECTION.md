@@ -2,7 +2,7 @@
 
 **Status**: 🟡 IN PROGRESS  
 **Priority**: 🔴 CRITICAL  
-**Duration**: Week 1-2 (2-3 days with automation)
+**Duration**: Week 1-2
 
 ---
 
@@ -18,31 +18,40 @@ Collect diverse real-world audio data to complement ASVspoof dataset using **pra
 
 ### 1. Download Public Datasets (AUTOMATED - Step 1)
 
-**⭐ Primary Sources (Instant Download):**
+**⭐ Primary Sources (Verified Working & Downloadable):**
 
-**A. VoxCeleb1 + VoxCeleb2** (PERFECT for broadcast/podcast)
+**A. LibriSpeech (OpenSLR)** ⭐ RECOMMENDED
 
-- **1.2M+ clips** from YouTube interviews, news, speeches
-- **7,000+ speakers** (excellent for speaker independence)
-- Contains: Broadcast (TV interviews), Podcasts, Social media-like videos
+- **1,000+ hours** of read English speech
+- **2,484 speakers** (excellent for speaker independence)
+- Well-organized, stable download servers
 - **Use subset: 5,000-10,000 samples** (enough for FYP)
-- Download: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/
+- Download: http://www.openslr.org/12/ (train-clean-100 = 6.3 GB)
+- **Why it works**: Small file sizes, no login, no region restrictions
 
-**B. Mozilla Common Voice**
+**B. VCTK Corpus** ⭐ RECOMMENDED
 
-- **9,000+ hours** of real speech
-- Many languages, natural environments, background noise
-- **Use subset: 5,000-8,000 samples**
-- Download: https://commonvoice.mozilla.org/
-
-**C. VCTK Corpus**
-
-- Studio-quality speech, different accents
+- **110 speakers** with different accents
+- Studio-quality speech
 - Perfect for "clean/studio" domain
-- **Use: 500-1,000 samples**
-- Download: https://datashare.ed.ac.uk/handle/10283/3443
+- **Use: 2,000-5,000 samples**
+- Download: https://datashare.ed.ac.uk/handle/10283/3443 (~10 GB)
+- **Why it works**: Manageable size, stable academic server, no restrictions
 
-**Total from Public Datasets: ~10,000-19,000 samples** ✅
+**C. VoxCeleb1 (Optional - if available)**
+
+- **1,000+ speakers** from YouTube interviews
+- Contains: Broadcast (TV interviews), Podcasts
+- **Use subset: 3,000-5,000 samples** (if downloadable)
+- Download: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/voxceleb1/
+- **Note**: VoxCeleb2 is 300+ GB (too large), skip it
+
+**⚠️ NOT AVAILABLE:**
+
+- ❌ **VoxCeleb2**: Too large (300+ GB), requires Git LFS, not feasible
+- ❌ **Mozilla Common Voice**: No longer publicly available, requires login/approval
+
+**Total from Public Datasets: ~10,000-20,000 samples** ✅
 
 ### 2. Automated YouTube Collection (AUTOMATED - Step 2)
 
@@ -182,9 +191,9 @@ data/
 
 ### To Create:
 
-- ✅ `Code/phase0/download_voxceleb.py` - Download VoxCeleb dataset
-- ✅ `Code/phase0/download_commonvoice.py` - Download Common Voice dataset
-- ✅ `Code/phase0/download_vctk.py` - Download VCTK dataset
+- ✅ `Code/phase0/download_librispeech.py` - Download LibriSpeech dataset (optional helper)
+- ✅ `Code/phase0/download_vctk.py` - Download VCTK dataset (optional helper)
+- ⚠️ **Note**: Most datasets require manual download due to size/access restrictions
 - ✅ `Code/phase0/download_youtube.py` - Automated YouTube downloading
 - ✅ `Code/phase0/generate_fake_audio.py` - TTS fake audio generation
 - ✅ `Code/phase0/process_audio.py` - Audio processing (convert, resample, split)
@@ -222,13 +231,13 @@ data/
 ```
 Source              | Samples | Domain Breakdown
 --------------------|---------|------------------
-Public Datasets     | 10K-19K | VoxCeleb (broadcast/podcast), Common Voice (mixed), VCTK (studio)
+Public Datasets     | 10K-20K | LibriSpeech (read speech), VCTK (studio), VoxCeleb1 (optional)
 YouTube (Auto)      | 1K-1.5K | Broadcast, Podcast, Social
 Manual Collection   | 300-500 | Phone, Room, Outdoor
 TTS Generated       | 2K-3K   | Synthetic (fake)
 -----------------------------------
-Total Raw           | 13K-24K |
-After Augmentation  | 130K-240K | (10× expansion)
+Total Raw           | 13K-25K |
+After Augmentation  | 130K-250K | (10× expansion)
 ```
 
 **Domain Distribution (Target):**
@@ -236,24 +245,25 @@ After Augmentation  | 130K-240K | (10× expansion)
 ```
 Domain      | Samples | Percentage | Sources
 ------------|---------|------------|------------------
-Broadcast   | 5,000+  | ~40%       | VoxCeleb, YouTube
-Phone       | 500+    | ~4%        | Manual, Common Voice
-Podcast     | 3,000+  | ~24%       | VoxCeleb, YouTube
-Social      | 2,000+  | ~16%       | YouTube, Manual
-Studio      | 1,000+  | ~8%        | VCTK, VoxCeleb
-Synthetic   | 2,000+  | ~16%       | TTS generated
+Read Speech | 5,000+  | ~35%       | LibriSpeech
+Broadcast   | 3,000+  | ~21%       | YouTube, VoxCeleb1 (optional)
+Studio      | 2,000+  | ~14%       | VCTK
+Podcast     | 2,000+  | ~14%       | YouTube
+Phone       | 500+    | ~4%        | Manual
+Social      | 1,000+  | ~7%        | YouTube, Manual
+Synthetic   | 2,000+  | ~14%       | TTS generated
 -----------------------------------
-Total       | 13,500+ | 100%       |
+Total       | 14,500+ | 100%       |
 ```
 
 ---
 
 ## ⚠️ Challenges & Solutions
 
-### Challenge 1: Dataset Download Size
+### Challenge 1: Dataset Availability
 
-**Problem**: VoxCeleb and Common Voice are very large (100GB+)  
-**Solution**: Download subsets only (5-10K samples), use download scripts with resume capability
+**Problem**: VoxCeleb2 (300+ GB) too large, Common Voice no longer available  
+**Solution**: Use LibriSpeech + VCTK (both work, manageable sizes, no restrictions)
 
 ### Challenge 2: YouTube Download Limits
 
@@ -308,12 +318,31 @@ pip install yt-dlp librosa soundfile pandas tqdm
 # For TTS: pip install TTS  # or specific TTS library
 ```
 
-**Step 2: Download Public Datasets**
+**Step 2: Download Public Datasets (Manual Download)**
+
+**LibriSpeech:**
 
 ```bash
-python Code/phase0/download_voxceleb.py --max_samples 10000
-python Code/phase0/download_commonvoice.py --max_samples 8000
-python Code/phase0/download_vctk.py --max_samples 1000
+# Download train-clean-100 (6.3 GB, recommended)
+wget http://www.openslr.org/resources/12/train-clean-100.tar.gz
+tar -xzf train-clean-100.tar.gz
+# Extract to: data/realworld/public_datasets/librispeech/
+```
+
+**VCTK:**
+
+```bash
+# Download from Edinburgh Datashare
+# Visit: https://datashare.ed.ac.uk/handle/10283/3443
+# Download and extract to: data/realworld/public_datasets/vctk/
+```
+
+**VoxCeleb1 (Optional):**
+
+```bash
+# Only if you have space and can download
+# Visit: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/voxceleb1/
+# Extract to: data/realworld/public_datasets/voxceleb1/
 ```
 
 **Step 3: Download YouTube Audio**
