@@ -3,6 +3,7 @@ Automated YouTube Audio Downloader for Phase 0 Data Collection
 
 Downloads audio from YouTube videos based on search queries or channel names,
 then processes them into clips suitable for training.
+Optimized for GPU acceleration (RTX 3050, CUDA 13.1) using torchaudio.
 
 Usage:
     python download_youtube.py --domain broadcast --max_videos 300
@@ -16,8 +17,23 @@ import subprocess
 import json
 from pathlib import Path
 from tqdm import tqdm
-import librosa
+import torch
+import torchaudio
+import torchaudio.transforms as T
 import soundfile as sf
+import numpy as np
+
+# GPU Setup
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    torch.backends.cudnn.benchmark = True
+    print(f"[GPU] Using GPU: {torch.cuda.get_device_name(0)}")
+    print(f"[GPU] CUDA Version: {torch.version.cuda}")
+    USE_GPU = True
+else:
+    device = torch.device("cpu")
+    USE_GPU = False
+    print("[INFO] CUDA not available - using CPU for audio processing")
 
 
 def download_video_audio(url_or_query, output_dir, domain, video_id=None):
@@ -61,22 +77,39 @@ def download_video_audio(url_or_query, output_dir, domain, video_id=None):
         return None
 
 
-def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1):
+def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1, use_gpu=False, target_sr=16000):
     """
-    Split long audio file into clips of specified length.
+    Split long audio file into clips using GPU-accelerated torchaudio.
     
     Args:
         audio_path: Path to input audio file
         output_dir: Directory to save clips
         clip_length: Length of each clip in seconds
         overlap: Overlap between clips in seconds
+        use_gpu: Whether to use GPU for processing
+        target_sr: Target sample rate (default: 16000)
     """
     os.makedirs(output_dir, exist_ok=True)
     
     try:
-        # Load audio
-        y, sr = librosa.load(audio_path, sr=16000, mono=True)
-        duration = len(y) / sr
+        # Load audio using torchaudio (GPU-compatible)
+        waveform, sr = torchaudio.load(audio_path)
+        
+        # Convert to mono if stereo
+        if waveform.shape[0] > 1:
+            waveform = waveform.mean(dim=0, keepdim=True)
+        
+        # Resample if needed (GPU-accelerated)
+        if sr != target_sr:
+            if use_gpu and torch.cuda.is_available():
+                waveform = waveform.to(device)
+                resampler = T.Resample(orig_freq=sr, new_freq=target_sr).to(device)
+            else:
+                resampler = T.Resample(orig_freq=sr, new_freq=target_sr)
+            waveform = resampler(waveform)
+            sr = target_sr
+        
+        duration = waveform.shape[1] / sr
         
         if duration < 1.0:
             return []  # Too short
@@ -87,16 +120,25 @@ def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1):
         
         while start + clip_length <= duration:
             end = start + clip_length
-            clip_audio = y[int(start * sr):int(end * sr)]
+            start_sample = int(start * sr)
+            end_sample = int(end * sr)
+            clip_audio = waveform[:, start_sample:end_sample]
+            
+            # Move to CPU and convert to numpy for saving
+            clip_audio_cpu = clip_audio.cpu().squeeze(0).numpy()
             
             # Save clip
             clip_name = f"{Path(audio_path).stem}_clip{clip_idx:04d}.wav"
             clip_path = os.path.join(output_dir, clip_name)
-            sf.write(clip_path, clip_audio, sr)
+            sf.write(clip_path, clip_audio_cpu, sr)
             clips.append(clip_path)
             
             clip_idx += 1
             start += (clip_length - overlap)  # Move forward with overlap
+        
+        # Clear GPU cache
+        if use_gpu and torch.cuda.is_available():
+            torch.cuda.empty_cache()
         
         return clips
     except Exception as e:
@@ -136,15 +178,17 @@ def download_from_search_queries(queries, output_dir, domain, max_videos=300):
     return downloaded
 
 
-def process_downloaded_audio(downloaded_files, output_dir, domain, clip_length=10):
-    """Process downloaded audio files into clips."""
+def process_downloaded_audio(downloaded_files, output_dir, domain, clip_length=10, use_gpu=False):
+    """Process downloaded audio files into clips using GPU acceleration."""
     clips_dir = os.path.join(output_dir, "clips")
     os.makedirs(clips_dir, exist_ok=True)
     
     all_clips = []
     
+    print(f"[INFO] Processing {len(downloaded_files)} audio files into clips (using {'GPU' if use_gpu else 'CPU'})")
+    
     for audio_file in tqdm(downloaded_files, desc="Processing audio into clips"):
-        clips = split_audio_into_clips(audio_file, clips_dir, clip_length=clip_length)
+        clips = split_audio_into_clips(audio_file, clips_dir, clip_length=clip_length, use_gpu=use_gpu)
         all_clips.extend(clips)
         
         # Remove original long file to save space
@@ -152,6 +196,11 @@ def process_downloaded_audio(downloaded_files, output_dir, domain, clip_length=1
             os.remove(audio_file)
         except:
             pass
+    
+    # Final GPU cleanup
+    if use_gpu and torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        print(f"[GPU] Processing complete. VRAM usage: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
     
     return all_clips
 
@@ -168,8 +217,13 @@ def main():
                        help="Output directory for downloaded audio")
     parser.add_argument("--clip_length", type=int, default=10,
                        help="Length of each clip in seconds")
+    parser.add_argument("--use_gpu", action="store_true", default=True,
+                       help="Use GPU for audio processing (default: True if CUDA available)")
     
     args = parser.parse_args()
+    
+    # Auto-detect GPU if not explicitly disabled
+    use_gpu = args.use_gpu and USE_GPU
     
     # Define search strategies per domain
     if args.domain == "broadcast":
@@ -219,7 +273,7 @@ def main():
     
     # Process into clips
     print(f"[INFO] Processing audio into {args.clip_length}s clips...")
-    clips = process_downloaded_audio(downloaded, domain_output, args.domain, args.clip_length)
+    clips = process_downloaded_audio(downloaded, domain_output, args.domain, args.clip_length, use_gpu=use_gpu)
     
     print(f"[OK] Created {len(clips)} clips")
     print(f"[OK] Clips saved to: {os.path.join(domain_output, 'clips')}")

@@ -17,3 +17,8 @@ data/features_merged/features_manifest_combined.csv
 *.h5
 *.pth
 testing_audios/
+data/realworld/manual/
+data/realworld/synthetic/
+data/realworld/processed/
+data/realworld/youtube/
+data/realworld/public_datasets/
