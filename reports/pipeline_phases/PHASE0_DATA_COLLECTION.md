@@ -2,7 +2,8 @@
 
 **Status**: 🟡 IN PROGRESS  
 **Priority**: 🔴 CRITICAL  
-**Duration**: Week 1-2
+**Duration**: Week 1-2  
+**Dependencies**: None (starting phase)
 
 ---
 
@@ -20,25 +21,25 @@ Collect diverse real-world audio data to complement ASVspoof dataset using **pra
 
 **⭐ Primary Sources (Verified Working & Downloadable):**
 
-**A. LibriSpeech (OpenSLR)** ⭐ RECOMMENDED
+#### A. LibriSpeech (OpenSLR) ⭐ RECOMMENDED
 
 - **1,000+ hours** of read English speech
 - **2,484 speakers** (excellent for speaker independence)
 - Well-organized, stable download servers
 - **Use subset: 5,000-10,000 samples** (enough for FYP)
 - Download: http://www.openslr.org/12/ (train-clean-100 = 6.3 GB)
-- **Why it works**: Small file sizes, no login, no region restrictions
+- **Why it works**: Small file sizes, no login, no region restrictions, stable OpenSLR servers
 
-**B. VCTK Corpus** ⭐ RECOMMENDED
+#### B. VCTK Corpus ⭐ RECOMMENDED
 
 - **110 speakers** with different accents
 - Studio-quality speech
 - Perfect for "clean/studio" domain
 - **Use: 2,000-5,000 samples**
 - Download: https://datashare.ed.ac.uk/handle/10283/3443 (~10 GB)
-- **Why it works**: Manageable size, stable academic server, no restrictions
+- **Why it works**: Manageable size, stable academic server, no login, no restrictions
 
-**C. VoxCeleb1 (Optional - if available)**
+#### C. VoxCeleb1 (Optional - if available)
 
 - **1,000+ speakers** from YouTube interviews
 - Contains: Broadcast (TV interviews), Podcasts
@@ -48,8 +49,8 @@ Collect diverse real-world audio data to complement ASVspoof dataset using **pra
 
 **⚠️ NOT AVAILABLE:**
 
-- ❌ **VoxCeleb2**: Too large (300+ GB), requires Git LFS, not feasible
-- ❌ **Mozilla Common Voice**: No longer publicly available, requires login/approval
+- ❌ **VoxCeleb2**: Too large (300+ GB), requires Git LFS, causes "no space left on device" errors, not feasible
+- ❌ **Mozilla Common Voice**: No longer publicly available, moved to Mozilla Data Collective, requires login/approval, region restrictions (404 errors in many regions including Pakistan)
 
 **Total from Public Datasets: ~10,000-20,000 samples** ✅
 
@@ -57,19 +58,19 @@ Collect diverse real-world audio data to complement ASVspoof dataset using **pra
 
 **Use `yt-dlp` for automated downloading:**
 
-**A. Broadcast Audio (News, Speeches)**
+#### A. Broadcast Audio (News, Speeches)
 
 - Channels: Geo News, ARY News, BBC News, DW News, CNN, Fox News
 - Download: 200-300 videos → auto-split into 10-20 sec clips
 - Auto-label as "broadcast"
 
-**B. Podcast Audio**
+#### B. Podcast Audio
 
 - Search: "podcast interviews"
 - Download: 500+ videos
 - Auto-label as "podcast"
 
-**C. Social Media Audio**
+#### C. Social Media Audio
 
 - Search: "tiktok real voice", "ytshorts"
 - Download: 200-300 videos
@@ -133,8 +134,8 @@ Collect diverse real-world audio data to complement ASVspoof dataset using **pra
 
 - `filepath` - Path to audio file
 - `label` - `bonafide` or `spoof`
-- `dataset` - `voxceleb`/`commonvoice`/`vctk`/`youtube`/`manual`/`tts`
-- `domain` - `broadcast`/`phone`/`podcast`/`social`/`studio`
+- `dataset` - `librispeech`/`vctk`/`voxceleb1`/`youtube`/`manual`/`synthetic`
+- `domain` - `broadcast`/`phone`/`podcast`/`social`/`studio`/`read_speech`
 - `speaker_id` - Unique speaker identifier (if available)
 - `source` - `public_dataset`/`youtube`/`manual`/`synthetic`
 - `duration` - Audio duration in seconds
@@ -168,19 +169,21 @@ data/
 └── realworld/
     ├── manifest_realworld.csv          # Main manifest
     ├── public_datasets/
-    │   ├── voxceleb/                  # VoxCeleb samples
-    │   ├── commonvoice/               # Common Voice samples
-    │   └── vctk/                      # VCTK samples
+    │   ├── librispeech/               # LibriSpeech samples
+    │   ├── vctk/                      # VCTK samples
+    │   └── voxceleb1/                 # VoxCeleb1 samples (optional)
     ├── youtube/
     │   ├── broadcast/                 # YouTube broadcast audio
     │   ├── podcast/                   # YouTube podcast audio
     │   └── social/                    # YouTube social media audio
     ├── manual/
     │   ├── phone/                     # Manual phone recordings
-    │   └── room/                      # Manual room recordings
+    │   ├── room/                      # Manual room recordings
+    │   └── outdoor/                   # Manual outdoor recordings
     ├── synthetic/
     │   ├── tts/                       # TTS-generated fake audio
     │   └── replay/                    # Replay-simulated audio
+    ├── processed/                     # All processed WAV files
     └── statistics/
         └── collection_stats.json      # Collection statistics
 ```
@@ -189,20 +192,22 @@ data/
 
 ## 🔧 Scripts Needed
 
-### To Create:
+### Existing:
 
-- ✅ `Code/phase0/download_librispeech.py` - Download LibriSpeech dataset (optional helper)
-- ✅ `Code/phase0/download_vctk.py` - Download VCTK dataset (optional helper)
-- ⚠️ **Note**: Most datasets require manual download due to size/access restrictions
+- ✅ `Code/phase0/download_librispeech.py` - Download/verify LibriSpeech dataset
+- ✅ `Code/phase0/download_vctk.py` - Download/verify VCTK dataset
 - ✅ `Code/phase0/download_youtube.py` - Automated YouTube downloading
 - ✅ `Code/phase0/generate_fake_audio.py` - TTS fake audio generation
 - ✅ `Code/phase0/process_audio.py` - Audio processing (convert, resample, split)
 - ✅ `Code/phase0/create_realworld_manifest.py` - Manifest creation
 - ✅ `Code/phase0/verify_realworld_data.py` - Quality verification
+- ✅ `Code/phase0/run_phase0.py` - Master orchestrator script
+
+**⚠️ Note**: Most public datasets require manual download due to size/access restrictions (scripts provide verification only)
 
 ### Manual Tasks (Minimal):
 
-- Download public datasets (one-time, automated scripts help)
+- Download public datasets manually (one-time, automated scripts help verify)
 - Record 300-500 manual clips (phone, room, outdoor)
 - Verify labels (spot-check, not full manual labeling)
 
@@ -210,15 +215,17 @@ data/
 
 ## ✅ Success Criteria
 
-- [ ] Public datasets downloaded (VoxCeleb, Common Voice, VCTK)
-- [ ] YouTube audio collected (broadcast, podcast, social)
-- [ ] Manual collection completed (300-500 clips)
-- [ ] Fake audio generated (2,000-3,000 TTS clips)
+- [ ] LibriSpeech downloaded and verified (5K-10K samples)
+- [ ] VCTK downloaded and verified (2K-5K samples)
+- [ ] VoxCeleb1 downloaded (optional, 3K-5K samples)
+- [ ] YouTube audio collected (1K-1.5K samples: broadcast, podcast, social)
+- [ ] Manual collection completed (300-500 samples)
+- [ ] Fake audio generated (2K-3K TTS clips)
 - [ ] At least 10,000+ real-world audio samples collected
 - [ ] All samples processed (converted to WAV, resampled to 16kHz)
 - [ ] All samples labeled and verified
 - [ ] Manifest created with all required columns
-- [ ] Quality checks passed
+- [ ] Quality checks passed (>95% valid)
 - [ ] Domain distribution documented
 - [ ] Statistics report generated
 
@@ -295,7 +302,7 @@ Total       | 14,500+ | 100%       |
 
 **Next Phase:**
 
-- Phase 1: Unified Dataset Preparation (requires this phase's output)
+- Phase 1: Unified Dataset Preparation (requires this phase's output: `manifest_realworld.csv`)
 
 ---
 
@@ -308,68 +315,9 @@ Total       | 14,500+ | 100%       |
 - Respect YouTube ToS and dataset licenses
 - Quality over quantity - verify samples are usable
 - Consider ethical implications of data collection
-
-## 🚀 Quick Start Guide
-
-**Step 1: Install Dependencies**
-
-```bash
-pip install yt-dlp librosa soundfile pandas tqdm
-# For TTS: pip install TTS  # or specific TTS library
-```
-
-**Step 2: Download Public Datasets (Manual Download)**
-
-**LibriSpeech:**
-
-```bash
-# Download train-clean-100 (6.3 GB, recommended)
-wget http://www.openslr.org/resources/12/train-clean-100.tar.gz
-tar -xzf train-clean-100.tar.gz
-# Extract to: data/realworld/public_datasets/librispeech/
-```
-
-**VCTK:**
-
-```bash
-# Download from Edinburgh Datashare
-# Visit: https://datashare.ed.ac.uk/handle/10283/3443
-# Download and extract to: data/realworld/public_datasets/vctk/
-```
-
-**VoxCeleb1 (Optional):**
-
-```bash
-# Only if you have space and can download
-# Visit: https://www.robots.ox.ac.uk/~vgg/data/voxceleb/voxceleb1/
-# Extract to: data/realworld/public_datasets/voxceleb1/
-```
-
-**Step 3: Download YouTube Audio**
-
-```bash
-python Code/phase0/download_youtube.py --domain broadcast --max_videos 300
-python Code/phase0/download_youtube.py --domain podcast --max_videos 500
-python Code/phase0/download_youtube.py --domain social --max_videos 300
-```
-
-**Step 4: Generate Fake Audio**
-
-```bash
-python Code/phase0/generate_fake_audio.py --num_clips 3000
-```
-
-**Step 5: Process and Verify**
-
-```bash
-python Code/phase0/process_audio.py --input_dir data/realworld --output_dir data/realworld/processed
-python Code/phase0/verify_realworld_data.py --data_dir data/realworld/processed
-python Code/phase0/create_realworld_manifest.py --data_dir data/realworld/processed --output data/realworld/manifest_realworld.csv
-```
-
-**Estimated Time: 2-3 days** (mostly automated, minimal manual work)
+- **Practical alternatives**: LibriSpeech and VCTK are verified working alternatives to VoxCeleb2 and Common Voice
 
 ---
 
-**Last Updated**: December 7, 2025  
+**Last Updated**: 10 December 2025  
 **Status**: 🟡 IN PROGRESS
