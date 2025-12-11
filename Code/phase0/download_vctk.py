@@ -22,38 +22,85 @@ def verify_vctk(data_dir):
         print(f"[ERROR] Directory does not exist: {data_dir}")
         return False
     
-    # Find all WAV files
-    wav_files = list(data_path.rglob("*.wav"))
+    # VCTK structure: audio files are in wav48_silence_trimmed subdirectory
+    # Check common VCTK subdirectories
+    audio_dirs = [
+        data_path / "wav48_silence_trimmed",  # Standard VCTK structure
+        data_path / "wav48",                   # Alternative structure
+        data_path                              # Root directory (fallback)
+    ]
+    
+    # Find all audio files (WAV or FLAC)
+    wav_files = []
+    for audio_dir in audio_dirs:
+        if audio_dir.exists():
+            wav_files.extend(list(audio_dir.rglob("*.wav")))
+            wav_files.extend(list(audio_dir.rglob("*.flac")))
+            if wav_files:
+                print(f"[INFO] Found audio files in: {audio_dir.relative_to(data_path) if audio_dir != data_path else 'root'}")
+                break
+    
+    if not wav_files:
+        # If still no files, try searching entire directory recursively
+        wav_files = list(data_path.rglob("*.wav"))
+        wav_files.extend(list(data_path.rglob("*.flac")))
+        
+        if not wav_files:
+            print(f"[ERROR] No audio files found in {data_dir}")
+            print(f"[INFO] Expected location: {data_path / 'wav48_silence_trimmed'}")
+            print(f"[INFO] Please check:")
+            print(f"  1. VCTK dataset is properly extracted")
+            print(f"  2. Audio files are in 'wav48_silence_trimmed' subdirectory")
+            print(f"  3. File format is .wav or .flac")
+            return False
     
     print(f"[INFO] Found {len(wav_files)} audio files")
     
-    # Count speakers (VCTK format: p225_001.wav)
+    # Count speakers (VCTK format: p225_001.wav or speaker_id/p225_001.wav)
     speakers = set()
     for wav_file in wav_files:
         filename = wav_file.stem
         # Extract speaker ID (e.g., p225 from p225_001.wav)
-        if filename.startswith('p'):
+        if filename.startswith('p') and '_' in filename:
             speaker_id = filename.split('_')[0]
             speakers.add(speaker_id)
+        # Alternative: check parent directory
+        elif wav_file.parent.name.startswith('p'):
+            speakers.add(wav_file.parent.name)
     
     print(f"[INFO] Found {len(speakers)} unique speakers")
+    
+    if len(speakers) > 0:
+        # Show sample speaker IDs
+        sample_speakers = sorted(list(speakers))[:10]
+        print(f"[INFO] Sample speakers: {', '.join(sample_speakers)}")
     
     # Sample a few files to verify they're valid
     print("[INFO] Verifying sample files...")
     valid = 0
     invalid = 0
     
-    for wav_file in tqdm(wav_files[:100], desc="Verifying"):  # Check first 100
+    sample_size = min(100, len(wav_files))
+    if sample_size == 0:
+        print("[WARN] No files to verify")
+        return False
+    
+    for wav_file in tqdm(wav_files[:sample_size], desc="Verifying"):
         try:
             y, sr = librosa.load(str(wav_file), sr=None, duration=0.1)
             if len(y) > 0:
                 valid += 1
             else:
                 invalid += 1
-        except:
+        except Exception as e:
             invalid += 1
+            if invalid == 1:  # Print first error as example
+                print(f"\n[WARN] Sample error on {wav_file.name}: {str(e)}")
     
-    print(f"[OK] Valid files: {valid}/{valid+invalid} (sample)")
+    print(f"[OK] Valid files: {valid}/{valid+invalid} (sample of {sample_size})")
+    
+    if valid == 0 and len(wav_files) > 0:
+        print(f"[WARN] All sampled files failed verification. Check audio format/corruption.")
     
     return True
 

@@ -36,45 +36,58 @@ else:
     print("[INFO] CUDA not available - using CPU for audio processing")
 
 
-def download_video_audio(url_or_query, output_dir, domain, video_id=None):
+def download_video_audio(url_or_query, output_dir, domain, video_id=None, max_retries=2):
     """Download audio from a YouTube video or search query."""
     os.makedirs(output_dir, exist_ok=True)
     
     # Use yt-dlp to download audio
     output_template = os.path.join(output_dir, f"%(id)s.%(ext)s")
     
-    cmd = [
-        "yt-dlp",
-        "--extract-audio",
-        "--audio-format", "wav",
-        "--audio-quality", "0",  # Best quality
-        "--no-playlist",
-        "--output", output_template,
-        "--quiet",
-        "--no-warnings"
-    ]
+    for attempt in range(max_retries):
+        cmd = [
+            "yt-dlp",
+            "--extract-audio",
+            "--audio-format", "wav",
+            "--audio-quality", "0",  # Best quality
+            "--no-playlist",
+            "--output", output_template,
+            "--quiet",
+            "--no-warnings",
+            "--no-check-certificate",  # Sometimes helps with connection issues
+            "--socket-timeout", "30"  # 30 second socket timeout
+        ]
+        
+        # Add URL or search query
+        if url_or_query.startswith("http"):
+            cmd.append(url_or_query)
+        else:
+            # Search query - limit to 1 result for faster response
+            cmd.extend(["--default-search", "ytsearch1", url_or_query])
+        
+        try:
+            # Shorter timeout for individual downloads (2 minutes)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            if result.returncode == 0:
+                # Find the downloaded file
+                wav_files = list(Path(output_dir).glob("*.wav"))
+                if wav_files:
+                    return str(wav_files[-1])  # Return most recent
+            elif attempt < max_retries - 1:
+                continue  # Retry
+        except subprocess.TimeoutExpired:
+            if attempt < max_retries - 1:
+                continue  # Retry
+            print(f"[WARN] Timeout downloading (after {max_retries} attempts): {url_or_query[:50]}")
+            return None
+        except Exception as e:
+            if attempt < max_retries - 1:
+                continue  # Retry
+            # Don't print error for search queries (they fail often)
+            if url_or_query.startswith("http"):
+                print(f"[WARN] Failed to download {url_or_query[:50]}: {str(e)[:50]}")
+            return None
     
-    # Add URL or search query
-    if url_or_query.startswith("http"):
-        cmd.append(url_or_query)
-    else:
-        # Search query
-        cmd.extend(["--default-search", "ytsearch", url_or_query])
-    
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
-        if result.returncode == 0:
-            # Find the downloaded file
-            wav_files = list(Path(output_dir).glob("*.wav"))
-            if wav_files:
-                return str(wav_files[-1])  # Return most recent
-        return None
-    except subprocess.TimeoutError:
-        print(f"[WARN] Timeout downloading: {url_or_query}")
-        return None
-    except Exception as e:
-        print(f"[ERROR] Failed to download {url_or_query}: {e}")
-        return None
+    return None
 
 
 def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1, use_gpu=False, target_sr=16000):
@@ -146,19 +159,85 @@ def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1, us
         return []
 
 
+def get_channel_video_urls(channel_name_or_url, max_videos=10):
+    """Get video URLs from a YouTube channel using yt-dlp."""
+    cmd = [
+        "yt-dlp",
+        "--flat-playlist",
+        "--print", "%(url)s",
+        "--playlist-end", str(max_videos),
+        "--quiet",
+        "--no-warnings",
+        "--socket-timeout", "30"
+    ]
+    
+    # Handle both channel URLs and channel names
+    if channel_name_or_url.startswith("http"):
+        cmd.append(channel_name_or_url)
+    else:
+        # Search for channel and get first result's channel URL
+        search_cmd = [
+            "yt-dlp",
+            "--flat-playlist",
+            "--print", "%(channel_url)s",
+            "--playlist-end", "1",
+            "--quiet",
+            "--default-search", "ytsearch1",
+            f"{channel_name_or_url} channel"
+        ]
+        try:
+            result = subprocess.run(search_cmd, capture_output=True, text=True, timeout=60)
+            if result.returncode == 0 and result.stdout.strip():
+                channel_url = result.stdout.strip().split('\n')[0]
+                if channel_url.startswith("http"):
+                    cmd.append(channel_url)
+                else:
+                    return []
+            else:
+                return []
+        except:
+            return []
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        if result.returncode == 0:
+            urls = [line.strip() for line in result.stdout.strip().split('\n') if line.strip()]
+            return urls
+    except:
+        pass
+    
+    return []
+
+
 def download_from_channels(channels, output_dir, domain, max_videos=300):
     """Download videos from specific YouTube channels."""
     downloaded = []
     
+    print(f"[INFO] Fetching videos from {len(channels)} channels...")
+    
     for channel in tqdm(channels, desc=f"Downloading from channels ({domain})"):
-        # Search for channel videos
-        query = f"{channel} latest"
-        video_path = download_video_audio(query, output_dir, domain)
+        # Get video URLs from channel
+        video_urls = get_channel_video_urls(channel, max_videos=50)
         
-        if video_path:
-            downloaded.append(video_path)
-            if len(downloaded) >= max_videos:
-                break
+        if not video_urls:
+            # Fallback to search if channel URL extraction fails
+            print(f"[WARN] Could not extract channel videos for {channel}, trying search...")
+            query = f"{channel} latest"
+            video_path = download_video_audio(query, output_dir, domain)
+            if video_path:
+                downloaded.append(video_path)
+        else:
+            # Download from extracted URLs
+            for url in video_urls[:20]:  # Limit per channel
+                if len(downloaded) >= max_videos:
+                    break
+                video_path = download_video_audio(url, output_dir, domain)
+                if video_path:
+                    downloaded.append(video_path)
+                    print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos")
+        
+        if len(downloaded) >= max_videos:
+            break
     
     return downloaded
 
@@ -168,12 +247,14 @@ def download_from_search_queries(queries, output_dir, domain, max_videos=300):
     downloaded = []
     
     for query in tqdm(queries, desc=f"Downloading from queries ({domain})"):
+        if len(downloaded) >= max_videos:
+            break
+            
         video_path = download_video_audio(query, output_dir, domain)
         
         if video_path:
             downloaded.append(video_path)
-            if len(downloaded) >= max_videos:
-                break
+            print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos")
     
     return downloaded
 
