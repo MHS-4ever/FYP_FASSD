@@ -21,7 +21,6 @@ import torch
 import torchaudio
 import torchaudio.transforms as T
 import soundfile as sf
-import numpy as np
 
 # GPU Setup
 if torch.cuda.is_available():
@@ -36,12 +35,13 @@ else:
     print("[INFO] CUDA not available - using CPU for audio processing")
 
 
-def download_video_audio(url_or_query, output_dir, domain, video_id=None, max_retries=2):
+def download_video_audio(url_or_query, output_dir, domain, max_retries=2):
     """Download audio from a YouTube video or search query."""
     os.makedirs(output_dir, exist_ok=True)
     
     # Use yt-dlp to download audio
-    output_template = os.path.join(output_dir, f"%(id)s.%(ext)s")
+    # Fix: Use domain name directly, not nested path
+    output_template = os.path.join(output_dir, "%(id)s.%(ext)s")
     
     for attempt in range(max_retries):
         cmd = [
@@ -104,63 +104,103 @@ def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1, us
     """
     os.makedirs(output_dir, exist_ok=True)
     
+    # Check if file exists and is readable
+    if not os.path.exists(audio_path):
+        return []
+    
+    # Try multiple methods to load the audio
+    waveform = None
+    sr = None
+    
+    # Method 1: Try torchaudio first (GPU-compatible, faster)
     try:
-        # Load audio using torchaudio (GPU-compatible)
         waveform, sr = torchaudio.load(audio_path)
-        
-        # Convert to mono if stereo
-        if waveform.shape[0] > 1:
-            waveform = waveform.mean(dim=0, keepdim=True)
-        
-        # Resample if needed (GPU-accelerated)
-        if sr != target_sr:
-            if use_gpu and torch.cuda.is_available():
+        if waveform is not None and sr is not None:
+            # Convert to mono if stereo
+            if waveform.shape[0] > 1:
+                waveform = waveform.mean(dim=0, keepdim=True)
+    except Exception:
+        waveform = None
+        sr = None
+    
+    # Method 2: Try librosa as fallback (more robust for corrupted files)
+    if waveform is None:
+        try:
+            import librosa
+            y, sr = librosa.load(audio_path, sr=target_sr, mono=True, duration=None)
+            if len(y) > 0:
+                # Convert to torch tensor format for consistent processing
+                # librosa.load already resampled to target_sr
+                waveform = torch.from_numpy(y).unsqueeze(0)
+                sr = target_sr
+            else:
+                return []  # Empty file
+        except Exception:
+            return []  # Both methods failed
+    
+    if waveform is None or sr is None:
+        return []
+    
+    # Resample if needed (only for torchaudio loaded files that weren't already target_sr)
+    if sr != target_sr:
+        try:
+            if use_gpu and torch.cuda.is_available() and isinstance(waveform, torch.Tensor):
                 waveform = waveform.to(device)
                 resampler = T.Resample(orig_freq=sr, new_freq=target_sr).to(device)
-            else:
+                waveform = resampler(waveform)
+            elif isinstance(waveform, torch.Tensor):
                 resampler = T.Resample(orig_freq=sr, new_freq=target_sr)
-            waveform = resampler(waveform)
+                waveform = resampler(waveform)
             sr = target_sr
+        except Exception:
+            return []  # Resampling failed
+    
+    # Get duration (waveform is always torch.Tensor at this point)
+    duration = waveform.shape[1] / sr
+    
+    if duration < 1.0:
+        return []  # Too short
+    
+    # Generate clips
+    clips = []
+    clip_idx = 0
+    start = 0
+    
+    while start + clip_length <= duration:
+        end = start + clip_length
+        start_sample = int(start * sr)
+        end_sample = int(end * sr)
         
-        duration = waveform.shape[1] / sr
+        # Extract clip (waveform is always torch.Tensor at this point)
+        clip_audio = waveform[:, start_sample:end_sample]
+        clip_audio_cpu = clip_audio.cpu().squeeze(0).numpy()
         
-        if duration < 1.0:
-            return []  # Too short
+        # Save clip
+        clip_name = f"{Path(audio_path).stem}_clip{clip_idx:04d}.wav"
+        clip_path = os.path.join(output_dir, clip_name)
         
-        clips = []
-        clip_idx = 0
-        start = 0
-        
-        while start + clip_length <= duration:
-            end = start + clip_length
-            start_sample = int(start * sr)
-            end_sample = int(end * sr)
-            clip_audio = waveform[:, start_sample:end_sample]
-            
-            # Move to CPU and convert to numpy for saving
-            clip_audio_cpu = clip_audio.cpu().squeeze(0).numpy()
-            
-            # Save clip
-            clip_name = f"{Path(audio_path).stem}_clip{clip_idx:04d}.wav"
-            clip_path = os.path.join(output_dir, clip_name)
+        try:
             sf.write(clip_path, clip_audio_cpu, sr)
             clips.append(clip_path)
-            
-            clip_idx += 1
-            start += (clip_length - overlap)  # Move forward with overlap
+        except Exception:
+            # Skip this clip if write fails
+            pass
         
-        # Clear GPU cache
-        if use_gpu and torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        
-        return clips
-    except Exception as e:
-        print(f"[ERROR] Failed to split {audio_path}: {e}")
-        return []
+        clip_idx += 1
+        start += (clip_length - overlap)  # Move forward with overlap
+    
+    # Clear GPU cache
+    if use_gpu and torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    
+    return clips
 
 
 def get_channel_video_urls(channel_name_or_url, max_videos=10):
     """Get video URLs from a YouTube channel using yt-dlp."""
+    # Use shorter timeouts and limit videos to avoid hangs
+    max_videos = min(max_videos, 20)  # Limit to 20 videos per channel to avoid timeouts
+    
     cmd = [
         "yt-dlp",
         "--flat-playlist",
@@ -168,54 +208,42 @@ def get_channel_video_urls(channel_name_or_url, max_videos=10):
         "--playlist-end", str(max_videos),
         "--quiet",
         "--no-warnings",
-        "--socket-timeout", "30"
+        "--socket-timeout", "15",  # Shorter socket timeout
+        "--extractor-args", "youtube:skip=dash"  # Skip DASH to speed up
     ]
     
     # Handle both channel URLs and channel names
     if channel_name_or_url.startswith("http"):
         cmd.append(channel_name_or_url)
     else:
-        # Search for channel and get first result's channel URL
-        search_cmd = [
-            "yt-dlp",
-            "--flat-playlist",
-            "--print", "%(channel_url)s",
-            "--playlist-end", "1",
-            "--quiet",
-            "--default-search", "ytsearch1",
-            f"{channel_name_or_url} channel"
-        ]
-        try:
-            result = subprocess.run(search_cmd, capture_output=True, text=True, timeout=60)
-            if result.returncode == 0 and result.stdout.strip():
-                channel_url = result.stdout.strip().split('\n')[0]
-                if channel_url.startswith("http"):
-                    cmd.append(channel_url)
-                else:
-                    return []
-            else:
-                return []
-        except:
-            return []
+        # For channel names, use search instead of trying to extract channel URL
+        # This is faster and more reliable
+        return []
     
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=45)  # Shorter timeout
         if result.returncode == 0:
-            urls = [line.strip() for line in result.stdout.strip().split('\n') if line.strip()]
-            return urls
-    except:
-        pass
+            urls = [line.strip() for line in result.stdout.strip().split('\n') if line.strip() and line.strip().startswith("http")]
+            return urls[:max_videos]  # Limit results
+    except subprocess.TimeoutExpired:
+        print(f"[WARN] Timeout fetching videos from channel: {channel_name_or_url[:50]}")
+        return []
+    except Exception as e:
+        return []
     
     return []
 
 
 def download_from_channels(channels, output_dir, domain, max_videos=300):
-    """Download videos from specific YouTube channels."""
+    """Download videos from specific YouTube channels using direct channel URLs."""
     downloaded = []
     
     print(f"[INFO] Fetching videos from {len(channels)} channels...")
     
     for channel in tqdm(channels, desc=f"Downloading from channels ({domain})"):
+        if len(downloaded) >= max_videos:
+            break
+        
         # Get video URLs from channel
         video_urls = get_channel_video_urls(channel, max_videos=50)
         
@@ -226,6 +254,7 @@ def download_from_channels(channels, output_dir, domain, max_videos=300):
             video_path = download_video_audio(query, output_dir, domain)
             if video_path:
                 downloaded.append(video_path)
+                print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos")
         else:
             # Download from extracted URLs
             for url in video_urls[:20]:  # Limit per channel
@@ -235,9 +264,8 @@ def download_from_channels(channels, output_dir, domain, max_videos=300):
                 if video_path:
                     downloaded.append(video_path)
                     print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos")
-        
-        if len(downloaded) >= max_videos:
-            break
+                    if len(downloaded) >= max_videos:
+                        break
     
     return downloaded
 
@@ -265,23 +293,74 @@ def process_downloaded_audio(downloaded_files, output_dir, domain, clip_length=1
     os.makedirs(clips_dir, exist_ok=True)
     
     all_clips = []
+    failed_files = []
+    successful_files = []
+    file_clip_counts = {}  # Track clips per file for diversity analysis
     
     print(f"[INFO] Processing {len(downloaded_files)} audio files into clips (using {'GPU' if use_gpu else 'CPU'})")
     
     for audio_file in tqdm(downloaded_files, desc="Processing audio into clips"):
-        clips = split_audio_into_clips(audio_file, clips_dir, clip_length=clip_length, use_gpu=use_gpu)
-        all_clips.extend(clips)
+        if not os.path.exists(audio_file):
+            failed_files.append((audio_file, "File not found"))
+            continue
         
-        # Remove original long file to save space
+        # Check file size - skip if too small (likely corrupted)
         try:
-            os.remove(audio_file)
+            file_size = os.path.getsize(audio_file)
+            if file_size < 1000:  # Less than 1KB is likely corrupted
+                failed_files.append((audio_file, f"File too small ({file_size} bytes)"))
+                continue
         except:
-            pass
+            failed_files.append((audio_file, "Cannot read file size"))
+            continue
+            
+        clips = split_audio_into_clips(audio_file, clips_dir, clip_length=clip_length, use_gpu=use_gpu)
+        if clips:
+            all_clips.extend(clips)
+            successful_files.append(audio_file)
+            file_clip_counts[os.path.basename(audio_file)] = len(clips)
+        else:
+            failed_files.append((audio_file, "No clips generated (file may be too short or corrupted)"))
+        
+        # Remove original long file to save space (only if clips were created successfully)
+        if clips:
+            try:
+                if os.path.exists(audio_file):
+                    os.remove(audio_file)
+            except Exception as e:
+                # File might be locked or permission issue - will be cleaned up later
+                pass
     
     # Final GPU cleanup
     if use_gpu and torch.cuda.is_available():
         torch.cuda.empty_cache()
         print(f"[GPU] Processing complete. VRAM usage: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+    
+    # Detailed reporting
+    print(f"\n[INFO] Processing Summary:")
+    print(f"  - Total files downloaded: {len(downloaded_files)}")
+    print(f"  - Successfully processed: {len(successful_files)}")
+    print(f"  - Failed to process: {len(failed_files)}")
+    print(f"  - Total clips created: {len(all_clips)}")
+    
+    if successful_files:
+        avg_clips = len(all_clips) / len(successful_files)
+        print(f"  - Average clips per file: {avg_clips:.1f}")
+        
+        # Show diversity - files with most clips
+        if file_clip_counts:
+            sorted_files = sorted(file_clip_counts.items(), key=lambda x: x[1], reverse=True)
+            print(f"\n[INFO] Top 5 files by clip count:")
+            for filename, count in sorted_files[:5]:
+                print(f"    {filename}: {count} clips")
+    
+    if failed_files:
+        print(f"\n[WARN] Failed files (showing first 10):")
+        for file_path, reason in failed_files[:10]:
+            filename = os.path.basename(file_path)
+            print(f"    {filename}: {reason}")
+        if len(failed_files) > 10:
+            print(f"    ... and {len(failed_files) - 10} more")
     
     return all_clips
 
@@ -335,7 +414,12 @@ def main():
         channels = []
     
     # Create domain-specific output directory
-    domain_output = os.path.join(args.output_dir, args.domain)
+    # If output_dir already ends with domain name, use it as-is
+    output_path = Path(args.output_dir)
+    if output_path.name == args.domain:
+        domain_output = str(output_path)
+    else:
+        domain_output = os.path.join(args.output_dir, args.domain)
     os.makedirs(domain_output, exist_ok=True)
     
     print(f"[INFO] Starting download for domain: {args.domain}")
