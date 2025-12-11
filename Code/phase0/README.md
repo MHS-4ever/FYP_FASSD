@@ -64,23 +64,67 @@ FYP/
 
 ## 🚀 Quick Start
 
-### Step 1: Install Dependencies
+### Step 1: Environment Setup (CRITICAL - Two Environments Required)
+
+**⚠️ IMPORTANT**: TTS libraries cannot coexist with your FYP environment due to dependency conflicts. You need **TWO separate conda environments**:
+
+#### Environment 1: `fassd` (Main FYP Environment)
+
+This is your main environment for Phase 0 work (downloading, processing, verification).
 
 ```bash
-# Core dependencies
-pip install yt-dlp librosa soundfile pandas tqdm numpy
+# Activate your main FYP environment
+conda activate fassd
 
-# Optional for TTS generation
-pip install TTS  # For XTTS v2 (Coqui)
+# Core dependencies (should already be installed)
+# pip install yt-dlp librosa soundfile pandas tqdm numpy torch torchaudio
+
+# Verify Installation:
+python -c "import yt_dlp, librosa, soundfile, pandas, tqdm, torch, torchaudio; print('All core dependencies installed!')"
+```
+
+**Contains:**
+
+- PyTorch GPU (2.5.1+cu121)
+- librosa, soundfile, numpy, scipy, pandas
+- yt-dlp (for YouTube downloads)
+- All your FYP pipeline dependencies
+- **NO TTS libraries** (kept separate to prevent conflicts)
+
+#### Environment 2: `ttsgen` (TTS Generation Environment)
+
+This is a **separate isolated environment** ONLY for TTS fake audio generation.
+
+```bash
+# Create TTS environment (one-time setup)
+conda create -n ttsgen python=3.10 -y
+conda activate ttsgen
+
+# Install TTS library (choose one)
+pip install TTS  # For XTTS v2 (Coqui) - RECOMMENDED
 # OR
-pip install tortoise-tts  # For Tortoise TTS
+pip install tortoise-tts  # Alternative option
+
+# Verify TTS installation:
+python -c "from TTS.api import TTS; print('TTS installed successfully!')"
 ```
 
-**Verify Installation:**
+**Contains:**
 
-```bash
-python -c "import yt_dlp, librosa, soundfile, pandas, tqdm; print('All dependencies installed!')"
-```
+- TTS library (XTTS v2 or Tortoise TTS)
+- Isolated dependencies (won't affect fassd environment)
+- **Only used for `generate_fake_audio.py`**
+
+**⚠️ Why Two Environments?**
+
+TTS libraries require:
+
+- Old numpy (1.22.0) which conflicts with modern scientific stack
+- Heavy NLP dependencies (spaCy, transformers, etc.)
+- Downgrades scipy, pandas, matplotlib
+- **Breaks PyTorch 2.5.1 + librosa + modern numpy compatibility**
+
+Keeping TTS isolated ensures your main `fassd` environment stays stable and functional for all other Phase 0 work.
 
 ### Step 2: Download Public Datasets (Manual)
 
@@ -169,17 +213,30 @@ python Code/phase0/download_youtube.py --domain social --max_videos 300 --output
 
 ### Step 4: Generate Fake Audio (Automated)
 
-**Using XTTS v2 (Recommended):**
+**⚠️ CRITICAL: Use `ttsgen` environment for this step!**
 
 ```bash
+# Switch to TTS environment
+conda activate ttsgen
+
+# Generate 3000 fake clips using TTS
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method xtts --output_dir data/realworld/synthetic
+
+# After generation, switch back to main environment
+conda activate fassd
 ```
 
-**Using Simple Placeholder (If TTS not available):**
+**Alternative: Using Simple Placeholder (If TTS not available):**
+
+If you don't have TTS set up, you can use the simple method from `fassd` environment:
 
 ```bash
+# Stay in fassd environment
+conda activate fassd
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple --output_dir data/realworld/synthetic
 ```
+
+**⚠️ Note**: Simple method generates placeholder audio (sine waves). For real TTS generation, you MUST use `ttsgen` environment.
 
 **Expected Output:**
 
@@ -188,7 +245,11 @@ python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple --out
 - Saves as WAV files (16kHz, mono)
 - Auto-labeled as "spoof"
 
-**Time Estimate**: ~3-6 hours (depends on GPU availability)
+**Time Estimate**:
+
+- With GPU (ttsgen environment): ~1-2 hours
+- Without GPU: ~5-10 hours
+- Simple method: ~10 minutes (but low quality)
 
 ### Step 5: Process All Audio (Automated)
 
@@ -390,18 +451,33 @@ python Code/phase0/download_youtube.py --domain social --max_videos 300 --output
 
 Generates synthetic speech using TTS models.
 
+**⚠️ IMPORTANT: This script should be run in `ttsgen` environment (or use `--method simple` from `fassd`).**
+
 **Usage:**
 
 ```bash
-# Using XTTS v2 (requires: pip install TTS)
+# Switch to TTS environment first
+conda activate ttsgen
+
+# Using XTTS v2 (requires TTS library in ttsgen environment)
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method xtts --output_dir data/realworld/synthetic
 
-# Using Tortoise TTS (requires: pip install tortoise-tts)
+# Using Tortoise TTS (requires tortoise-tts in ttsgen environment)
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method tortoise --output_dir data/realworld/synthetic
 
-# Using simple placeholder (no TTS library needed)
+# Switch back to main environment after generation
+conda activate fassd
+```
+
+**Alternative (Simple Method - No TTS Required):**
+
+```bash
+# Can run from fassd environment (generates placeholder audio)
+conda activate fassd
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple --output_dir data/realworld/synthetic
 ```
+
+**⚠️ Note**: Simple method creates placeholder audio (sine waves), not real TTS. For production-quality fake audio, use `ttsgen` environment with `--method xtts`.
 
 **Options:**
 
@@ -418,13 +494,22 @@ python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple --out
 - Saves as WAV files (16kHz, mono)
 - Auto-labeled as "spoof"
 
-**Dependencies**: `TTS` (for XTTS), `tortoise-tts` (for Tortoise), or none (for simple)
+**Dependencies**:
+
+- XTTS: Requires `ttsgen` environment with `pip install TTS`
+- Tortoise: Requires `ttsgen` environment with `pip install tortoise-tts`
+- Simple: Can run from `fassd` environment (no TTS library needed)
+
+**Environment Requirements**:
+
+- **XTTS/Tortoise**: MUST use `conda activate ttsgen` (isolated environment)
+- **Simple**: Can use `conda activate fassd` (main environment)
 
 **Time**:
 
-- XTTS: ~0.5-1 second per clip (with GPU)
-- Tortoise: ~2-5 seconds per clip (with GPU)
-- Simple: ~0.1 second per clip (fast but low quality)
+- XTTS: ~0.5-1 second per clip (with GPU in ttsgen environment)
+- Tortoise: ~2-5 seconds per clip (with GPU in ttsgen environment)
+- Simple: ~0.1 second per clip (fast but generates placeholder audio, low quality)
 
 ---
 
@@ -617,22 +702,39 @@ python Code/phase0/download_youtube.py --domain broadcast --max_videos 10 --verb
 
 **Solutions:**
 
+**If using TTS (XTTS/Tortoise):**
+
 ```bash
-# Install TTS library
+# Make sure you're in ttsgen environment
+conda activate ttsgen
+
+# Install TTS library (if not already installed)
 pip install TTS
 
 # For XTTS, model downloads automatically on first use
 # First run will be slow (downloading model)
 
-# If still fails, use simple method
+# Verify TTS works
+python -c "from TTS.api import TTS; print('TTS ready!')"
+```
+
+**If TTS installation causes dependency conflicts:**
+
+```bash
+# Use simple method from fassd environment instead
+conda activate fassd
 python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple
 ```
 
+**⚠️ DO NOT install TTS in fassd environment** - It will break your dependencies (numpy/scipy/pandas conflicts).
+
 **Common Issues:**
 
-- GPU not available: TTS will use CPU (much slower but works)
-- Out of memory: Reduce `--num_clips` or use `--method simple`
-- Model download fails: Check internet connection, retry
+- **Wrong environment**: Make sure to use `conda activate ttsgen` for TTS methods
+- **GPU not available**: TTS will use CPU (much slower but works)
+- **Out of memory**: Reduce `--num_clips` or use `--method simple`
+- **Model download fails**: Check internet connection, retry
+- **Dependency conflicts**: Use `ttsgen` environment (isolated from fassd)
 
 ---
 
@@ -750,19 +852,29 @@ For manual collection (300-500 clips), follow these steps:
 
 Use this checklist to track progress:
 
-- [ ] Dependencies installed (`yt-dlp`, `librosa`, `soundfile`, `pandas`, `tqdm`)
-- [ ] LibriSpeech downloaded and verified (5K-10K samples)
-- [ ] VCTK downloaded and verified (2K-5K samples)
-- [ ] VoxCeleb1 downloaded (optional, 3K-5K samples)
-- [ ] YouTube broadcast audio collected (200-300 videos)
-- [ ] YouTube podcast audio collected (500+ videos)
-- [ ] YouTube social audio collected (200-300 videos)
-- [ ] Fake audio generated (2K-3K clips)
-- [ ] Manual collection completed (300-500 clips)
-- [ ] All audio processed (WAV, 16kHz, 1-10s)
-- [ ] Manifest created (`manifest_realworld.csv`)
-- [ ] Quality verified (>95% valid)
-- [ ] Statistics report generated
+**Environment Setup:**
+
+- [ ] `fassd` environment set up with core dependencies
+- [ ] `ttsgen` environment created (for TTS generation only)
+- [ ] TTS library installed in `ttsgen` environment (optional)
+
+**Data Collection:**
+
+- [ ] LibriSpeech downloaded and verified (5K-10K samples) - use `fassd` environment
+- [ ] VCTK downloaded and verified (2K-5K samples) - use `fassd` environment
+- [ ] VoxCeleb1 downloaded (optional, 3K-5K samples) - use `fassd` environment
+- [ ] YouTube broadcast audio collected (200-300 videos) - use `fassd` environment
+- [ ] YouTube podcast audio collected (500+ videos) - use `fassd` environment
+- [ ] YouTube social audio collected (200-300 videos) - use `fassd` environment
+- [ ] Fake audio generated (2K-3K clips) - use `ttsgen` environment (or simple method from `fassd`)
+- [ ] Manual collection completed (300-500 clips) - use `fassd` environment
+
+**Processing:**
+
+- [ ] All audio processed (WAV, 16kHz, 1-10s) - use `fassd` environment
+- [ ] Manifest created (`manifest_realworld.csv`) - use `fassd` environment
+- [ ] Quality verified (>95% valid) - use `fassd` environment
+- [ ] Statistics report generated - use `fassd` environment
 - [ ] Total samples: 10,000+
 
 ---
@@ -777,5 +889,42 @@ After completing Phase 0:
 
 ---
 
-**Last Updated**: 10 December 2025  
-**Status**: Ready for Use
+---
+
+## 📋 Environment Summary
+
+### Quick Reference: Which Environment for Which Script?
+
+| Script                                   | Environment | Notes                              |
+| ---------------------------------------- | ----------- | ---------------------------------- |
+| `download_librispeech.py`                | `fassd`     | Main environment                   |
+| `download_vctk.py`                       | `fassd`     | Main environment                   |
+| `download_youtube.py`                    | `fassd`     | Main environment                   |
+| `process_audio.py`                       | `fassd`     | Main environment (GPU-accelerated) |
+| `create_realworld_manifest.py`           | `fassd`     | Main environment                   |
+| `verify_realworld_data.py`               | `fassd`     | Main environment                   |
+| `generate_fake_audio.py` (xtts/tortoise) | `ttsgen`    | **Isolated TTS environment**       |
+| `generate_fake_audio.py` (simple)        | `fassd`     | Can use main environment           |
+
+### Environment Switching Workflow
+
+```bash
+# For most Phase 0 work:
+conda activate fassd
+python Code/phase0/download_youtube.py --domain broadcast --max_videos 300
+python Code/phase0/process_audio.py --input_dir data/realworld --output_dir data/realworld/processed
+
+# For TTS generation only:
+conda activate ttsgen
+python Code/phase0/generate_fake_audio.py --num_clips 3000 --method xtts
+conda activate fassd  # Switch back immediately after
+
+# For simple placeholder audio (no TTS):
+conda activate fassd
+python Code/phase0/generate_fake_audio.py --num_clips 3000 --method simple
+```
+
+---
+
+**Last Updated**: December 2025  
+**Status**: Ready for Use (Two-Environment Setup)

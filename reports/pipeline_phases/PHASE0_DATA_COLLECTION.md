@@ -317,6 +317,21 @@ Total       | 14,500+ | 100%       |
 - Consider ethical implications of data collection
 - **Practical alternatives**: LibriSpeech and VCTK are verified working alternatives to VoxCeleb2 and Common Voice
 
+### ⚠️ Two-Environment Setup Required
+
+**Critical**: TTS libraries (XTTS v2, Tortoise TTS) cannot be installed in the main `fassd` environment due to dependency conflicts:
+
+- TTS requires old numpy (1.22.0)
+- Main environment needs modern numpy (≥1.26) for PyTorch 2.5.1 + librosa 0.11+
+- Installing TTS in main environment causes dependency corruption
+
+**Solution**: Use two separate conda environments:
+
+1. **`fassd`**: Main environment for all Phase 0 work (downloading, processing, verification)
+2. **`ttsgen`**: Isolated environment ONLY for TTS fake audio generation
+
+See `Code/phase0/README.md` for complete setup instructions.
+
 ---
 
 **Last Updated**: 10 December 2025  

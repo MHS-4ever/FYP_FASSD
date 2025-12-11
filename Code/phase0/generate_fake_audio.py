@@ -4,8 +4,19 @@ Generate Fake Audio using TTS Models for Phase 0 Data Collection
 Generates synthetic speech using TTS models to create fake audio samples.
 Optimized for GPU acceleration (RTX 3050, CUDA 13.1).
 
+⚠️ ENVIRONMENT REQUIREMENT:
+    - For --method xtts or --method tortoise: MUST use 'ttsgen' conda environment
+      (TTS libraries cannot coexist with fassd environment due to dependency conflicts)
+    - For --method simple: Can use 'fassd' conda environment
+
 Usage:
-    python generate_fake_audio.py --num_clips 3000 --output_dir data/realworld/synthetic
+    # From ttsgen environment (for xtts/tortoise):
+    conda activate ttsgen
+    python generate_fake_audio.py --num_clips 3000 --method xtts --output_dir data/realworld/synthetic
+    
+    # From fassd environment (for simple method only):
+    conda activate fassd
+    python generate_fake_audio.py --num_clips 3000 --method simple --output_dir data/realworld/synthetic
 """
 
 import argparse
