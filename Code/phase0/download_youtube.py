@@ -41,7 +41,7 @@ else:
     print("[INFO] CUDA not available - using CPU for audio processing")
 
 
-def download_video_audio(url_or_query, output_dir, timeout=120):
+def download_video_audio(url_or_query, output_dir, timeout=120, max_duration=1800):
     """
     Download audio from a YouTube video or search query.
     
@@ -49,6 +49,7 @@ def download_video_audio(url_or_query, output_dir, timeout=120):
         url_or_query: YouTube URL or search query
         output_dir: Output directory
         timeout: Timeout in seconds (default: 120)
+        max_duration: Maximum video duration in seconds (default: 1800 = 30 min)
     """
     os.makedirs(output_dir, exist_ok=True)
     
@@ -74,27 +75,93 @@ def download_video_audio(url_or_query, output_dir, timeout=120):
         "--no-warnings",
         "--socket-timeout", "15",
         "--fragment-retries", "1",
-        "--retries", "1"
+        "--retries", "1",
+        "--match-filter", f"duration < {max_duration}"  # Filter by duration
     ]
     
     # Add URL or search query
     if url_or_query.startswith("http"):
         cmd.append(url_or_query)
     else:
-        cmd.extend(["--default-search", "ytsearch1", url_or_query])
+        # Use ytsearch10 to get 10 videos per search (much faster!)
+        cmd.extend(["--default-search", "ytsearch10", url_or_query])
     
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         if result.returncode == 0:
             wav_files = list(Path(output_dir).glob("*.wav"))
             if wav_files:
-                return str(wav_files[-1])
+                # Return the most recently created file
+                wav_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+                return str(wav_files[0])
     except subprocess.TimeoutExpired:
         pass
     except Exception:
         pass
     
     return None
+
+
+def download_multiple_videos_from_query(query, output_dir, max_results=10, max_duration=1800, timeout=300):
+    """
+    Download multiple videos from a single search query (much more efficient).
+    
+    Args:
+        query: Search query string
+        output_dir: Output directory
+        max_results: Maximum number of videos to download from this query (default: 10)
+        max_duration: Maximum video duration in seconds (default: 1800 = 30 min)
+        timeout: Timeout in seconds (default: 300 for batch)
+    
+    Returns:
+        List of downloaded file paths
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    
+    output_template = os.path.join(output_dir, "%(id)s.%(ext)s")
+    
+    cmd = [
+        "yt-dlp",
+        "--extract-audio",
+        "--audio-format", "wav",
+        "--audio-quality", "0",
+        "--no-playlist",
+        "--output", output_template,
+        "--quiet",
+        "--no-warnings",
+        "--socket-timeout", "15",
+        "--fragment-retries", "1",
+        "--retries", "1",
+        "--match-filter", f"duration < {max_duration}",
+        "--default-search", f"ytsearch{max_results}",
+        query
+    ]
+    
+    downloaded_files = []
+    existing_files_before = set(Path(output_dir).glob("*.wav"))
+    existing_video_ids_before = {f.stem for f in existing_files_before}
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        if result.returncode == 0:
+            # Find newly created files
+            existing_files_after = set(Path(output_dir).glob("*.wav"))
+            new_files = existing_files_after - existing_files_before
+            
+            # Double-check: only return files with new video IDs (extra safety)
+            downloaded_files = []
+            for f in new_files:
+                if f.stat().st_size > 1000:
+                    video_id = f.stem
+                    if video_id not in existing_video_ids_before:
+                        downloaded_files.append(str(f))
+                        existing_video_ids_before.add(video_id)  # Track it
+    except subprocess.TimeoutExpired:
+        pass
+    except Exception:
+        pass
+    
+    return downloaded_files
 
 
 def split_audio_into_clips(audio_path, output_dir, clip_length=10, overlap=1, use_gpu=False, target_sr=16000):
@@ -260,49 +327,143 @@ def download_from_channels(channels, output_dir, domain, max_videos=300, max_cha
             print(f"[INFO] Downloading video {url_idx}/{len(video_urls)} from channel...")
             video_path = download_video_audio(url, output_dir)
             if video_path and video_path not in downloaded:
-                downloaded.append(video_path)
-                if len(downloaded) % 10 == 0:
-                    print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos total")
+                # Extract video ID to check for duplicates
+                video_id = Path(video_path).stem
+                # Check if we already have this video ID (in case of duplicates)
+                existing_ids = {Path(f).stem for f in downloaded}
+                if video_id not in existing_ids:
+                    downloaded.append(video_path)
+                    if len(downloaded) % 10 == 0:
+                        print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos total")
             elif not video_path:
                 print(f"[WARN] Failed to download video, continuing...")
     
     return downloaded
 
-
 def download_from_search_queries(queries, output_dir, domain, max_videos=300, existing_downloaded=None):
-    """Download videos from search queries."""
+    """
+    Download videos from search queries using batch downloads (much faster!).
+    Will keep trying until max_videos is reached.
+    """
     if existing_downloaded is None:
         existing_downloaded = []
     
     downloaded = []
+    existing_set = set(existing_downloaded)
+    
+    # Get all existing video IDs from already downloaded files and output directory
+    existing_video_ids = set()
+    for file_path in existing_downloaded:
+        video_id = Path(file_path).stem
+        existing_video_ids.add(video_id)
+    
+    # Also check files already in output_dir (from previous runs)
+    for existing_file in Path(output_dir).glob("*.wav"):
+        video_id = existing_file.stem
+        existing_video_ids.add(video_id)
+        existing_set.add(str(existing_file))
+    
+    # Set max duration based on domain
+    max_duration_map = {
+        "broadcast": 1800,  # 30 minutes
+        "podcast": 1800,    # 30 minutes
+        "social": 900       # 15 minutes
+    }
+    max_duration = max_duration_map.get(domain, 1800)
     
     # Expand queries with domain keywords
     keywords = {
-        "broadcast": ["news", "breaking news", "latest news", "news today", "news update"],
-        "podcast": ["podcast", "interview", "conversation", "podcast episode", "talk show"],
-        "social": ["vlog", "shorts", "real voice", "daily vlog", "voice over"]
+        "broadcast": ["news", "breaking news", "latest news", "news today", "news update", 
+                     "headlines", "news report", "world news", "current events", "news analysis"],
+        "podcast": ["podcast", "interview", "conversation", "podcast episode", "talk show",
+                   "discussion", "podcast latest", "interview show", "long form", "podcast series"],
+        "social": ["vlog", "shorts", "real voice", "daily vlog", "voice over",
+                  "talking vlog", "personal vlog", "vlog latest", "real voice latest", "social media"]
     }
     
     domain_keywords = keywords.get(domain, [])
     expanded_queries = []
     
+    # Base queries
     for query in queries:
         expanded_queries.append(query)
         for keyword in domain_keywords[:5]:
             expanded_queries.append(f"{query} {keyword}")
             expanded_queries.append(f"{keyword} {query}")
     
+    # Standalone keywords
     expanded_queries.extend(domain_keywords[:10])
     
-    for query in tqdm(expanded_queries, desc=f"Search queries ({domain})"):
-        if len(downloaded) >= max_videos:
-            break
-        
-        video_path = download_video_audio(query, output_dir)
-        if video_path and video_path not in downloaded and video_path not in existing_downloaded:
-            downloaded.append(video_path)
-            if len(downloaded) % 10 == 0:
-                print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos")
+    # Add date/recency modifiers for more variety
+    date_modifiers = ["latest", "new", "recent", "today", "2024", "2023"]
+    for keyword in domain_keywords[:8]:
+        for modifier in date_modifiers:
+            expanded_queries.append(f"{keyword} {modifier}")
+            expanded_queries.append(f"{modifier} {keyword}")
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_queries = []
+    for q in expanded_queries:
+        q_lower = q.lower().strip()
+        if q_lower not in seen:
+            seen.add(q_lower)
+            unique_queries.append(q)
+    
+    query_idx = 0
+    max_queries_to_try = max_videos * 2  # Allow many more queries (not all will succeed)
+    
+    # Use batch downloads - much faster!
+    with tqdm(total=max_videos, desc=f"Downloading videos ({domain})") as pbar:
+        while len(downloaded) < max_videos and query_idx < max_queries_to_try:
+            # Cycle through queries if we've exhausted the list
+            if query_idx >= len(unique_queries):
+                # Generate more variations
+                print(f"[INFO] Exhausted {len(unique_queries)} queries, generating more variations...")
+                for base_query in queries[:5]:
+                    for modifier in ["latest", "new", "recent", "episode", "full", "complete", "2024", "2023"]:
+                        new_query = f"{base_query} {modifier}"
+                        if new_query.lower() not in seen:
+                            unique_queries.append(new_query)
+                            seen.add(new_query.lower())
+                
+                # Also try standalone keywords with more modifiers
+                for keyword in domain_keywords[:10]:
+                    for modifier in ["latest", "new", "recent", "today", "episode"]:
+                        new_query = f"{keyword} {modifier}"
+                        if new_query.lower() not in seen:
+                            unique_queries.append(new_query)
+                            seen.add(new_query.lower())
+                
+                query_idx = 0  # Reset to start of expanded list
+            
+            query = unique_queries[query_idx]
+            query_idx += 1
+            
+            # Download multiple videos from this query (batch download)
+            new_files = download_multiple_videos_from_query(
+                query, output_dir, max_results=10, max_duration=max_duration, timeout=300
+            )
+            
+            # Add only new, unique files (check by both file path and video ID)
+            for file_path in new_files:
+                video_id = Path(file_path).stem
+                # Check if we've seen this video ID before (strongest check)
+                if video_id not in existing_video_ids and file_path not in downloaded and file_path not in existing_set:
+                    downloaded.append(file_path)
+                    existing_set.add(file_path)
+                    existing_video_ids.add(video_id)  # Track by ID too
+                    pbar.update(1)
+                    if len(downloaded) >= max_videos:
+                        break
+            
+            if len(downloaded) % 20 == 0:
+                print(f"[OK] Downloaded {len(downloaded)}/{max_videos} videos (query {query_idx}, {len(unique_queries)} total)")
+    
+    if len(downloaded) < max_videos:
+        print(f"[WARN] Only downloaded {len(downloaded)}/{max_videos} videos after {query_idx} queries")
+    else:
+        print(f"[OK] Successfully downloaded {len(downloaded)} videos from {query_idx} queries")
     
     return downloaded
 
@@ -425,7 +586,12 @@ def main():
             print(f"[INFO] Processing domain: {domain}")
             print(f"{'='*60}\n")
             
-            domain_output = os.path.join(args.output_dir, domain)
+            # Check if output_dir already ends with domain name to avoid duplication
+            output_path = Path(args.output_dir)
+            if output_path.name == domain:
+                domain_output = str(output_path)
+            else:
+                domain_output = os.path.join(args.output_dir, domain)
             os.makedirs(domain_output, exist_ok=True)
             
             if args.process_existing:
@@ -506,7 +672,12 @@ def main():
         return
     
     # Single domain mode
-    domain_output = os.path.join(args.output_dir, args.domain)
+    # Check if output_dir already ends with domain name to avoid duplication
+    output_path = Path(args.output_dir)
+    if output_path.name == args.domain:
+        domain_output = str(output_path)
+    else:
+        domain_output = os.path.join(args.output_dir, args.domain)
     os.makedirs(domain_output, exist_ok=True)
     
     if args.process_existing:
