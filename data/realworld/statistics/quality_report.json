@@ -1,0 +1,150 @@
+{
+  "summary": {
+    "total_files": 157434,
+    "files_exist": 157434,
+    "files_valid": 157414,
+    "files_corrupted": 20,
+    "duration_ok": 157434,
+    "sample_rate_ok": 157434,
+    "validity_rate": 0.9998729626383119
+  },
+  "statistics": {
+    "duration": {
+      "mean": 6.25483677247291,
+      "min": 1.41,
+      "max": 10.0,
+      "std": 3.2996934083306364
+    },
+    "sample_rate": {
+      "unique_values": [
+        16000
+      ],
+      "most_common": 16000
+    }
+  },
+  "errors": {
+    "All zeros (silent)": 20
+  },
+  "failed_files": [
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\broadcast\\clips\\2BjOyJ2Gh8A_clip0045.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\broadcast\\clips\\6Wl8G4k6FoQ_clip0042.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\ct_Iv2sXzk0_clip0022.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\ct_Iv2sXzk0_clip0023.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\ct_Iv2sXzk0_clip0024.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\FRcdoP58auU_clip0041.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\Is1CvlLlT-E_clip0194.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\Is1CvlLlT-E_clip0195.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\mLpNDDr8HVQ_clip0030.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\P_tlQsi1qbg_clip0023.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\rmLIe-sL9LQ_clip0188.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\rZmQVPuJ4mg_clip0069.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\rZmQVPuJ4mg_clip0078.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\rZmQVPuJ4mg_clip0081.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\t3SZHVb5eV8_clip0025.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\V1bd1ypBfw8_clip0134.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\V1bd1ypBfw8_clip0135.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\V1bd1ypBfw8_clip0136.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\podcast\\clips\\xp--TdCU9GI_clip0152.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    },
+    {
+      "filepath": "data\\realworld\\processed\\youtube\\social\\clips\\H_GKDXeHBCg_clip0079.wav",
+      "errors": [
+        "All zeros (silent)"
+      ]
+    }
+  ]
+}

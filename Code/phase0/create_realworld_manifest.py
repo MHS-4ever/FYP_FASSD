@@ -20,7 +20,9 @@ def infer_domain_from_path(filepath):
     """Infer domain from file path."""
     path_lower = str(filepath).lower()
     
-    if "broadcast" in path_lower or "news" in path_lower or "tv" in path_lower:
+    if "synthetic" in path_lower or "tts" in path_lower or "fake" in path_lower:
+        return "synthetic"  # Synthetic/fake audio domain
+    elif "broadcast" in path_lower or "news" in path_lower or "tv" in path_lower:
         return "broadcast"
     elif "podcast" in path_lower:
         return "podcast"
@@ -140,7 +142,7 @@ def scan_directory(data_dir, recursive=True):
         # Determine source
         if dataset == "synthetic":
             source = "synthetic"
-        elif dataset in ["voxceleb", "commonvoice", "vctk"]:
+        elif dataset in ["voxceleb", "commonvoice", "vctk", "librispeech"]:
             source = "public_dataset"
         elif dataset == "youtube":
             source = "youtube"
@@ -213,6 +215,36 @@ def main():
     print(f"    Mean: {df['duration'].mean():.2f}s")
     print(f"    Min: {df['duration'].min():.2f}s")
     print(f"    Max: {df['duration'].max():.2f}s")
+    
+    # Save collection statistics to statistics folder
+    stats_dir = Path(args.output).parent / "statistics"
+    stats_dir.mkdir(exist_ok=True)
+    stats_path = stats_dir / "collection_stats.json"
+    
+    # Prepare statistics dictionary
+    stats_dict = {
+        "total_samples": int(len(df)),
+        "label_distribution": df['label'].value_counts().to_dict(),
+        "domain_distribution": df['domain'].value_counts().to_dict(),
+        "dataset_distribution": df['dataset'].value_counts().to_dict(),
+        "source_distribution": df['source'].value_counts().to_dict(),
+        "attack_type_distribution": df['attack_type'].value_counts().to_dict() if 'attack_type' in df.columns else {},
+        "duration_statistics": {
+            "mean": float(df['duration'].mean()),
+            "min": float(df['duration'].min()),
+            "max": float(df['duration'].max()),
+            "std": float(df['duration'].std())
+        },
+        "unique_speakers": int(df['speaker_id'].nunique()),
+        "manifest_path": str(args.output),
+        "generated_from": str(args.data_dir)
+    }
+    
+    # Save statistics
+    with open(stats_path, "w", encoding="utf-8") as f:
+        json.dump(stats_dict, f, indent=2)
+    
+    print(f"\n[OK] Collection statistics saved to: {stats_path}")
 
 
 if __name__ == "__main__":

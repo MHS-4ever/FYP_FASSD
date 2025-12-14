@@ -1,0 +1,40 @@
+{
+  "total_samples": 157434,
+  "label_distribution": {
+    "bonafide": 152932,
+    "spoof": 4502
+  },
+  "domain_distribution": {
+    "studio": 83155,
+    "read_speech": 28539,
+    "broadcast": 17996,
+    "podcast": 17529,
+    "social": 5713,
+    "synthetic": 4502
+  },
+  "dataset_distribution": {
+    "vctk": 83155,
+    "youtube": 41238,
+    "librispeech": 28539,
+    "synthetic": 4502
+  },
+  "source_distribution": {
+    "public_dataset": 111694,
+    "youtube": 41238,
+    "synthetic": 4502
+  },
+  "attack_type_distribution": {
+    "bonafide": 152932,
+    "synthesis": 3002,
+    "replay": 1500
+  },
+  "duration_statistics": {
+    "mean": 6.254826149370531,
+    "min": 1.41,
+    "max": 10.0,
+    "std": 3.2997105490201575
+  },
+  "unique_speakers": 73281,
+  "manifest_path": "data/realworld/manifest_realworld.csv",
+  "generated_from": "data/realworld/processed"
+}
