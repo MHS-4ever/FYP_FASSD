@@ -10,6 +10,7 @@ Usage:
 
 import argparse
 import os
+import random
 from pathlib import Path
 from tqdm import tqdm
 import numpy as np
@@ -30,6 +31,42 @@ else:
     device = torch.device("cpu")
     USE_GPU = False
     print("[INFO] CUDA not available - using CPU for processing")
+
+
+def validate_processed_file(file_path, target_sr=16000, min_duration=1.0, max_duration=10.0):
+    """
+    Validate if an already-processed WAV file meets the criteria.
+    Returns (is_valid, reason) tuple.
+    """
+    try:
+        # Quick check: file exists and has reasonable size
+        if not os.path.exists(file_path):
+            return False, "File does not exist"
+        
+        file_size = os.path.getsize(file_path)
+        if file_size < 1000:  # Less than 1KB is suspicious
+            return False, "File too small"
+        
+        # Load and check audio properties
+        waveform, sr = torchaudio.load(file_path)
+        
+        # Check sample rate
+        if sr != target_sr:
+            return False, f"Wrong sample rate: {sr} != {target_sr}"
+        
+        # Check mono
+        if waveform.shape[0] > 1:
+            return False, "Not mono"
+        
+        # Check duration
+        duration = waveform.shape[1] / sr
+        if duration < min_duration or duration > max_duration:
+            return False, f"Duration out of range: {duration:.2f}s"
+        
+        return True, None
+        
+    except Exception as e:
+        return False, f"Validation error: {str(e)}"
 
 
 def process_audio_file(input_path, output_path, target_sr=16000, min_duration=1.0, max_duration=10.0, use_gpu=False):
@@ -65,15 +102,24 @@ def process_audio_file(input_path, output_path, target_sr=16000, min_duration=1.
         if duration < min_duration:
             return False, duration, f"Too short: {duration:.2f}s < {min_duration}s"
         
-        # Truncate if too long
+        # Truncate if too long (use random start position for better diversity)
         if duration > max_duration:
             max_samples = int(max_duration * sr)
-            waveform = waveform[:, :max_samples]
+            total_samples = waveform.shape[1]
+            # Random start position to avoid bias toward beginning of audio
+            start_sample = random.randint(0, max(0, total_samples - max_samples))
+            waveform = waveform[:, start_sample:start_sample + max_samples]
             duration = max_duration
         
-        # Resample if needed (GPU-accelerated)
+        # Resample if needed (GPU-accelerated for large files, CPU for small ones)
         if sr != target_sr:
-            resampler = T.Resample(orig_freq=sr, new_freq=target_sr).to(device if use_gpu and torch.cuda.is_available() else torch.device("cpu"))
+            # Use GPU for resampling only if file is large enough to benefit
+            # Small files: CPU is faster (avoids GPU transfer overhead)
+            num_samples = waveform.shape[1]
+            use_gpu_resample = use_gpu and torch.cuda.is_available() and num_samples > 100000  # ~6s at 16kHz
+            
+            target_device = device if use_gpu_resample else torch.device("cpu")
+            resampler = T.Resample(orig_freq=sr, new_freq=target_sr).to(target_device)
             waveform = resampler(waveform)
         
         # Normalize (GPU if available)
@@ -134,12 +180,13 @@ def process_directory(input_dir, output_dir, extensions=None, target_sr=16000,
     stats = {
         "total": len(audio_files),
         "success": 0,
+        "skipped_valid": 0,  # Already processed and valid
         "failed": 0,
         "too_short": 0,
         "errors": []
     }
     
-    # Use batch processing for GPU
+    # Use batch processing for GPU (optimized for better GPU utilization)
     if use_gpu and torch.cuda.is_available() and batch_size > 1:
         print(f"[GPU] Using batch processing (batch_size={batch_size}) for better GPU utilization")
         
@@ -152,7 +199,17 @@ def process_directory(input_dir, output_dir, extensions=None, target_sr=16000,
                 rel_path = audio_file.relative_to(input_path)
                 output_file = output_path / rel_path.with_suffix('.wav')
                 
-                # Process
+                # Skip if already processed and valid
+                if output_file.exists():
+                    is_valid, reason = validate_processed_file(
+                        str(output_file), target_sr, min_duration, max_duration
+                    )
+                    if is_valid:
+                        stats["skipped_valid"] += 1
+                        continue
+                    # If invalid, reprocess it (fall through to processing)
+                
+                # Process file (new file or invalid existing file)
                 success, duration, error = process_audio_file(
                     str(audio_file),
                     str(output_file),
@@ -173,8 +230,8 @@ def process_directory(input_dir, output_dir, extensions=None, target_sr=16000,
                         "error": error
                     })
             
-            # Clear GPU cache periodically
-            if use_gpu and torch.cuda.is_available():
+            # Clear GPU cache every 10 batches to prevent memory buildup
+            if (batch_start // batch_size) % 10 == 0 and use_gpu and torch.cuda.is_available():
                 torch.cuda.empty_cache()
     else:
         # Single file processing (CPU or small batches)
@@ -182,6 +239,15 @@ def process_directory(input_dir, output_dir, extensions=None, target_sr=16000,
             # Create output path (preserve relative structure)
             rel_path = audio_file.relative_to(input_path)
             output_file = output_path / rel_path.with_suffix('.wav')
+            
+            # Skip if already processed and valid
+            if output_file.exists():
+                is_valid, reason = validate_processed_file(
+                    str(output_file), target_sr, min_duration, max_duration
+                )
+                if is_valid:
+                    stats["skipped_valid"] += 1
+                    continue
             
             # Process
             success, duration, error = process_audio_file(
@@ -239,12 +305,19 @@ def main():
     # Auto-detect GPU if not explicitly disabled
     use_gpu = args.use_gpu and USE_GPU
     
+    # Set random seed for reproducible random truncation
+    random.seed(42)
+    np.random.seed(42)
+    if torch.cuda.is_available():
+        torch.manual_seed(42)
+    
     print(f"[INFO] Processing audio files")
     print(f"[INFO] Input: {args.input_dir}")
     print(f"[INFO] Output: {args.output_dir}")
     print(f"[INFO] Target sample rate: {args.target_sr} Hz")
     print(f"[INFO] Duration range: {args.min_duration}-{args.max_duration} seconds")
-    print(f"[INFO] Using {'GPU' if use_gpu else 'CPU'} for processing")
+    print(f"[INFO] Using {'GPU (adaptive)' if use_gpu else 'CPU'} for processing")
+    print(f"[INFO] Random truncation enabled for better diversity")
     
     # Process
     stats = process_directory(
@@ -262,7 +335,8 @@ def main():
     # Print statistics
     print("\n[RESULTS] Processing Statistics:")
     print(f"  Total files: {stats['total']}")
-    print(f"  Success: {stats['success']}")
+    print(f"  Successfully processed: {stats['success']}")
+    print(f"  Skipped (already valid): {stats['skipped_valid']}")
     print(f"  Failed: {stats['failed']}")
     print(f"  Too short: {stats['too_short']}")
     

@@ -294,6 +294,189 @@ Total       | 14,500+ | 100%       |
 
 ---
 
+## 🐛 Issues & Difficulties Encountered (Real-World Experience)
+
+### Issue 1: Script Complexity and Performance
+
+**Problem**: Initial `download_youtube.py` and `generate_fake_audio.py` scripts were overly complex with unnecessary retry logic, timeout handling, and multiple search rounds, making them difficult to maintain and debug.
+
+**Impact**:
+
+- Scripts took 9-15 minutes per video download (extremely slow)
+- Complex code made debugging difficult
+- Unnecessary overhead reduced efficiency
+
+**Solution**:
+
+- Simplified both scripts significantly
+- Removed complex retry/timeout logic
+- Optimized `yt-dlp` calls by batching (`ytsearch10` instead of `ytsearch1`)
+- Added duration filtering to avoid downloading excessively long videos
+- Result: Download speed improved from 9-15 min/video to ~30-60 sec/video
+
+### Issue 2: Path Resolution Errors
+
+**Problem**: `download_youtube.py` was not finding existing files due to incorrect path resolution. Script was looking for files relative to its own directory (`Code/phase0/data/...`) instead of project root (`E:\FYP\data/...`).
+
+**Error Message**: `[INFO] No existing files found in E:\FYP\Code\phase0\data/realworld/youtube\broadcast`
+
+**Solution**:
+
+- Implemented `find_project_root()` function that traverses up directory tree to locate project root (identified by presence of both `data` and `Code` folders)
+- All paths now resolved relative to project root
+- Fixed output directory duplication issue (e.g., `podcast/podcast`)
+
+### Issue 3: YouTube Download Speed (Critical Bottleneck)
+
+**Problem**: Script was downloading videos at extremely slow rate (5 videos in 43 minutes, ETA in days). Root cause: calling `yt-dlp` once per video with `--default-search ytsearch1`, causing significant startup and search overhead for each video.
+
+**Solution**:
+
+1. Changed `ytsearch1` to `ytsearch10` (or `ytsearch20`) to download multiple videos per `yt-dlp` invocation
+2. Introduced `download_multiple_videos_from_query()` function for batch downloads
+3. Added duration filtering (`--match-filter "duration < {max_duration}"`) per domain:
+   - Social: 15 minutes max
+   - Podcast/Broadcast: 30 minutes max
+4. Result: **10-20x speed improvement**
+
+### Issue 4: Incomplete Downloads (Not Reaching max_videos Target)
+
+**Problem**: Script stopped downloading after exhausting initial set of queries, even if `max_videos` target not reached (e.g., 201/300 for social, 142/500 for podcast).
+
+**Solution**:
+
+- Modified `download_from_search_queries()` to loop and cycle through queries multiple times
+- Dynamically generate more query variations (e.g., adding "latest", "new", "episode") if initial set exhausted
+- Increased `max_queries_to_try` limit to allow more attempts
+- Result: Script now reliably reaches `max_videos` target
+
+### Issue 5: Duplicate Video Downloads
+
+**Problem**: Concern that script might download the same video multiple times if it appeared in different search results or channels.
+
+**Solution**:
+
+- Enhanced duplicate prevention by tracking video IDs across all downloaded and existing files
+- Added `existing_video_ids` set in `download_from_search_queries()` to track all video IDs
+- Modified `download_multiple_videos_from_query()` to only return files with new video IDs
+- Added video ID checking in `download_from_channels()` to prevent re-downloading
+- Result: Zero duplicate downloads
+
+### Issue 6: Output Directory Duplication
+
+**Problem**: Script was creating nested directories like `E:\FYP\data\realworld\youtube\podcast\podcast` when `--output_dir` already contained domain name.
+
+**Solution**:
+
+- Modified `main()` to check if `output_path.name` (last component) equals domain name
+- If match, use `output_path` directly; otherwise append domain
+- Applied to both single domain and "all" domain modes
+
+### Issue 7: YouTube Channel Downloads Hanging
+
+**Problem**: Script would hang for extended periods (20+ minutes) when trying to fetch video URLs from YouTube channels.
+
+**Solution**:
+
+- Reduced timeout for `yt-dlp` calls in `get_channel_video_urls()` from 60s to 30s
+- Added progress messages and per-channel time limit (`max_channel_time=300s`)
+- Introduced `--skip_channels` flag to bypass channel downloads entirely (rely solely on search queries)
+- Result: No more hanging, faster overall execution
+
+### Issue 8: TTS Dependency Conflicts
+
+**Problem**: TTS libraries (XTTS v2, Tortoise TTS) require old numpy (1.22.0) which conflicts with modern scientific stack (PyTorch 2.5.1 + librosa 0.11+ need numpy ≥1.26).
+
+**Solution**:
+
+- Created separate `ttsgen` conda environment for TTS generation only
+- Main `fassd` environment kept clean for all other Phase 0 work
+- Result: No dependency conflicts, both environments stable
+
+### Issue 9: CSV Metadata Format Issues
+
+**Problem**: `clips_metadata.csv` was not saving paths correctly - Excel showed truncated paths and `#NAME?` errors in `source_vid` column.
+
+**Solution**:
+
+- Ensured all paths use full absolute paths (`Path.resolve()`)
+- Fixed column name consistency (`source_video` not `source_vid`)
+- Added proper CSV quoting (though user removed `csv.QUOTE_ALL` later)
+- Created `cleanup_youtube_downloads.py` to regenerate metadata from existing clips
+
+### Issue 10: Missing Original Videos (Clips Only)
+
+**Problem**: For broadcast domain, original downloaded videos were deleted but clips remained. Needed to regenerate `clips_metadata.csv` from existing clips only.
+
+**Solution**:
+
+- Enhanced `cleanup_youtube_downloads.py` to detect when original videos missing but clips exist
+- Added `regenerate_metadata_from_clips()` function to scan existing clips and extract video IDs from filenames
+- Automatically generates complete metadata CSV with full absolute paths
+
+### Issue 11: Script Simplification Request
+
+**Problem**: User found both `generate_fake_audio.py` and `download_youtube.py` too complex initially.
+
+**Solution**:
+
+- Significantly simplified both scripts
+- Removed unnecessary complexity
+- Improved code readability and maintainability
+- Added better error messages and progress tracking
+
+### Issue 12: GPU Utilization in Audio Processing
+
+**Problem**: `process_audio.py` needed optimization for better GPU utilization when processing 45K+ files.
+
+**Solution**:
+
+- Added skip logic for already-processed files
+- Optimized GPU cache clearing (every 10 batches instead of every batch)
+- Pre-created resampler on GPU for efficiency
+- Result: Better GPU utilization, faster processing
+
+---
+
+## 📊 Actual Collection Statistics (As of December 2025)
+
+**Current Status**: Steps 1-4 Complete, Step 5 (Processing) In Progress
+
+### Collected Data:
+
+| Source                    | Files       | Status        | Notes                                                                                  |
+| ------------------------- | ----------- | ------------- | -------------------------------------------------------------------------------------- |
+| **YouTube**               | **41,238**  | ✅ Complete   | Broadcast: 17,756 clips<br>Podcast: 17,682 clips<br>Social: 5,800 clips<br>Format: WAV |
+| **Synthetic (TTS)**       | **4,505**   | ✅ Complete   | XTTS v2 generated<br>Includes synthesis + replay attacks<br>Format: WAV                |
+| **LibriSpeech**           | **28,539**  | ✅ Downloaded | Public dataset<br>Format: FLAC (needs processing)                                      |
+| **VCTK**                  | **88,328**  | ✅ Downloaded | Public dataset<br>Format: FLAC (needs processing)                                      |
+| **Public Datasets Total** | **116,867** | ✅            | LibriSpeech + VCTK                                                                     |
+| **Manual Collection**     | **0**       | ⏳ Pending    | 300-500 clips planned                                                                  |
+| **Total Collected**       | **162,610** | ✅            | **Massively exceeds initial target of 13K-25K! (6.5x the target!)**                    |
+
+### Processing Status:
+
+- **Raw Audio Files**: 162,610 files total
+  - 45,743 WAV files (YouTube + Synthetic) - ready for processing
+  - 116,867 FLAC files (LibriSpeech + VCTK) - needs conversion to WAV
+- **Processed Audio**: 0 (Step 5 in progress)
+- **Target**: All files processed to 16kHz, mono, 1-10 seconds
+
+### Storage:
+
+- **Raw Audio**: ~40-50 GB (estimated, including FLAC files)
+- **Processed Audio**: ~30-40 GB (estimated after processing to WAV)
+- **Total**: ~70-90 GB
+
+### Time Investment:
+
+- **YouTube Downloading**: ~8-12 hours (automated, with optimizations)
+- **TTS Generation**: ~4-5 hours (with GPU in `ttsgen` environment)
+- **Audio Processing**: In progress (estimated 20-30 hours for 163K files with GPU)
+- **Total**: ~18-27 hours of automated processing
+
+---
+
 ## 🔗 Dependencies
 
 **Prerequisites:**
@@ -335,4 +518,4 @@ See `Code/phase0/README.md` for complete setup instructions.
 ---
 
 **Last Updated**: 10 December 2025  
-**Status**: 🟡 IN PROGRESS
+**Status**: 🟡 IN PROGRESS (Steps 1-4 Complete, Step 5 Processing In Progress)

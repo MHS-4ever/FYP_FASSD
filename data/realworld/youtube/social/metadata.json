@@ -1,8 +1,6 @@
 {
   "domain": "social",
-  "videos_processed": 0,
-  "videos_total": 0,
-  "clips_created": 0,
-  "clip_length": 10,
-  "output_dir": "E:\\FYP\\data\\realworld\\youtube\\social"
+  "videos_downloaded": 300,
+  "clips_created": 5800,
+  "clip_length": 10
 }

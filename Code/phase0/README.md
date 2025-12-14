@@ -638,13 +638,15 @@ python Code/phase0/verify_realworld_data.py --data_dir data/realworld/processed 
 
 ### After Completion
 
-**File Counts:**
+**File Counts (Actual as of December 2025):**
 
-- Public datasets: 10,000-20,000 files
-- YouTube: 1,000-1,500 files
-- Manual: 300-500 files
-- Synthetic: 2,000-3,000 files
-- **Total**: 13,000-25,000 files
+- **LibriSpeech**: **28,539 files** ✅ (FLAC format, needs processing)
+- **VCTK**: **88,328 files** ✅ (FLAC format, needs processing)
+- **Public Datasets Total**: **116,867 files** ✅
+- **YouTube**: **41,238 files** ✅ (Broadcast: 17,756, Podcast: 17,682, Social: 5,800, WAV format)
+- **Synthetic**: **4,505 files** ✅ (XTTS v2 generated, WAV format)
+- **Manual**: 0 files (pending collection)
+- **Total Collected**: **162,610 files** ✅ (**Massively exceeds initial target of 13K-25K! (6.5x the target!)**)
 
 **Storage:**
 
@@ -652,13 +654,13 @@ python Code/phase0/verify_realworld_data.py --data_dir data/realworld/processed 
 - Processed audio: ~5-10 GB
 - Total: ~10-20 GB
 
-**Time:**
+**Time (Actual Experience):**
 
-- Manual dataset download: 2-4 hours (depends on bandwidth)
-- YouTube downloading: 4-8 hours (automated)
-- TTS generation: 3-6 hours (depends on GPU)
-- Audio processing: 4-8 hours (automated)
-- Total: 2-3 days (mostly automated)
+- Manual dataset download: 2-4 hours (depends on bandwidth) - ⏳ Pending
+- YouTube downloading: **8-12 hours** (automated, with optimizations) ✅
+- TTS generation: **4-5 hours** (with GPU in `ttsgen` environment) ✅
+- Audio processing: **20-30 hours estimated** (for 163K files with GPU) - ⏳ In Progress
+- Total: **~18-27 hours** of automated processing (mostly automated)
 
 **Manifest:**
 
