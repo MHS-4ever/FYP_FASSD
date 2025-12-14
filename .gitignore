@@ -20,5 +20,7 @@ testing_audios/
 data/realworld/manual/
 data/realworld/synthetic/
 data/realworld/processed/
-data/realworld/youtube/
+data/realworld/youtube/broadcast/clips
+data/realworld/youtube/podcast/clips
+data/realworld/youtube/social/clips
 data/realworld/public_datasets/
