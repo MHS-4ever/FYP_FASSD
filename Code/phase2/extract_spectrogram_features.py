@@ -156,12 +156,6 @@ def main():
         default=None,
         help='Maximum number of samples to process (for testing)'
     )
-    parser.add_argument(
-        '--num_workers',
-        type=int,
-        default=1,
-        help='Number of parallel workers (currently sequential)'
-    )
     
     args = parser.parse_args()
     
@@ -171,7 +165,7 @@ def main():
         print(f"[ERROR] Manifest not found: {args.manifest}")
         return 1
     
-    df = pd.read_csv(args.manifest)
+    df = pd.read_csv(args.manifest, low_memory=False)
     print(f"[INFO] Loaded {len(df)} samples from manifest")
     
     # Limit samples if specified
@@ -196,11 +190,12 @@ def main():
     for idx, row in tqdm(df.iterrows(), total=len(df), desc="Extracting spectrograms"):
         audio_path = row['filepath']
         
-        # Generate output path
-        # Use a hash or index-based filename to avoid collisions
+        # Generate output path using manifest index to ensure uniqueness
+        # This prevents collisions if multiple files share the same basename
         audio_basename = os.path.basename(audio_path)
         audio_name = os.path.splitext(audio_basename)[0]
-        output_path = os.path.join(args.output_dir, f"{audio_name}_logmel.npy")
+        # Use manifest index as prefix to ensure uniqueness
+        output_path = os.path.join(args.output_dir, f"{idx:08d}_{audio_name}_logmel.npy")
         
         # Check if already exists
         if args.resume and os.path.exists(output_path):

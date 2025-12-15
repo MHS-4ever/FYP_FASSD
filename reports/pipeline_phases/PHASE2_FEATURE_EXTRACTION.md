@@ -198,6 +198,7 @@ Environmental       | [N, 12]      | ~0.1 GB   | ~1.4M
 
 - ✅ Phase 1: Unified Dataset Preparation
 - ✅ Audio files accessible at specified paths
+- ✅ Python packages: `h5py`, `librosa`, `numpy`, `pandas`, `tqdm` (see `requirements.txt`)
 
 **Next Phase:**
 

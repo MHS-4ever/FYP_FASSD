@@ -253,6 +253,12 @@ Environmental       | [N, 12]      | ~0.1 GB   | ~1.4M
 - ✅ Audio files accessible at specified paths
 - ✅ `data/manifests/unified_manifest.csv` exists
 
+**Required Python Packages:**
+- `h5py` - For HDF5 file operations (install with `pip install h5py`)
+- `librosa` - For audio processing and feature extraction
+- `numpy`, `pandas`, `tqdm` - Standard data processing libraries
+- All dependencies listed in `requirements.txt`
+
 **Next Phase:**
 - Phase 3: Hybrid Model Architecture (requires extracted features)
 
@@ -283,6 +289,9 @@ Environmental       | [N, 12]      | ~0.1 GB   | ~1.4M
 
 ## 🐛 Troubleshooting
 
+### Issue: ModuleNotFoundError: No module named 'h5py'
+**Solution**: Install h5py with `pip install h5py` or install all requirements: `pip install -r requirements.txt`
+
 ### Issue: Out of Memory
 **Solution**: Process in batches, use `--max_samples` to test with smaller subset first
 
@@ -294,6 +303,9 @@ Environmental       | [N, 12]      | ~0.1 GB   | ~1.4M
 
 ### Issue: Slow Extraction
 **Solution**: Use `--resume` to continue, consider parallel processing (future enhancement)
+
+### Issue: DtypeWarning when loading manifest
+**Solution**: Scripts now use `low_memory=False` to handle mixed types correctly
 
 ---
 

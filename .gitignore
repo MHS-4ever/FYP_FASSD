@@ -7,8 +7,8 @@ __pycache__/
 reports/logs/
 env/
 .vscode/
-data/features/lfcc
-data/features/logmel
+data/features/lfcc_previous_pipeline
+data/features/logmel_previous_pipeline
 data/noise_rir/musan
 data/noise_rir/rir
 data/features_augmented/lfcc

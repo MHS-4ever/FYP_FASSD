@@ -47,7 +47,8 @@ def pack_spectrograms(manifest_df, spectrogram_dir, output_path):
         audio_path = row['filepath']
         audio_basename = os.path.basename(audio_path)
         audio_name = os.path.splitext(audio_basename)[0]
-        feature_path = os.path.join(spectrogram_dir, f"{audio_name}_logmel.npy")
+        # Match the naming convention from extraction (index prefix)
+        feature_path = os.path.join(spectrogram_dir, f"{idx:08d}_{audio_name}_logmel.npy")
         
         if os.path.exists(feature_path):
             feature_files.append(feature_path)
@@ -148,7 +149,8 @@ def pack_environmental(manifest_df, environmental_dir, output_path):
         audio_path = row['filepath']
         audio_basename = os.path.basename(audio_path)
         audio_name = os.path.splitext(audio_basename)[0]
-        feature_path = os.path.join(environmental_dir, f"{audio_name}_env.npy")
+        # Match the naming convention from extraction (index prefix)
+        feature_path = os.path.join(environmental_dir, f"{idx:08d}_{audio_name}_env.npy")
         
         if os.path.exists(feature_path):
             feature_files.append(feature_path)
@@ -311,7 +313,7 @@ def main():
         print(f"[ERROR] Manifest not found: {args.manifest}")
         return 1
     
-    df = pd.read_csv(args.manifest)
+    df = pd.read_csv(args.manifest, low_memory=False)
     print(f"[INFO] Loaded {len(df)} samples from manifest")
     
     # Pack spectrograms

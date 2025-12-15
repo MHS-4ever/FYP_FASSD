@@ -21,6 +21,26 @@ from tqdm import tqdm
 import json
 
 
+def convert_to_native_types(obj):
+    """
+    Convert numpy types to native Python types for JSON serialization.
+    """
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, dict):
+        return {key: convert_to_native_types(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_to_native_types(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_to_native_types(item) for item in obj)
+    else:
+        return obj
+
+
 def verify_spectrograms(h5_path, manifest_df):
     """
     Verify spectrogram features.
@@ -239,7 +259,7 @@ def verify_manifest(manifest_path, spectrogram_h5, environmental_h5):
             'error': 'Manifest file not found'
         }
     
-    df = pd.read_csv(manifest_path)
+    df = pd.read_csv(manifest_path, low_memory=False)
     
     results = {
         'valid': True,
@@ -333,7 +353,7 @@ def main():
     # Load manifest if it exists
     manifest_df = None
     if os.path.exists(args.manifest):
-        manifest_df = pd.read_csv(args.manifest)
+        manifest_df = pd.read_csv(args.manifest, low_memory=False)
         print(f"[INFO] Loaded manifest with {len(manifest_df)} samples")
     else:
         print(f"[WARN] Manifest not found: {args.manifest}")
@@ -396,10 +416,11 @@ def main():
     
     print(f"\nOverall: {'✓ VALID' if report['overall_valid'] else '✗ INVALID'}")
     
-    # Save report
+    # Save report (convert numpy types to native Python types for JSON)
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    report_serializable = convert_to_native_types(report)
     with open(args.output, 'w') as f:
-        json.dump(report, f, indent=2)
+        json.dump(report_serializable, f, indent=2)
     print(f"\n[INFO] Verification report saved to: {args.output}")
     
     return 0 if report['overall_valid'] else 1
