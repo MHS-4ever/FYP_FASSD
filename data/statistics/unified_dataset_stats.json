@@ -1,0 +1,113 @@
+{
+  "total_samples": 1893919,
+  "total_speakers": 73421,
+  "by_dataset": {
+    "PA": 943110,
+    "DF": 611829,
+    "LA": 181566,
+    "RealWorld": 157414
+  },
+  "by_label": {
+    "spoof": 1573308,
+    "bonafide": 320611
+  },
+  "by_attack_type": {
+    "replay": 816480,
+    "conversion": 589212,
+    "bonafide": 320611,
+    "synthesis": 167616
+  },
+  "by_domain": {
+    "studio": 1819660,
+    "read_speech": 28539,
+    "broadcast": 17994,
+    "podcast": 17512,
+    "social": 5712,
+    "synthetic": 4502
+  },
+  "by_source": {
+    "clean": 1736505,
+    "realworld": 157414
+  },
+  "dataset_label_crosstab": {
+    "DF": {
+      "bonafide": 22617,
+      "spoof": 589212
+    },
+    "LA": {
+      "bonafide": 18452,
+      "spoof": 163114
+    },
+    "PA": {
+      "bonafide": 126630,
+      "spoof": 816480
+    },
+    "RealWorld": {
+      "bonafide": 152912,
+      "spoof": 4502
+    }
+  },
+  "dataset_domain_crosstab": {
+    "DF": {
+      "broadcast": 0,
+      "podcast": 0,
+      "read_speech": 0,
+      "social": 0,
+      "studio": 611829,
+      "synthetic": 0
+    },
+    "LA": {
+      "broadcast": 0,
+      "podcast": 0,
+      "read_speech": 0,
+      "social": 0,
+      "studio": 181566,
+      "synthetic": 0
+    },
+    "PA": {
+      "broadcast": 0,
+      "podcast": 0,
+      "read_speech": 0,
+      "social": 0,
+      "studio": 943110,
+      "synthetic": 0
+    },
+    "RealWorld": {
+      "broadcast": 17994,
+      "podcast": 17512,
+      "read_speech": 28539,
+      "social": 5712,
+      "studio": 83155,
+      "synthetic": 4502
+    }
+  },
+  "label_attack_crosstab": {
+    "bonafide": {
+      "bonafide": 320611,
+      "conversion": 0,
+      "replay": 0,
+      "synthesis": 0
+    },
+    "spoof": {
+      "bonafide": 0,
+      "conversion": 589212,
+      "replay": 816480,
+      "synthesis": 167616
+    }
+  },
+  "speakers_per_dataset": {
+    "DF": 93,
+    "LA": 67,
+    "PA": 67,
+    "RealWorld": 73261
+  },
+  "real_ratio": 0.16928443085475145,
+  "fake_ratio": 0.8307155691452486,
+  "duration": {
+    "mean": 6.254350311916348,
+    "median": 4.65,
+    "min": 1.41,
+    "max": 10.0,
+    "std": 3.299650095737207
+  }
+}

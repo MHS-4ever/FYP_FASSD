@@ -1,0 +1,95 @@
+{
+  "train": {
+    "split": "train",
+    "n_speakers": 58734,
+    "n_samples": 1483741,
+    "by_dataset": {
+      "PA": 746550,
+      "DF": 473697,
+      "LA": 140273,
+      "RealWorld": 123221
+    },
+    "by_label": {
+      "spoof": 1232473,
+      "bonafide": 251268
+    },
+    "by_attack_type": {
+      "replay": 646380,
+      "conversion": 456417,
+      "bonafide": 251268,
+      "synthesis": 129676
+    },
+    "by_domain": {
+      "studio": 1424330,
+      "read_speech": 22732,
+      "broadcast": 14472,
+      "podcast": 14035,
+      "social": 4580,
+      "synthetic": 3592
+    },
+    "real_ratio": 0.1693476152509097,
+    "fake_ratio": 0.8306523847490903
+  },
+  "val": {
+    "split": "val",
+    "n_speakers": 7338,
+    "n_samples": 155604,
+    "by_dataset": {
+      "PA": 77490,
+      "DF": 44100,
+      "RealWorld": 17109,
+      "LA": 16905
+    },
+    "by_label": {
+      "spoof": 125998,
+      "bonafide": 29606
+    },
+    "by_attack_type": {
+      "replay": 68040,
+      "conversion": 42210,
+      "bonafide": 29606,
+      "synthesis": 15748
+    },
+    "by_domain": {
+      "studio": 148179,
+      "read_speech": 2896,
+      "broadcast": 1804,
+      "podcast": 1694,
+      "social": 578,
+      "synthetic": 453
+    },
+    "real_ratio": 0.19026503174725584,
+    "fake_ratio": 0.8097349682527442
+  },
+  "test": {
+    "split": "test",
+    "n_speakers": 7349,
+    "n_samples": 254574,
+    "by_dataset": {
+      "PA": 119070,
+      "DF": 94032,
+      "LA": 24388,
+      "RealWorld": 17084
+    },
+    "by_label": {
+      "spoof": 214837,
+      "bonafide": 39737
+    },
+    "by_attack_type": {
+      "replay": 102060,
+      "conversion": 90585,
+      "bonafide": 39737,
+      "synthesis": 22192
+    },
+    "by_domain": {
+      "studio": 247151,
+      "read_speech": 2911,
+      "podcast": 1783,
+      "broadcast": 1718,
+      "social": 554,
+      "synthetic": 457
+    },
+    "real_ratio": 0.15609213823878323,
+    "fake_ratio": 0.8439078617612168
+  }
+}
