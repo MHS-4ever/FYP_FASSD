@@ -27,3 +27,5 @@ data/realworld/public_datasets/
 data/manifests/train_speaker_independent.csv
 data/manifests/unified_asvspoof_manifest.csv
 data/manifests/unified_manifest.csv
+data/features/spectrograms
+data/features/environmental
