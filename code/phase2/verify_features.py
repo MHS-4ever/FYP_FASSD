@@ -87,32 +87,49 @@ def verify_spectrograms(h5_path, manifest_df):
                 results['valid'] = False
                 results['errors'].append(f"Shape mismatch: {features.shape[1:]} != {results['expected_shape']}")
             
-            # Sample check (check first 1000 and random samples)
-            sample_indices = list(range(min(1000, results['num_samples'])))
-            if results['num_samples'] > 1000:
-                import random
-                random.seed(42)
-                sample_indices.extend(random.sample(range(1000, results['num_samples']), min(100, results['num_samples'] - 1000)))
+            # Vectorized check for NaN/Inf (much faster than checking one by one)
+            print(f"[INFO] Checking all {results['num_samples']} samples for NaN/Inf (vectorized)...")
             
-            print(f"[INFO] Checking {len(sample_indices)} samples for NaN/Inf...")
+            # Load data in chunks to avoid memory issues
+            chunk_size = 10000
+            nan_indices = []
+            inf_indices = []
             
-            for idx in tqdm(sample_indices, desc="Verifying samples"):
-                feature = features[idx]
+            for chunk_start in tqdm(range(0, results['num_samples'], chunk_size), desc="Checking samples"):
+                chunk_end = min(chunk_start + chunk_size, results['num_samples'])
+                chunk_data = features[chunk_start:chunk_end]
                 
-                if np.any(np.isnan(feature)):
-                    results['has_nan'] += 1
-                    results['valid'] = False
-                    if len(results['errors']) < 10:
-                        results['errors'].append(f"Sample {idx} contains NaN")
+                # Vectorized NaN/Inf check
+                nan_mask = np.any(np.isnan(chunk_data), axis=(1, 2))
+                inf_mask = np.any(np.isinf(chunk_data), axis=(1, 2))
                 
-                if np.any(np.isinf(feature)):
-                    results['has_inf'] += 1
-                    results['valid'] = False
-                    if len(results['errors']) < 10:
-                        results['errors'].append(f"Sample {idx} contains Inf")
+                # Collect indices with issues
+                chunk_nan_indices = np.where(nan_mask)[0] + chunk_start
+                chunk_inf_indices = np.where(inf_mask)[0] + chunk_start
+                
+                nan_indices.extend(chunk_nan_indices.tolist())
+                inf_indices.extend(chunk_inf_indices.tolist())
             
-            # Compute value range
-            sample_data = features[:min(10000, results['num_samples'])]
+            results['has_nan'] = len(nan_indices)
+            results['has_inf'] = len(inf_indices)
+            
+            if results['has_nan'] > 0:
+                results['valid'] = False
+                for idx in nan_indices[:10]:  # Report first 10
+                    results['errors'].append(f"Sample {idx} contains NaN")
+                if len(nan_indices) > 10:
+                    results['errors'].append(f"... and {len(nan_indices) - 10} more samples with NaN")
+            
+            if results['has_inf'] > 0:
+                results['valid'] = False
+                for idx in inf_indices[:10]:  # Report first 10
+                    results['errors'].append(f"Sample {idx} contains Inf")
+                if len(inf_indices) > 10:
+                    results['errors'].append(f"... and {len(inf_indices) - 10} more samples with Inf")
+            
+            # Compute value range (use larger sample for better statistics)
+            sample_size = min(50000, results['num_samples'])  # Increased from 10000
+            sample_data = features[:sample_size]
             results['value_range'] = {
                 'min': float(np.min(sample_data)),
                 'max': float(np.max(sample_data)),
@@ -185,32 +202,49 @@ def verify_environmental(h5_path, manifest_df):
                 results['valid'] = False
                 results['errors'].append(f"Shape mismatch: {features.shape[1:]} != {results['expected_shape']}")
             
-            # Sample check
-            sample_indices = list(range(min(1000, results['num_samples'])))
-            if results['num_samples'] > 1000:
-                import random
-                random.seed(42)
-                sample_indices.extend(random.sample(range(1000, results['num_samples']), min(100, results['num_samples'] - 1000)))
+            # Vectorized check for NaN/Inf (much faster than checking one by one)
+            print(f"[INFO] Checking all {results['num_samples']} samples for NaN/Inf (vectorized)...")
             
-            print(f"[INFO] Checking {len(sample_indices)} samples for NaN/Inf...")
+            # Load data in chunks to avoid memory issues
+            chunk_size = 10000
+            nan_indices = []
+            inf_indices = []
             
-            for idx in tqdm(sample_indices, desc="Verifying samples"):
-                feature = features[idx]
+            for chunk_start in tqdm(range(0, results['num_samples'], chunk_size), desc="Checking samples"):
+                chunk_end = min(chunk_start + chunk_size, results['num_samples'])
+                chunk_data = features[chunk_start:chunk_end]
                 
-                if np.any(np.isnan(feature)):
-                    results['has_nan'] += 1
-                    results['valid'] = False
-                    if len(results['errors']) < 10:
-                        results['errors'].append(f"Sample {idx} contains NaN")
+                # Vectorized NaN/Inf check
+                nan_mask = np.any(np.isnan(chunk_data), axis=1)
+                inf_mask = np.any(np.isinf(chunk_data), axis=1)
                 
-                if np.any(np.isinf(feature)):
-                    results['has_inf'] += 1
-                    results['valid'] = False
-                    if len(results['errors']) < 10:
-                        results['errors'].append(f"Sample {idx} contains Inf")
+                # Collect indices with issues
+                chunk_nan_indices = np.where(nan_mask)[0] + chunk_start
+                chunk_inf_indices = np.where(inf_mask)[0] + chunk_start
+                
+                nan_indices.extend(chunk_nan_indices.tolist())
+                inf_indices.extend(chunk_inf_indices.tolist())
             
-            # Compute value ranges per feature
-            sample_data = features[:min(10000, results['num_samples'])]
+            results['has_nan'] = len(nan_indices)
+            results['has_inf'] = len(inf_indices)
+            
+            if results['has_nan'] > 0:
+                results['valid'] = False
+                for idx in nan_indices[:10]:  # Report first 10
+                    results['errors'].append(f"Sample {idx} contains NaN")
+                if len(nan_indices) > 10:
+                    results['errors'].append(f"... and {len(nan_indices) - 10} more samples with NaN")
+            
+            if results['has_inf'] > 0:
+                results['valid'] = False
+                for idx in inf_indices[:10]:  # Report first 10
+                    results['errors'].append(f"Sample {idx} contains Inf")
+                if len(inf_indices) > 10:
+                    results['errors'].append(f"... and {len(inf_indices) - 10} more samples with Inf")
+            
+            # Compute value ranges per feature (use larger sample for better statistics)
+            sample_size = min(50000, results['num_samples'])  # Increased from 10000
+            sample_data = features[:sample_size]
             results['value_range'] = {
                 'min': float(np.min(sample_data)),
                 'max': float(np.max(sample_data)),

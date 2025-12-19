@@ -29,3 +29,6 @@ data/manifests/unified_asvspoof_manifest.csv
 data/manifests/unified_manifest.csv
 data/features/spectrograms
 data/features/environmental
+data/features/logmel_packed.h5
+data/features/environmental_packed.h5
+data/features/features_manifest_unified.csv

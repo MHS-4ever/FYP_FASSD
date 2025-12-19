@@ -21,9 +21,11 @@ import pandas as pd
 from tqdm import tqdm
 import json
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import multiprocessing
 
 
-def pack_spectrograms(manifest_df, spectrogram_dir, output_path):
+def pack_spectrograms(manifest_df, spectrogram_dir, output_path, num_workers=None, batch_size=500):
     """
     Pack spectrogram features into HDF5.
     
@@ -71,39 +73,93 @@ def pack_spectrograms(manifest_df, spectrogram_dir, output_path):
     # Create HDF5 file
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
+    # Calculate optimal chunk size (balance between memory and I/O efficiency)
+    # Chunk size: ~100MB per chunk (adjust based on feature size)
+    feature_size = np.prod(expected_shape) * 4  # 4 bytes per float32
+    chunk_size = max(1, min(1000, int(100 * 1024 * 1024 / feature_size)))  # ~100MB chunks
+    
+    # Determine number of workers (use all available CPU cores)
+    if num_workers is None:
+        num_workers = min(multiprocessing.cpu_count(), 32)  # Cap at 32 to avoid overhead
+    print(f"[INFO] Using {num_workers} parallel workers for file I/O")
+    
+    def load_and_process_feature(feature_path):
+        """Load and process a single feature file."""
+        try:
+            feature = np.load(feature_path)
+            if feature.shape != expected_shape:
+                # Pad or truncate if needed
+                if feature.shape[0] == expected_shape[0]:
+                    if feature.shape[1] < expected_shape[1]:
+                        feature = np.pad(feature, ((0, 0), (0, expected_shape[1] - feature.shape[1])), mode='constant')
+                    else:
+                        feature = feature[:, :expected_shape[1]]
+                else:
+                    # Shape mismatch - fill with zeros
+                    feature = np.zeros(expected_shape, dtype=np.float32)
+            return feature, None
+        except Exception as e:
+            return np.zeros(expected_shape, dtype=np.float32), str(e)
+    
     with h5py.File(output_path, 'w') as h5f:
-        # Create dataset
+        # Create dataset with chunking for better performance
         dataset = h5f.create_dataset(
             'features',
             shape=(len(feature_files), *expected_shape),
             dtype=np.float32,
             compression='gzip',
-            compression_opts=4
+            compression_opts=1,  # Lower compression for faster writes (1-9, 1 is fastest)
+            chunks=(chunk_size, *expected_shape)  # Enable chunking
         )
         
-        # Load and store features
-        for i, feature_path in enumerate(tqdm(feature_files, desc="Packing spectrograms")):
-            try:
-                feature = np.load(feature_path)
-                if feature.shape != expected_shape:
-                    print(f"[WARN] Shape mismatch in {feature_path}: {feature.shape} != {expected_shape}")
-                    # Pad or truncate if needed
-                    if feature.shape[0] == expected_shape[0]:
-                        if feature.shape[1] < expected_shape[1]:
-                            feature = np.pad(feature, ((0, 0), (0, expected_shape[1] - feature.shape[1])), mode='constant')
-                        else:
-                            feature = feature[:, :expected_shape[1]]
-                
-                dataset[i] = feature
-            except Exception as e:
-                print(f"[ERROR] Failed to load {feature_path}: {e}")
-                # Fill with zeros
-                dataset[i] = np.zeros(expected_shape, dtype=np.float32)
+        # Batch processing with parallel file loading
+        num_batches = (len(feature_files) + batch_size - 1) // batch_size
         
-        # Store indices mapping
+        for batch_idx in tqdm(range(num_batches), desc="Packing spectrograms"):
+            start_idx = batch_idx * batch_size
+            end_idx = min(start_idx + batch_size, len(feature_files))
+            batch_files = feature_files[start_idx:end_idx]
+            
+            # Load batch in parallel using ThreadPoolExecutor (better for I/O)
+            batch_data = [None] * len(batch_files)
+            errors = []
+            
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                # Submit all tasks
+                future_to_idx = {
+                    executor.submit(load_and_process_feature, feature_path): i
+                    for i, feature_path in enumerate(batch_files)
+                }
+                
+                # Collect results as they complete
+                for future in as_completed(future_to_idx):
+                    idx = future_to_idx[future]
+                    try:
+                        feature, error = future.result()
+                        batch_data[idx] = feature
+                        if error:
+                            errors.append((batch_files[idx], error))
+                    except Exception as e:
+                        batch_data[idx] = np.zeros(expected_shape, dtype=np.float32)
+                        errors.append((batch_files[idx], str(e)))
+            
+            # Report errors
+            for file_path, error_msg in errors:
+                tqdm.write(f"[ERROR] Failed to load {file_path}: {error_msg}")
+            
+            # Write batch to HDF5
+            if batch_data:
+                batch_array = np.stack(batch_data, axis=0)
+                dataset[start_idx:end_idx] = batch_array
+        
+        # Store indices mapping as a single array (much more efficient)
+        # Create arrays for manifest indices and HDF5 indices
+        manifest_indices = np.array(list(indices.keys()), dtype=np.int64)
+        h5_indices = np.array([indices[idx] for idx in manifest_indices], dtype=np.int32)
+        
         indices_group = h5f.create_group('indices')
-        for manifest_idx, h5_idx in indices.items():
-            indices_group.create_dataset(str(manifest_idx), data=h5_idx)
+        indices_group.create_dataset('manifest_idx', data=manifest_indices, compression='gzip', compression_opts=1)
+        indices_group.create_dataset('h5_idx', data=h5_indices, compression='gzip', compression_opts=1)
         
         # Store metadata
         metadata_group = h5f.create_group('metadata')
@@ -125,7 +181,7 @@ def pack_spectrograms(manifest_df, spectrogram_dir, output_path):
     }
 
 
-def pack_environmental(manifest_df, environmental_dir, output_path):
+def pack_environmental(manifest_df, environmental_dir, output_path, num_workers=None, batch_size=500):
     """
     Pack environmental features into HDF5.
     
@@ -180,38 +236,87 @@ def pack_environmental(manifest_df, environmental_dir, output_path):
         'env_stability'
     ]
     
+    # Calculate optimal chunk size
+    feature_size = np.prod(expected_shape) * 4  # 4 bytes per float32
+    chunk_size = max(1, min(1000, int(100 * 1024 * 1024 / feature_size)))  # ~100MB chunks
+    
+    # Determine number of workers (use all available CPU cores)
+    if num_workers is None:
+        num_workers = min(multiprocessing.cpu_count(), 32)  # Cap at 32 to avoid overhead
+    print(f"[INFO] Using {num_workers} parallel workers for file I/O")
+    
+    def load_and_process_feature(feature_path):
+        """Load and process a single environmental feature file."""
+        try:
+            feature = np.load(feature_path)
+            if feature.shape != expected_shape:
+                # Pad or truncate if needed
+                if len(feature) < len(expected_shape):
+                    feature = np.pad(feature, (0, len(expected_shape) - len(feature)), mode='constant')
+                else:
+                    feature = feature[:len(expected_shape)]
+            return feature, None
+        except Exception as e:
+            return np.zeros(expected_shape, dtype=np.float32), str(e)
+    
     with h5py.File(output_path, 'w') as h5f:
-        # Create dataset
+        # Create dataset with chunking for better performance
         dataset = h5f.create_dataset(
             'features',
             shape=(len(feature_files), *expected_shape),
             dtype=np.float32,
             compression='gzip',
-            compression_opts=4
+            compression_opts=1,  # Lower compression for faster writes
+            chunks=(chunk_size, *expected_shape)  # Enable chunking
         )
         
-        # Load and store features
-        for i, feature_path in enumerate(tqdm(feature_files, desc="Packing environmental features")):
-            try:
-                feature = np.load(feature_path)
-                if feature.shape != expected_shape:
-                    print(f"[WARN] Shape mismatch in {feature_path}: {feature.shape} != {expected_shape}")
-                    # Pad or truncate if needed
-                    if len(feature) < len(expected_shape):
-                        feature = np.pad(feature, (0, len(expected_shape) - len(feature)), mode='constant')
-                    else:
-                        feature = feature[:len(expected_shape)]
-                
-                dataset[i] = feature
-            except Exception as e:
-                print(f"[ERROR] Failed to load {feature_path}: {e}")
-                # Fill with zeros
-                dataset[i] = np.zeros(expected_shape, dtype=np.float32)
+        # Batch processing with parallel file loading
+        num_batches = (len(feature_files) + batch_size - 1) // batch_size
         
-        # Store indices mapping
+        for batch_idx in tqdm(range(num_batches), desc="Packing environmental features"):
+            start_idx = batch_idx * batch_size
+            end_idx = min(start_idx + batch_size, len(feature_files))
+            batch_files = feature_files[start_idx:end_idx]
+            
+            # Load batch in parallel using ThreadPoolExecutor (better for I/O)
+            batch_data = [None] * len(batch_files)
+            errors = []
+            
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                # Submit all tasks
+                future_to_idx = {
+                    executor.submit(load_and_process_feature, feature_path): i
+                    for i, feature_path in enumerate(batch_files)
+                }
+                
+                # Collect results as they complete
+                for future in as_completed(future_to_idx):
+                    idx = future_to_idx[future]
+                    try:
+                        feature, error = future.result()
+                        batch_data[idx] = feature
+                        if error:
+                            errors.append((batch_files[idx], error))
+                    except Exception as e:
+                        batch_data[idx] = np.zeros(expected_shape, dtype=np.float32)
+                        errors.append((batch_files[idx], str(e)))
+            
+            # Report errors
+            for file_path, error_msg in errors:
+                tqdm.write(f"[ERROR] Failed to load {file_path}: {error_msg}")
+            
+            # Write batch to HDF5
+            if batch_data:
+                batch_array = np.stack(batch_data, axis=0)
+                dataset[start_idx:end_idx] = batch_array
+        
+        # Store indices mapping as a single array (much more efficient)
+        manifest_indices = np.array(list(indices.keys()), dtype=np.int64)
+        h5_indices = np.array([indices[idx] for idx in manifest_indices], dtype=np.int32)
+        
         indices_group = h5f.create_group('indices')
-        for manifest_idx, h5_idx in indices.items():
-            indices_group.create_dataset(str(manifest_idx), data=h5_idx)
+        indices_group.create_dataset('manifest_idx', data=manifest_indices, compression='gzip', compression_opts=1)
+        indices_group.create_dataset('h5_idx', data=h5_indices, compression='gzip', compression_opts=1)
         
         # Store metadata
         metadata_group = h5f.create_group('metadata')
@@ -304,6 +409,18 @@ def main():
         action='store_true',
         help='Only pack environmental features'
     )
+    parser.add_argument(
+        '--num_workers',
+        type=int,
+        default=None,
+        help='Number of parallel workers for file I/O (default: auto-detect CPU count, max 32)'
+    )
+    parser.add_argument(
+        '--batch_size',
+        type=int,
+        default=500,
+        help='Batch size for processing files (default: 500)'
+    )
     
     args = parser.parse_args()
     
@@ -323,7 +440,8 @@ def main():
     if not args.environmental_only:
         spectrogram_output = os.path.join(args.output_dir, 'logmel_packed.h5')
         spectrogram_indices, spectrogram_metadata = pack_spectrograms(
-            df, args.spectrogram_dir, spectrogram_output
+            df, args.spectrogram_dir, spectrogram_output, 
+            num_workers=args.num_workers, batch_size=args.batch_size
         )
         if spectrogram_indices is None:
             print("[ERROR] Failed to pack spectrograms")
@@ -337,7 +455,8 @@ def main():
     if not args.spectrogram_only:
         environmental_output = os.path.join(args.output_dir, 'environmental_packed.h5')
         environmental_indices, environmental_metadata = pack_environmental(
-            df, args.environmental_dir, environmental_output
+            df, args.environmental_dir, environmental_output,
+            num_workers=args.num_workers, batch_size=args.batch_size
         )
         if environmental_indices is None:
             print("[ERROR] Failed to pack environmental features")

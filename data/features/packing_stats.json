@@ -1,0 +1,31 @@
+{
+  "spectrogram": {
+    "num_samples": 1893919,
+    "feature_shape": [
+      64,
+      400
+    ],
+    "file_size_gb": 103.044317391
+  },
+  "environmental": {
+    "num_samples": 1893919,
+    "feature_shape": [
+      12
+    ],
+    "feature_names": [
+      "rt60",
+      "drr",
+      "snr",
+      "background_level",
+      "silence_ratio",
+      "spectral_tilt",
+      "spectral_flatness",
+      "spectral_rolloff",
+      "cleanliness_score",
+      "high_freq_content",
+      "background_consistency",
+      "env_stability"
+    ],
+    "file_size_gb": 0.067249438
+  }
+}
