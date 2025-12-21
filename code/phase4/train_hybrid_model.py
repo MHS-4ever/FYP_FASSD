@@ -44,14 +44,14 @@ def parse_args():
     ap.add_argument(
         '--train_manifest',
         type=str,
-        default=r'E:\FYP\data\manifests\train_speaker_independent.csv',
-        help='Path to training manifest CSV'
+        default=r'E:\FYP\data\manifests\train_speaker_independent_with_features.csv',
+        help='Path to training manifest CSV (must have spectrogram_idx and environmental_idx columns)'
     )
     ap.add_argument(
         '--val_manifest',
         type=str,
-        default=r'E:\FYP\data\manifests\val_speaker_independent.csv',
-        help='Path to validation manifest CSV'
+        default=r'E:\FYP\data\manifests\val_speaker_independent_with_features.csv',
+        help='Path to validation manifest CSV (must have spectrogram_idx and environmental_idx columns)'
     )
     ap.add_argument(
         '--spectrogram_h5',
