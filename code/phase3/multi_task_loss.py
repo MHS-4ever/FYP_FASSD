@@ -34,8 +34,8 @@ class MultiTaskLoss(nn.Module):
         Args:
             binary_weight: Weight for binary classification task (default: 0.7)
             multiclass_weight: Weight for multi-class classification task (default: 0.3)
-            binary_class_weights: Class weights for binary task [real_weight, fake_weight]
-            multiclass_class_weights: Class weights for multi-class task [bonafide, synthesis, conversion, replay]
+            binary_class_weights: Class weights for binary task [class_0_weight, class_1_weight] = [bonafide_weight, spoof_weight]
+            multiclass_class_weights: Class weights for multi-class task [class_0, class_1, class_2, class_3] = [bonafide, synthesis, conversion, replay]
             reduction: 'mean' or 'sum' (default: 'mean')
         """
         super().__init__()

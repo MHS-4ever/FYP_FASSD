@@ -3,10 +3,10 @@ from sklearn.metrics import roc_curve, auc, confusion_matrix
 
 def eer_and_auc(y_true, y_scores):
     """
-    y_true: np.array of {0,1}  (1=bonafide)
-    y_scores: np.array of probabilities for class 1
+    y_true: np.array of {0,1}  (1=spoof/fake, 0=bonafide/real)
+    y_scores: np.array of probabilities for class 1 (spoof/fake)
     """
-    fpr, tpr, _ = roc_curve(y_true, y_scores, pos_label=1)
+    fpr, tpr, _ = roc_curve(y_true, y_scores, pos_label=1)  # 1=spoof
     fnr = 1 - tpr
     idx = np.nanargmin(np.abs(fnr - fpr))
     eer = (fnr[idx] + fpr[idx]) / 2.0
