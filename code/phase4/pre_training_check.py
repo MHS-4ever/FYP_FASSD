@@ -24,8 +24,8 @@ def main():
         'Train manifest': 'data/manifests/train_speaker_independent.csv',
         'Val manifest': 'data/manifests/val_speaker_independent.csv',
         'Unified manifest': 'data/manifests/unified_manifest.csv',
-        'Spectrogram HDF5': 'D:/FYP/data/features/logmel_packed.h5',
-        'Environmental HDF5': 'D:/FYP/data/features/environmental_packed.h5',
+        'Spectrogram HDF5': 'C:/FYP/data/features/logmel_packed.h5',
+        'Environmental HDF5': 'C:/FYP/data/features/environmental_packed.h5',
     }
     for name, path in files_to_check.items():
         exists = os.path.exists(path)
@@ -72,8 +72,8 @@ def main():
     import h5py
     import numpy as np
     
-    spec_h5_path = 'D:/FYP/data/features/logmel_packed.h5'
-    env_h5_path = 'D:/FYP/data/features/environmental_packed.h5'
+    spec_h5_path = 'C:/FYP/data/features/logmel_packed.h5'
+    env_h5_path = 'C:/FYP/data/features/environmental_packed.h5'
     
     with h5py.File(spec_h5_path, 'r') as f:
         print(f"  Spectrogram shape: {f['features'].shape}")
@@ -151,7 +151,7 @@ def main():
                 spec = torch.randn(batch_size, 1, 64, 400, device=device)
                 env = torch.randn(batch_size, 12, device=device)
                 
-                with torch.cuda.amp.autocast():
+                with torch.amp.autocast('cuda'):
                     b, m = model(spec, env)
                     loss = b.sum() + m.sum()
                 loss.backward()
@@ -295,7 +295,7 @@ def main():
     print("-" * 80)
     cmd = """cd E:\\FYP
 conda activate fassd
-python code/phase4/train_hybrid_model.py --train_manifest data/manifests/train_speaker_independent.csv --val_manifest data/manifests/val_speaker_independent.csv --spectrogram_h5 D:/FYP/data/features/logmel_packed.h5 --environmental_h5 D:/FYP/data/features/environmental_packed.h5 --output_dir models_saved --batch_size 64 --epochs 20 --num_workers 8"""
+python code/phase4/train_hybrid_model.py --train_manifest data/manifests/train_speaker_independent.csv --val_manifest data/manifests/val_speaker_independent.csv --spectrogram_h5 C:/FYP/data/features/logmel_packed.h5 --environmental_h5 C:/FYP/data/features/environmental_packed.h5 --output_dir models_saved --batch_size 64 --epochs 20 --num_workers 8"""
     print(cmd)
     print("-" * 80)
     

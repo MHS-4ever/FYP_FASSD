@@ -27,7 +27,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.cuda.amp import GradScaler, autocast
+from torch.amp import autocast
+from torch.cuda.amp import GradScaler
 from tqdm import tqdm
 
 # Add parent directory to path
@@ -175,7 +176,7 @@ def evaluate_model(model, dataloader, device, loss_fn, domain_filter=None):
                 domains = [d for d, m in zip(domains, mask) if m]
             
             # Forward pass
-            with autocast():
+            with autocast('cuda'):
                 binary_logits, multiclass_logits = model(spectrograms, environmental)
                 loss, binary_loss, multiclass_loss = loss_fn(
                     binary_logits, multiclass_logits, binary_labels, multiclass_labels
@@ -245,7 +246,7 @@ def train_epoch(model, dataloader, device, optimizer, loss_fn, scaler, args):
         # Forward pass
         optimizer.zero_grad()
         
-        with autocast(enabled=args.mixed_precision):
+        with autocast('cuda', enabled=args.mixed_precision):
             binary_logits, multiclass_logits = model(spectrograms, environmental)
             loss, binary_loss, multiclass_loss = loss_fn(
                 binary_logits, multiclass_logits, binary_labels, multiclass_labels
