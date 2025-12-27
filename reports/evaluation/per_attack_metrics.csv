@@ -1,0 +1,5 @@
+attack_type,samples,eer,auc,acc,multiclass_acc
+bonafide,39737,,,58.7211,61.0539
+conversion,90585,,,92.1996,88.5169
+replay,102060,,,98.6547,46.9871
+synthesis,22192,,,94.7053,51.6042

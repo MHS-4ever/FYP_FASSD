@@ -1,6 +1,6 @@
 # Phase 5: Comprehensive Evaluation
 
-**Status**: ⏳ PENDING  
+**Status**: ✅ **COMPLETED (TEST EVALUATED + REPORTS GENERATED)**  
 **Priority**: 🔴 CRITICAL  
 **Duration**: Week 4  
 **Dependencies**: Phase 4 (Training)
@@ -10,6 +10,34 @@
 ## 🎯 Objective
 
 Comprehensively evaluate the trained hybrid model on all domains and attack types to verify generalization and identify areas for improvement.
+
+---
+
+## ✅ Final Result (Dec 27, 2025)
+
+Evaluation completed on the **speaker-independent test set** using:
+- Checkpoint: `models_saved/hybrid_resnet_environmental_best.pth`
+- Test manifest: `data/manifests/test_speaker_independent.csv`
+
+**Key outcome (MVP / scope-critical):**
+- ✅ **RealWorld test EER = 16.14%** (**< 20% target met**)
+
+### Test Metrics Summary
+
+| Split | Samples | Binary EER (↓) | Binary AUC (↑) | Binary Acc @0.5 | Multiclass Acc |
+|---|---:|---:|---:|---:|---:|
+| **Overall** | 254,574 | **16.22%** | **0.9167** | 89.78% | 64.36% |
+| **ASVspoof** | 237,490 | 18.15% | 0.8947 | 90.65% | 63.39% |
+| **RealWorld** | 17,084 | **16.14%** | **0.9236** | 77.68% | 77.90% |
+
+### Per-Dataset (Test)
+
+| Dataset | Samples | EER (↓) | AUC (↑) |
+|---|---:|---:|---:|
+| LA | 24,388 | 6.30% | 0.9847 |
+| DF | 94,032 | 8.33% | 0.9763 |
+| PA | 119,070 | 16.23% | 0.9095 |
+| RealWorld | 17,084 | 16.14% | 0.9236 |
 
 ---
 
@@ -105,45 +133,83 @@ Comprehensively evaluate the trained hybrid model on all domains and attack type
 reports/
 ├── evaluation/
 │   ├── comprehensive_evaluation_report.md    # Main report
+│   ├── overall_metrics.csv                   # Overall metrics (overall split)
 │   ├── asvspoof_evaluation.csv               # ASVspoof metrics
-│   ├── realworld_evaluation.csv            # Real-world metrics
+│   ├── realworld_evaluation.csv              # Real-world metrics
 │   ├── per_domain_metrics.csv               # Domain breakdown
 │   ├── per_attack_metrics.csv               # Attack type breakdown
 │   └── confusion_matrices/
-│       ├── overall_cm.png
-│       ├── asvspoof_cm.png
-│       └── realworld_cm.png
-└── figures/
-    ├── roc_curves.png
-    └── performance_comparison.png
+│       ├── overall_binary_cm.png
+│       └── overall_multiclass_cm.png
+└── evaluation/figures/
+    ├── roc_overall.png
+    ├── roc_asvspoof.png
+    └── roc_realworld.png
 ```
 
 ---
 
 ## 🔧 Scripts Needed
 
-### To Create:
-- `Code/evaluate_hybrid_model.py` - Main evaluation script
-- `Code/analyze_evaluation_results.py` - Results analysis
-- `Code/generate_evaluation_report.py` - Report generation
+### Implemented (Phase 5):
+- ✅ `code/phase5/evaluate_hybrid_model.py` - Main evaluation script (overall + per-domain + per-attack + figures + markdown report)
+- ✅ `code/phase5/run_phase5.py` - Convenience runner with defaults
+- ✅ `code/phase5/README.md` - Practical guide / commands
 
 ### Existing (Reuse):
-- ✅ `Code/utils/evaluation.py` - EER, AUC calculations
-- ✅ `Code/utils/confusion.py` - Confusion matrix
+- ✅ `code/utils_metrics.py` - EER, AUC, confusion matrix
 
 ---
 
 ## ✅ Success Criteria
 
-- [ ] Comprehensive evaluation completed on all test sets
-- [ ] All metrics calculated (EER, AUC, Accuracy)
-- [ ] Per-domain performance analyzed
-- [ ] Per-attack-type performance analyzed
-- [ ] Speaker-independent verification passed
-- [ ] Evaluation report generated
-- [ ] **KEY**: Real-world EER < 20% (MVP requirement)
+- [x] Comprehensive evaluation completed on the test set
+- [x] All metrics calculated (EER, AUC, Accuracy)
+- [x] Per-domain performance analyzed
+- [x] Per-attack-type performance analyzed
+- [x] Speaker-independent verification passed (train/test overlap count = 0)
+- [x] Evaluation report generated
+- [x] **KEY**: Real-world EER < 20% (MVP requirement) ✅
+
+**Notes vs original targets:**
+- RealWorld target ✅ met
+- Overall EER target (<10%) ❌ not met (overall test EER = 16.22%)
+- Multiclass accuracy target (>80%) ❌ not met (overall = 64.36%)
 
 ---
+
+## 🚀 How to Run (PC / Laptop)
+
+### PC
+
+```powershell
+cd C:\FYP
+conda activate fassd
+python code/phase5/evaluate_hybrid_model.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --test_manifest data/manifests/test_speaker_independent.csv --train_manifest data/manifests/train_speaker_independent.csv --spectrogram_h5 C:/FYP/data/features/logmel_chunked.h5 --environmental_h5 C:/FYP/data/features/environmental_packed.h5 --output_dir reports/evaluation --batch_size 256
+```
+
+### Laptop
+
+```powershell
+cd E:\FYP
+conda activate fassd
+python code/phase5/evaluate_hybrid_model.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --test_manifest data/manifests/test_speaker_independent.csv --train_manifest data/manifests/train_speaker_independent.csv --spectrogram_h5 D:/FYP/data/features/logmel_chunked.h5 --environmental_h5 D:/FYP/data/features/environmental_packed.h5 --output_dir reports/evaluation --batch_size 128
+```
+
+Or run the convenience wrapper (PC defaults):
+
+```powershell
+cd C:\FYP
+conda activate fassd
+python code/phase5/run_phase5.py
+```
+
+Expected outputs:
+- `reports/evaluation/comprehensive_evaluation_report.md`
+- `reports/evaluation/per_domain_metrics.csv`
+- `reports/evaluation/per_attack_metrics.csv`
+- `reports/evaluation/confusion_matrices/*.png`
+- `reports/evaluation/figures/roc_*.png`
 
 ## 📊 Expected Performance
 
@@ -196,6 +262,16 @@ Multiclass Accuracy        | > 85%  | ⏳
 
 ---
 
+## 🐛 Issue Encountered & Fix
+
+### EER/AUC undefined for single-class slices (FIXED)
+
+**Problem:**
+Some evaluation slices (especially per-attack-type) can contain only one class (all bonafide or all spoof). In this case, ROC/EER/AUC are undefined and the evaluation originally crashed with `All-NaN slice encountered`.
+
+**Fix applied:**
+- Updated `code/phase5/evaluate_hybrid_model.py` to safely return `NaN` for EER/AUC on single-class subsets and continue generating the rest of the report/CSVs/figures.
+
 ## 🔗 Dependencies
 
 **Prerequisites:**
@@ -203,7 +279,7 @@ Multiclass Accuracy        | > 85%  | ⏳
 
 **Next Phase:**
 - Phase 6: Explanation System (if evaluation passes)
-- Phase 7: Domain Adaptation (if Real-world EER > 20%)
+- Phase 7: Domain Adaptation (only if Real-world EER > 20%)
 
 ---
 
@@ -219,18 +295,18 @@ Multiclass Accuracy        | > 85%  | ⏳
 
 ## 🔍 Evaluation Checklist
 
-- [ ] All test sets evaluated
-- [ ] All metrics calculated
-- [ ] Per-domain breakdown complete
-- [ ] Per-attack-type breakdown complete
-- [ ] Confusion matrices generated
-- [ ] ROC curves plotted
-- [ ] Failure cases identified
-- [ ] Evaluation report written
-- [ ] Performance targets checked
+- [x] All test sets evaluated (speaker-independent test)
+- [x] All metrics calculated
+- [x] Per-domain breakdown complete
+- [x] Per-attack-type breakdown complete
+- [x] Confusion matrices generated
+- [x] ROC curves plotted
+- [ ] Failure cases identified (optional deep-dive)
+- [x] Evaluation report written
+- [x] Performance targets checked
 
 ---
 
-**Last Updated**: [Date]  
-**Status**: ⏳ PENDING
+**Last Updated**: December 27, 2025  
+**Status**: ✅ **COMPLETED**
 

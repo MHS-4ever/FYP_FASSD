@@ -1,0 +1,2 @@
+split,samples,eer,auc,acc,multiclass_acc
+ASVspoof,237490,18.1507,0.894653,90.6506,63.3892
