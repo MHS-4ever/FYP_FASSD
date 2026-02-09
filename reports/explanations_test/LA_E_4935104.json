@@ -1,0 +1,42 @@
+{
+  "filename": "LA_E_4935104.wav",
+  "filepath": "E:\\FYP\\DataSet\\English\\ASVspoof2021_LA_eval\\LA_clips\\LA_E_4935104.wav",
+  "prediction": "FAKE",
+  "confidence": 0.9992664456367493,
+  "spoof_prob": 0.9992664456367493,
+  "threshold": 0.5,
+  "attack_type": "synthesis",
+  "attack_type_idx": 1,
+  "attack_type_conf": 0.9992915391921997,
+  "attack_probs": [
+    0.000708286534063518,
+    0.9992915391921997,
+    8.021147124281924e-08,
+    5.960810511851378e-08
+  ],
+  "n_chunks": 1,
+  "env_features": {
+    "rt60": 3.776,
+    "drr": 0.23703138530254364,
+    "snr": 10.036911010742188,
+    "background_level": -23.52782440185547,
+    "silence_ratio": 0.10059171597633136,
+    "spectral_tilt": -2.9190442692031207,
+    "spectral_flatness": 0.0007493473240174353,
+    "spectral_rolloff": 1874.5377218934912,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 6.988475576008568e-09,
+    "background_consistency": 0.9673274755477905,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "Environmental features look broadly plausible; no strong anomalies detected."
+  ],
+  "spec_reasons": [
+    "Audio fits into one chunk; decision is based on a single 4s window."
+  ],
+  "overall_explanation": "Model predicts FAKE (spoof_prob=0.999). Most likely attack type: synthesis (conf=0.999).",
+  "true_label": "spoof",
+  "true_attack_type": "synthesis",
+  "domain": "LA"
+}

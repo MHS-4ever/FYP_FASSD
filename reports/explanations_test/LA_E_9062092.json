@@ -1,0 +1,43 @@
+{
+  "filename": "LA_E_9062092.wav",
+  "filepath": "E:\\FYP\\DataSet\\English\\ASVspoof2021_LA_eval\\LA_clips\\LA_E_9062092.wav",
+  "prediction": "FAKE",
+  "confidence": 0.9999682307243347,
+  "spoof_prob": 0.9999682307243347,
+  "threshold": 0.5,
+  "attack_type": "synthesis",
+  "attack_type_idx": 1,
+  "attack_type_conf": 0.9985979199409485,
+  "attack_probs": [
+    0.0014001609524711967,
+    0.9985979199409485,
+    9.23575452227432e-14,
+    1.894306933536427e-06
+  ],
+  "n_chunks": 2,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.26131823658943176,
+    "snr": 8.814949035644531,
+    "background_level": -23.201881408691406,
+    "silence_ratio": 0.10126582278481013,
+    "spectral_tilt": -2.786789310486902,
+    "spectral_flatness": 0.0002228481025667861,
+    "spectral_rolloff": 2143.8554852320676,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 1.1140610212123647e-08,
+    "background_consistency": 0.8702797293663025,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [1.000, 1.000] across 2 chunks.",
+    "Chunk scores are consistent \u2192 model decision is stable across the file."
+  ],
+  "overall_explanation": "Model predicts FAKE (spoof_prob=1.000). Most likely attack type: synthesis (conf=0.999).",
+  "true_label": "spoof",
+  "true_attack_type": "synthesis",
+  "domain": "LA"
+}

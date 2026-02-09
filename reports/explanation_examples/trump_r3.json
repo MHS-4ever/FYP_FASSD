@@ -1,0 +1,41 @@
+{
+  "filename": "trump_r3.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_r3.wav",
+  "prediction": "FAKE",
+  "confidence": 0.5289345979690552,
+  "spoof_prob": 0.5289345979690552,
+  "threshold": 0.5,
+  "attack_type": "bonafide",
+  "attack_type_idx": 0,
+  "attack_type_conf": 0.4759750962257385,
+  "attack_probs": [
+    0.4759750962257385,
+    0.2334509938955307,
+    0.2904689610004425,
+    0.00010407243098597974
+  ],
+  "n_chunks": 1648,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.545026421546936,
+    "snr": 11.298604011535645,
+    "background_level": -25.40941619873047,
+    "silence_ratio": 0.10000388113380855,
+    "spectral_tilt": -0.6799701143950292,
+    "spectral_flatness": 0.09642540663480759,
+    "spectral_rolloff": 4146.768309248742,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.037216827273368835,
+    "background_consistency": 0.5607322454452515,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio).",
+    "Background consistency is low (0.56) \u2192 suggests edits or inconsistent environment."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.000, 1.000] across 1648 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments."
+  ],
+  "overall_explanation": "Model predicts FAKE (spoof_prob=0.529). Most likely attack type: bonafide (conf=0.476)."
+}

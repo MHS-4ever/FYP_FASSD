@@ -1,0 +1,43 @@
+{
+  "filename": "LA_E_3149567.wav",
+  "filepath": "E:\\FYP\\DataSet\\English\\ASVspoof2021_LA_eval\\LA_clips\\LA_E_3149567.wav",
+  "prediction": "FAKE",
+  "confidence": 1.0,
+  "spoof_prob": 1.0,
+  "threshold": 0.5,
+  "attack_type": "conversion",
+  "attack_type_idx": 2,
+  "attack_type_conf": 1.0,
+  "attack_probs": [
+    8.630008374588272e-10,
+    5.741963143952691e-18,
+    1.0,
+    0.0
+  ],
+  "n_chunks": 1,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.2192419022321701,
+    "snr": 8.891407012939453,
+    "background_level": -23.319320678710938,
+    "silence_ratio": 0.11538461538461539,
+    "spectral_tilt": -0.6423715775461339,
+    "spectral_flatness": 0.040628235787153244,
+    "spectral_rolloff": 3393.329326923077,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.013208388350903988,
+    "background_consistency": 0.5,
+    "env_stability": 0.5
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio).",
+    "Background consistency is low (0.50) \u2192 suggests edits or inconsistent environment."
+  ],
+  "spec_reasons": [
+    "Audio fits into one chunk; decision is based on a single 4s window."
+  ],
+  "overall_explanation": "Model predicts FAKE (spoof_prob=1.000). Most likely attack type: conversion (conf=1.000).",
+  "true_label": "spoof",
+  "true_attack_type": "synthesis",
+  "domain": "LA"
+}

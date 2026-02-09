@@ -1,0 +1,40 @@
+{
+  "filename": "trump_f1.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_f1.wav",
+  "prediction": "FAKE",
+  "confidence": 0.9994214177131653,
+  "spoof_prob": 0.9994214177131653,
+  "threshold": 0.5,
+  "attack_type": "conversion",
+  "attack_type_idx": 2,
+  "attack_type_conf": 0.8090236783027649,
+  "attack_probs": [
+    0.0012994412099942565,
+    0.18967682123184204,
+    0.8090236783027649,
+    1.7829555887249882e-10
+  ],
+  "n_chunks": 48,
+  "env_features": {
+    "rt60": 5.984,
+    "drr": 0.6704071760177612,
+    "snr": 17.08197021484375,
+    "background_level": -36.970314025878906,
+    "silence_ratio": 0.1000654022236756,
+    "spectral_tilt": -0.9643310182079142,
+    "spectral_flatness": 0.04434749111533165,
+    "spectral_rolloff": 2965.0711249182473,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.004179724957793951,
+    "background_consistency": 0.5457062125205994,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "Background consistency is low (0.55) \u2192 suggests edits or inconsistent environment."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.978, 1.000] across 48 chunks.",
+    "Chunk scores are consistent \u2192 model decision is stable across the file."
+  ],
+  "overall_explanation": "Model predicts FAKE (spoof_prob=0.999). Most likely attack type: conversion (conf=0.809)."
+}
