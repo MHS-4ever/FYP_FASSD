@@ -1,0 +1,63 @@
+{
+  "filename": "imran_khan_f1.wav",
+  "filepath": "E:\\FYP\\testing_audios\\pakistani\\imran_khan_f1.wav",
+  "prediction": "REAL",
+  "confidence": 0.3932584269662921,
+  "spoof_prob": 0.6067415730337079,
+  "decision_score": 0.6067415730337079,
+  "pooling": "pct_vote",
+  "spoof_prob_mean": 0.7305644750595093,
+  "spoof_prob_median": 0.948441743850708,
+  "spoof_prob_trimmed": 0.7877683043479919,
+  "spoof_prob_logit_mean": 0.97412109375,
+  "pct_chunks_above_chunk_threshold": 0.6067415730337079,
+  "threshold": 0.65,
+  "effective_threshold": 0.7,
+  "chunk_threshold": 0.8,
+  "vote_threshold": 0.7,
+  "attack_type": "conversion",
+  "attack_type_idx": 2,
+  "attack_type_conf": 0.4358029365539551,
+  "attack_probs": [
+    0.32681795954704285,
+    0.237376868724823,
+    0.4358029365539551,
+    2.2246342723519774e-06
+  ],
+  "n_chunks": 89,
+  "n_chunks_total": 93,
+  "n_chunks_used": 89,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 40.0,
+  "vad_mode": "file_percentile",
+  "vad_db_threshold": -45.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6322676454930091,
+  "speech_ratio_median_used": 0.6259351620947631,
+  "vad_file_rms_threshold": 0.07779083400964737,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.223817378282547,
+    "snr": 8.615777969360352,
+    "background_level": -23.341596603393555,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -1.3378163576126099,
+    "spectral_flatness": 0.005556910764425993,
+    "spectral_rolloff": 1783.172119140625,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.00200181663967669,
+    "background_consistency": 0.750718355178833,
+    "env_stability": 0.5
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.001, 1.000] across 89 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=pct_vote: mean=0.731, median=0.948, trimmed=0.788, logit_mean=0.974, pct_over_chunk_threshold=0.607",
+    "VAD(file_percentile) kept 89/93 chunks (min speech ratio=0.40).",
+    "pct_vote thresholds: chunk_threshold=0.800, vote_threshold=0.700."
+  ],
+  "overall_explanation": "Model predicts REAL (bonafide) with confidence=0.393 (pooling=pct_vote, threshold=0.700)."
+}

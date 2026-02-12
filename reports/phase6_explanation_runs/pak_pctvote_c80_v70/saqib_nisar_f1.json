@@ -1,0 +1,63 @@
+{
+  "filename": "saqib_nisar_f1.wav",
+  "filepath": "E:\\FYP\\testing_audios\\pakistani\\saqib_nisar_f1.wav",
+  "prediction": "FAKE",
+  "confidence": 1.0,
+  "spoof_prob": 1.0,
+  "decision_score": 1.0,
+  "pooling": "pct_vote",
+  "spoof_prob_mean": 0.9921366572380066,
+  "spoof_prob_median": 0.9999934434890747,
+  "spoof_prob_trimmed": 0.9963237643241882,
+  "spoof_prob_logit_mean": 1.0,
+  "pct_chunks_above_chunk_threshold": 1.0,
+  "threshold": 0.65,
+  "effective_threshold": 0.7,
+  "chunk_threshold": 0.8,
+  "vote_threshold": 0.7,
+  "attack_type": "synthesis",
+  "attack_type_idx": 1,
+  "attack_type_conf": 0.6671560406684875,
+  "attack_probs": [
+    0.013168148696422577,
+    0.6671560406684875,
+    0.24095147848129272,
+    0.07872428745031357
+  ],
+  "n_chunks": 12,
+  "n_chunks_total": 12,
+  "n_chunks_used": 12,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 40.0,
+  "vad_mode": "file_percentile",
+  "vad_db_threshold": -45.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.5993349958437241,
+  "speech_ratio_median_used": 0.5760598503740648,
+  "vad_file_rms_threshold": 0.06613873690366745,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.31688204407691956,
+    "snr": 12.259160995483398,
+    "background_level": -25.241104125976562,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -2.2014098167419434,
+    "spectral_flatness": 0.0008484129793941975,
+    "spectral_rolloff": 1657.738037109375,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 2.542164111218881e-05,
+    "background_consistency": 0.6633361577987671,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.942, 1.000] across 12 chunks.",
+    "Chunk scores are consistent \u2192 model decision is stable across the file.",
+    "Pooling=pct_vote: mean=0.992, median=1.000, trimmed=0.996, logit_mean=1.000, pct_over_chunk_threshold=1.000",
+    "VAD(file_percentile) kept 12/12 chunks (min speech ratio=0.40).",
+    "pct_vote thresholds: chunk_threshold=0.800, vote_threshold=0.700."
+  ],
+  "overall_explanation": "Model predicts FAKE (decision_score=1.000, pooling=pct_vote, threshold=0.700). Most likely attack type: synthesis (conf=0.667)."
+}

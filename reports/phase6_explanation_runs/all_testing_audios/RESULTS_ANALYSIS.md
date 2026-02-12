@@ -3,6 +3,8 @@
 **Run**: `all_testing_audios`  
 **Convention**: **r = real**, **f = fake** (for Trump, Pakistani, and any other files). Filenames are correct.
 
+**Note:** These results and the full `testing_audios/` layout (pakistani, trump, synthetic_fake) are kept as-is. Further work focuses **only on Trump testing audios** (`testing_audios/trump/`).
+
 ---
 
 ## 1. Trump audios (8 files)
@@ -26,7 +28,7 @@
 
 ---
 
-## 2. Pakistani audios (8 files) — key focus
+## 2. Pakistani audios (8 files) — kept for reference
 
 | File               | True label | Prediction | decision_score | spoof_prob_mean | spoof_prob_median | n_chunks_used | Correct? |
 |--------------------|------------|------------|----------------|-----------------|-------------------|---------------|----------|

@@ -2,9 +2,9 @@
 
 This folder contains all Phase 6 explanation outputs. Each subfolder has a `results.csv` and per-file JSONs. **Do not modify** `reports/evaluation/` (Phase 5 outputs).
 
-**Testing audios layout (current):** `testing_audios/` has subfolders — **pakistani/** (Saqib Nisar, Imran Khan; key focus), **trump/**, **synthetic_fake/**. The script recurses into subfolders (`rglob`), so one run with `--audio_dir E:/FYP/testing_audios` processes all files.
+**Testing audios layout (current):** `testing_audios/` has subfolders — **pakistani/**, **trump/**, **synthetic_fake/**. All results and this layout are **kept as-is**. Further work focuses **only on Trump testing audios** (`testing_audios/trump/`).
 
-**Naming convention:** **r = real**, **f = fake** for all testing audios (Trump names are correct; same convention for Pakistani).
+**Naming convention:** **r = real**, **f = fake** for all testing audios.
 
 ---
 
@@ -69,23 +69,22 @@ This folder contains all Phase 6 explanation outputs. Each subfolder has a `resu
 
 ### `all_testing_audios/`
 
-- **Config**: Single run over **all** current testing audios: `testing_audios/` (recursive). Includes **pakistani/** (Imran Khan, Saqib Nisar — key focus), **trump/**, **synthetic_fake/**.
-- **Convention**: r = real, f = fake (Trump names corrected; same for Pakistani).
-- **Result**: Trump 8/8, Synthetic 1/1, Pakistani 3/8. See **`all_testing_audios/RESULTS_ANALYSIS.md`** for a full per-file breakdown.
+- **Config**: Single run over **all** testing audios: `testing_audios/` (recursive) — pakistani/, trump/, synthetic_fake/. Results kept for reference.
+- **Result**: Trump 8/8, Synthetic 1/1, Pakistani 3/8. See **`all_testing_audios/RESULTS_ANALYSIS.md`** for per-file breakdown. Further work uses **Trump only**.
 
 ---
 
-## Recommended command (all testing audios; Pakistani = key focus)
+## Recommended command (Trump testing audios only)
 
-From project root (run all: Pakistani + Trump + synthetic):
+From project root. Use **Trump folder only** for further work:
 
 ```powershell
 conda activate fassd
-python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_dir E:/FYP/testing_audios --output_dir reports/phase6_explanation_runs/all_testing_audios --batch_size 32 --pooling pct_vote --chunk_threshold 0.65 --vote_threshold 0.70 --vad_mode file_percentile --vad_rms_percentile 40 --vad_min_speech_ratio 0.40
+python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_dir E:/FYP/testing_audios/trump --output_dir reports/phase6_explanation_runs/trump_run --batch_size 32 --pooling pct_vote --chunk_threshold 0.65 --vote_threshold 0.70 --vad_mode file_percentile --vad_rms_percentile 40 --vad_min_speech_ratio 0.40
 ```
 
-- **Output**: `reports/phase6_explanation_runs/all_testing_audios/results.csv` and one JSON per file. Pakistani audios are the key focus; compare with Trump and synthetic_fake.
-- For a separate run, use a different subfolder (e.g. `my_run`) so existing runs are not overwritten.
+- **Output**: `reports/phase6_explanation_runs/trump_run/results.csv` and per-file JSONs (8 Trump files). For a new run, use a different subfolder (e.g. `trump_run_v2`) so existing runs are not overwritten.
+- To re-run on **all** testing_audios (pakistani + trump + synthetic), use `--audio_dir E:/FYP/testing_audios` and e.g. `--output_dir reports/phase6_explanation_runs/all_testing_audios`.
 
 ---
 

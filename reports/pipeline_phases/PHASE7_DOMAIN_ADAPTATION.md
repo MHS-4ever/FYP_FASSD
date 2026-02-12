@@ -1,9 +1,9 @@
 # Phase 7: Domain Adaptation (If Needed)
 
-**Status**: ⏳ PENDING (OPTIONAL)  
+**Status**: 🟢 **NEXT** (Phase 6 closed; start Phase 7)  
 **Priority**: 🟡 CONDITIONAL  
 **Duration**: Week 5  
-**Dependencies**: Phase 5 (Evaluation) - Only if Real-world EER > 20%
+**Dependencies**: Phase 5 (Evaluation), Phase 6 (complete). Trigger: Real-world EER > 20% or domain adaptation desired.
 
 ---
 

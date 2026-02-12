@@ -1,4 +1,4 @@
-# Phase 6: Explanation System
+# Phase 6: Explanation System — **COMPLETE (CLOSED)**
 
 Generate explanations for the Phase 4 hybrid model on raw audio (e.g. `testing_audios/` Trump set). The script chunks long audio, extracts **per-chunk** log-mel and environmental features, runs the trained hybrid checkpoint, and saves per-file JSON/CSV with configurable pooling and VAD gating.
 
@@ -14,10 +14,12 @@ python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_envir
 
 ## Long-audio robust voting (recommended for long/broadcast-style files)
 
-Use **pct_vote** with **vote_threshold 0.70** and **vad_rms_percentile 40** for best balance on long files (e.g. Trump 8-file set: 8/8 correct with corrected labels — trump_r1 is actually FAKE).
+Use **pct_vote** with **vote_threshold 0.70** and **vad_rms_percentile 40** for best balance on long files. Trump 8-file set: **8/8** correct (r = real, f = fake).
+
+**Further work:** Use **Trump testing audios only** — `--audio_dir E:/FYP/testing_audios/trump` and e.g. `--output_dir reports/phase6_explanation_runs/trump_run`.
 
 ```powershell
-python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_dir E:/FYP/testing_audios --output_dir reports/phase6_explanation_runs/my_run --batch_size 32 --pooling pct_vote --chunk_threshold 0.65 --vote_threshold 0.70 --vad_mode file_percentile --vad_rms_percentile 40 --vad_min_speech_ratio 0.40
+python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_dir E:/FYP/testing_audios/trump --output_dir reports/phase6_explanation_runs/trump_run --batch_size 32 --pooling pct_vote --chunk_threshold 0.65 --vote_threshold 0.70 --vad_mode file_percentile --vad_rms_percentile 40 --vad_min_speech_ratio 0.40
 ```
 
 ## Run on the test manifest (validation)

@@ -1,6 +1,6 @@
 # Phase 6: Explanation System
 
-**Status**: ✅ IMPLEMENTED (scripts + tuning complete)  
+**Status**: ✅ **COMPLETE (CLOSED)** — scripts, tuning, and Trump 8/8 runs done; further work focuses on Phase 7.  
 **Priority**: 🟡 IMPORTANT  
 **Duration**: Week 4-5  
 **Dependencies**: Phase 5 (Evaluation)
@@ -188,4 +188,4 @@ With **correct Trump naming** (r=real, f=fake), the tuned configs (pct_vote, vot
 ---
 
 **Last Updated**: February 2026  
-**Status**: ✅ IMPLEMENTED
+**Status**: ✅ COMPLETE (CLOSED) — **Next**: Phase 7 (Domain Adaptation)
