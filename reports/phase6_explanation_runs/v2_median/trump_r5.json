@@ -1,0 +1,56 @@
+{
+  "filename": "trump_r5.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_r5.wav",
+  "prediction": "FAKE",
+  "confidence": 0.7842364311218262,
+  "spoof_prob": 0.7842364311218262,
+  "decision_score": 0.7842364311218262,
+  "pooling": "median",
+  "spoof_prob_mean": 0.5803204774856567,
+  "spoof_prob_median": 0.7842364311218262,
+  "spoof_prob_trimmed": 0.6001152992248535,
+  "spoof_prob_logit_mean": 0.80322265625,
+  "pct_chunks_above_threshold": 0.546448087431694,
+  "threshold": 0.65,
+  "attack_type": "bonafide",
+  "attack_type_idx": 0,
+  "attack_type_conf": 0.4747471809387207,
+  "attack_probs": [
+    0.4747471809387207,
+    0.13883715867996216,
+    0.38641297817230225,
+    2.6922602955892216e-06
+  ],
+  "n_chunks": 549,
+  "n_chunks_total": 549,
+  "n_chunks_used": 549,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 30.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6982543640897755,
+  "speech_ratio_median_used": 0.6982543640897756,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.2632502019405365,
+    "snr": 16.063100814819336,
+    "background_level": -48.4007682800293,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.567788302898407,
+    "spectral_flatness": 0.049112264066934586,
+    "spectral_rolloff": 3562.81005859375,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.02916460670530796,
+    "background_consistency": 0.6618332266807556,
+    "env_stability": 0.5
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.000, 1.000] across 549 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=median: mean=0.580, median=0.784, trimmed=0.600, logit_mean=0.803, pct_over_threshold=0.546",
+    "VAD gating kept 549/549 chunks (min speech ratio=0.40)."
+  ],
+  "overall_explanation": "Model predicts FAKE (decision_score=0.784, pooling=median). Most likely attack type: bonafide (conf=0.475)."
+}

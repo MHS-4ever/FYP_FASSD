@@ -132,12 +132,13 @@ Evaluation completed on the **speaker-independent test set** using:
 ```
 reports/
 ├── evaluation/
-│   ├── comprehensive_evaluation_report.md    # Main report
-│   ├── overall_metrics.csv                   # Overall metrics (overall split)
-│   ├── asvspoof_evaluation.csv               # ASVspoof metrics
-│   ├── realworld_evaluation.csv              # Real-world metrics
-│   ├── per_domain_metrics.csv               # Domain breakdown
-│   ├── per_attack_metrics.csv               # Attack type breakdown
+│   ├── comprehensive_evaluation_report.md    # Main report (includes Threshold sweep section)
+│   ├── overall_metrics.csv                    # Overall metrics (overall split)
+│   ├── threshold_sweep.csv                     # Detail evaluation: accuracy & bonafide FPR at 0.5, 0.65, 0.70
+│   ├── asvspoof_evaluation.csv                 # ASVspoof metrics
+│   ├── realworld_evaluation.csv                # Real-world metrics
+│   ├── per_domain_metrics.csv                  # Domain breakdown
+│   ├── per_attack_metrics.csv                  # Attack type breakdown
 │   └── confusion_matrices/
 │       ├── overall_binary_cm.png
 │       └── overall_multiclass_cm.png
@@ -190,10 +191,12 @@ python code/phase5/evaluate_hybrid_model.py --ckpt models_saved/hybrid_resnet_en
 
 ### Laptop
 
+Use `E:/FYP` or `D:/FYP` for the feature H5 paths depending on where your data lives:
+
 ```powershell
 cd E:\FYP
 conda activate fassd
-python code/phase5/evaluate_hybrid_model.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --test_manifest data/manifests/test_speaker_independent.csv --train_manifest data/manifests/train_speaker_independent.csv --spectrogram_h5 D:/FYP/data/features/logmel_chunked.h5 --environmental_h5 D:/FYP/data/features/environmental_packed.h5 --output_dir reports/evaluation --batch_size 128
+python code/phase5/evaluate_hybrid_model.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --test_manifest data/manifests/test_speaker_independent.csv --train_manifest data/manifests/train_speaker_independent.csv --spectrogram_h5 E:/FYP/data/features/logmel_chunked.h5 --environmental_h5 E:/FYP/data/features/environmental_packed.h5 --output_dir reports/evaluation --batch_size 128
 ```
 
 Or run the convenience wrapper (PC defaults):
@@ -205,11 +208,13 @@ python code/phase5/run_phase5.py
 ```
 
 Expected outputs:
-- `reports/evaluation/comprehensive_evaluation_report.md`
-- `reports/evaluation/per_domain_metrics.csv`
-- `reports/evaluation/per_attack_metrics.csv`
+- `reports/evaluation/comprehensive_evaluation_report.md` (includes **Threshold sweep (detail evaluation)** table)
+- `reports/evaluation/threshold_sweep.csv` — accuracy and bonafide FPR at each threshold (default: 0.5, 0.65, 0.70)
+- `reports/evaluation/overall_metrics.csv`, `per_domain_metrics.csv`, `per_attack_metrics.csv`
 - `reports/evaluation/confusion_matrices/*.png`
 - `reports/evaluation/figures/roc_*.png`
+
+**Detail evaluation (threshold sweep):** The script runs a threshold sweep by default (`--thresholds "0.5 0.65 0.70"`). To use different thresholds: `--thresholds "0.5 0.6 0.65 0.7 0.75"`.
 
 ## 📊 Expected Performance
 
@@ -224,15 +229,15 @@ Real-world AUC             | > 0.85 | ✅
 Multiclass Accuracy        | > 80%  | ✅
 ```
 
-**Full Success Targets:**
+**Full Success Targets (updated with test-set results):**
 ```
-Metric                    | Target | Status
---------------------------|--------|--------
-ASVspoof EER              | < 3%   | ⏳
-Real-world EER            | < 15%  | ⏳
-Overall EER                | < 8%   | ⏳
-Real-world AUC             | > 0.90 | ⏳
-Multiclass Accuracy        | > 85%  | ⏳
+Metric                    | Target   | Achieved (test) | Status
+--------------------------|----------|-----------------|--------
+ASVspoof EER              | < 3%     | 18.15%          | ❌
+Real-world EER             | < 15%    | 16.14%          | ❌
+Overall EER                | < 8%     | 16.22%          | ❌
+Real-world AUC             | > 0.90   | 0.9236          | ✅
+Multiclass Accuracy        | > 85%    | 64.36%          | ❌
 ```
 
 ---
@@ -304,9 +309,20 @@ Some evaluation slices (especially per-attack-type) can contain only one class (
 - [ ] Failure cases identified (optional deep-dive)
 - [x] Evaluation report written
 - [x] Performance targets checked
+- [x] **Detail evaluation**: Threshold sweep (0.5, 0.65, 0.70) run and documented; `threshold_sweep.csv` and report section added
 
 ---
 
-**Last Updated**: December 27, 2025  
+## 📊 Detail evaluation (threshold sweep)
+
+The evaluation script now runs a **threshold sweep** by default and reports **accuracy** and **bonafide FPR** at multiple operating points (0.5, 0.65, 0.70) on the full test set. This supports choosing an operating point that reduces false positives on real audio.
+
+- **Output**: `reports/evaluation/threshold_sweep.csv` (columns: `threshold`, `accuracy_pct`, `bonafide_fpr_pct`)
+- **Report**: Section **"Threshold sweep (detail evaluation)"** in `comprehensive_evaluation_report.md`
+- **Override**: `--thresholds "0.5 0.6 0.65 0.7 0.75"` (space-separated)
+
+---
+
+**Last Updated**: February 2026  
 **Status**: ✅ **COMPLETED**
 

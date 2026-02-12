@@ -1,0 +1,56 @@
+{
+  "filename": "trump_r6.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_r6.wav",
+  "prediction": "REAL",
+  "confidence": 0.9794977847486734,
+  "spoof_prob": 0.02050221525132656,
+  "decision_score": 0.02050221525132656,
+  "pooling": "median",
+  "spoof_prob_mean": 0.19949480891227722,
+  "spoof_prob_median": 0.02050221525132656,
+  "spoof_prob_trimmed": 0.13110052049160004,
+  "spoof_prob_logit_mean": 0.0129241943359375,
+  "pct_chunks_above_threshold": 0.15498154981549817,
+  "threshold": 0.65,
+  "attack_type": "bonafide",
+  "attack_type_idx": 0,
+  "attack_type_conf": 0.8067526817321777,
+  "attack_probs": [
+    0.8067526817321777,
+    0.11709374934434891,
+    0.07572419941425323,
+    0.0004294628161005676
+  ],
+  "n_chunks": 542,
+  "n_chunks_total": 542,
+  "n_chunks_used": 542,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 30.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6982543640897756,
+  "speech_ratio_median_used": 0.6982543640897756,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.21968570351600647,
+    "snr": 15.096949577331543,
+    "background_level": -44.19105529785156,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.5712597966194153,
+    "spectral_flatness": 0.08170957863330841,
+    "spectral_rolloff": 4357.390625,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.04882057011127472,
+    "background_consistency": 0.7257636785507202,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.000, 1.000] across 542 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=median: mean=0.199, median=0.021, trimmed=0.131, logit_mean=0.013, pct_over_threshold=0.155",
+    "VAD gating kept 542/542 chunks (min speech ratio=0.40)."
+  ],
+  "overall_explanation": "Model predicts REAL (bonafide) with confidence=0.979 (pooling=median)."
+}

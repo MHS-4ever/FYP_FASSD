@@ -1,0 +1,56 @@
+{
+  "filename": "trump_r4.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_r4.wav",
+  "prediction": "REAL",
+  "confidence": 0.8005908419497785,
+  "spoof_prob": 0.19940915805022155,
+  "decision_score": 0.19940915805022155,
+  "pooling": "pct_vote",
+  "spoof_prob_mean": 0.27474135160446167,
+  "spoof_prob_median": 0.05608106032013893,
+  "spoof_prob_trimmed": 0.2218625694513321,
+  "spoof_prob_logit_mean": 0.08526611328125,
+  "pct_chunks_above_threshold": 0.19940915805022155,
+  "threshold": 0.7,
+  "attack_type": "bonafide",
+  "attack_type_idx": 0,
+  "attack_type_conf": 0.710700273513794,
+  "attack_probs": [
+    0.710700273513794,
+    0.19525401294231415,
+    0.08985080569982529,
+    0.004195199813693762
+  ],
+  "n_chunks": 677,
+  "n_chunks_total": 677,
+  "n_chunks_used": 677,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 30.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6982543640897756,
+  "speech_ratio_median_used": 0.6982543640897756,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.23331287503242493,
+    "snr": 15.282867431640625,
+    "background_level": -47.712806701660156,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.5029463768005371,
+    "spectral_flatness": 0.05279948189854622,
+    "spectral_rolloff": 3954.613037109375,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.02679355815052986,
+    "background_consistency": 0.7485198378562927,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.000, 1.000] across 677 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=pct_vote: mean=0.275, median=0.056, trimmed=0.222, logit_mean=0.085, pct_over_threshold=0.199",
+    "VAD gating kept 677/677 chunks (min speech ratio=0.40)."
+  ],
+  "overall_explanation": "Model predicts REAL (bonafide) with confidence=0.801 (pooling=pct_vote)."
+}

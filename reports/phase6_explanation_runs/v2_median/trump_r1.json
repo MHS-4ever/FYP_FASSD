@@ -1,0 +1,56 @@
+{
+  "filename": "trump_r1.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump_r1.wav",
+  "prediction": "FAKE",
+  "confidence": 0.9999986886978149,
+  "spoof_prob": 0.9999986886978149,
+  "decision_score": 0.9999986886978149,
+  "pooling": "median",
+  "spoof_prob_mean": 0.9302693009376526,
+  "spoof_prob_median": 0.9999986886978149,
+  "spoof_prob_trimmed": 0.997136652469635,
+  "spoof_prob_logit_mean": 1.0,
+  "pct_chunks_above_threshold": 0.918918918918919,
+  "threshold": 0.65,
+  "attack_type": "synthesis",
+  "attack_type_idx": 1,
+  "attack_type_conf": 0.4842154085636139,
+  "attack_probs": [
+    0.07699917256832123,
+    0.4842154085636139,
+    0.43878164887428284,
+    3.772840955207357e-06
+  ],
+  "n_chunks": 37,
+  "n_chunks_total": 38,
+  "n_chunks_used": 37,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 30.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6960975938532049,
+  "speech_ratio_median_used": 0.6982543640897756,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.309137225151062,
+    "snr": 17.950441360473633,
+    "background_level": -44.39085006713867,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.8746940493583679,
+    "spectral_flatness": 0.03943975642323494,
+    "spectral_rolloff": 2935.329833984375,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.004658851306885481,
+    "background_consistency": 0.6317635774612427,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.046, 1.000] across 37 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=median: mean=0.930, median=1.000, trimmed=0.997, logit_mean=1.000, pct_over_threshold=0.919",
+    "VAD gating kept 37/38 chunks (min speech ratio=0.40)."
+  ],
+  "overall_explanation": "Model predicts FAKE (decision_score=1.000, pooling=median). Most likely attack type: synthesis (conf=0.484)."
+}

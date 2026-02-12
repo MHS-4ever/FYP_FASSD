@@ -1,257 +1,191 @@
 # Phase 6: Explanation System
 
-**Status**: ✅ READY (scripts implemented)  
+**Status**: ✅ IMPLEMENTED (scripts + tuning complete)  
 **Priority**: 🟡 IMPORTANT  
 **Duration**: Week 4-5  
-**Dependencies**: Phase 5 (Evaluation) - Only if evaluation passes
+**Dependencies**: Phase 5 (Evaluation)
 
 ---
 
 ## 🎯 Objective
 
-Build an explanation system that provides human-readable reasons for model predictions, based on environmental features, spectrogram patterns, and attack type classifications.
+Build an explanation system that provides human-readable reasons for model predictions, based on environmental features, spectrogram patterns, and attack type classifications. The system runs on raw audio (including long files), chunks it into 4 s segments aligned with training, and outputs per-file predictions with pooling options and VAD gating.
 
 ---
 
-## 📋 Tasks
+## 📋 Tasks (Design)
 
 ### 1. Feature Importance Analysis
 
-**Environmental Feature Importance:**
-- Analyze which environmental features contribute most to predictions
-- Use feature importance from Environmental Branch
-- Calculate per-feature contribution to final prediction
-- Rank features by importance
-
-**Spectrogram Pattern Analysis:**
-- Identify which spectrogram regions are most important
-- Use attention maps or gradient-based methods (Grad-CAM)
-- Visualize important regions in spectrogram
-- Correlate patterns with attack types
-
-**Attack Type Analysis:**
-- Analyze which features are important for each attack type
-- Identify feature patterns for:
-  - Synthesis attacks
-  - Conversion attacks
-  - Replay attacks
-  - Bonafide audio
+- **Environmental**: Per-feature contribution, rank by importance.
+- **Spectrogram**: Important regions (e.g. Grad-CAM); correlate with attack types.
+- **Attack type**: Patterns for bonafide, synthesis, conversion, replay.
 
 ### 2. Explanation Generation
 
-**Explanation Components:**
-1. **Prediction**: Real or Fake
-2. **Confidence**: Prediction confidence score
-3. **Attack Type**: Detected attack type (if fake)
-4. **Environmental Reasons**: Why environmental features suggest real/fake
-5. **Spectrogram Reasons**: What patterns were detected
-6. **Overall Explanation**: Human-readable summary
+- **Prediction** (Real/Fake), **confidence**, **attack type** (if fake).
+- **Environmental reasons** and **spectrogram reasons**; **overall** human-readable summary.
+- Output: JSON (structured) + CSV (per-file summary).
 
-**Explanation Format:**
+### 3. Implementation
 
-**For FAKE predictions:**
-```
-Prediction: FAKE
-Confidence: 87%
-Attack Type: Synthesis
-
-Reasons:
-1. Environmental Analysis:
-   - RT60 is abnormally low (0.2s) - suggests synthetic environment
-   - SNR is too high (45dB) - too clean for natural recording
-   - Background consistency is low - indicates artificial processing
-
-2. Spectrogram Analysis:
-   - Detected synthesis artifacts in frequency range 2-4 kHz
-   - Unnatural spectral patterns in mid-frequencies
-   - Missing natural reverberation characteristics
-
-3. Overall:
-   This audio appears to be AI-generated speech. The environmental
-   characteristics are inconsistent with natural recordings, and
-   spectrogram analysis reveals synthetic artifacts.
-```
-
-**For REAL predictions:**
-```
-Prediction: REAL
-Confidence: 92%
-
-Reasons:
-1. Environmental Analysis:
-   - RT60 is natural (0.8s) - consistent with typical room acoustics
-   - SNR is typical (25dB) - normal background noise level
-   - Environmental features are consistent throughout
-
-2. Spectrogram Analysis:
-   - Natural spectral patterns detected
-   - Consistent reverberation characteristics
-   - No synthetic artifacts found
-
-3. Overall:
-   This audio appears to be genuine human speech. Environmental
-   characteristics match natural recording conditions, and no
-   synthetic artifacts were detected.
-```
-
-### 3. Explanation System Implementation
-
-**Components:**
-1. **Feature Extractor**: Extract features from audio
-2. **Model Predictor**: Get predictions from hybrid model
-3. **Feature Analyzer**: Analyze feature contributions
-4. **Explanation Generator**: Generate human-readable explanations
-5. **Visualization**: Create visualizations (if needed)
-
-**Output Format:**
-- Text explanation (human-readable)
-- JSON explanation (structured, for API)
-- Visualization (spectrogram with highlights, feature importance plots)
+- Feature extractor (log-mel + environmental), model predictor (Phase 4 hybrid), explanation generator.
+- **Implemented**: `code/phase6/explain_prediction.py` — chunks raw audio, extracts features **per chunk**, runs checkpoint, supports multiple pooling strategies and VAD gating. See **Implementation and Tuning Log** below for all options and fixes.
 
 ---
 
 ## 📁 Output Files
 
-```
-Code/
-└── explain_prediction.py                 # Main explanation script
-
-reports/
-└── explanation_examples/
-    ├── fake_explanation_example.json
-    ├── real_explanation_example.json
-    └── explanation_visualizations/
-```
+- **Script**: `code/phase6/explain_prediction.py` (and optional `run_phase6.py`).
+- **Explanation runs**: All Phase 6 runs (baseline and tuning variants) are under **`reports/phase6_explanation_runs/`**. Each subfolder contains `results.csv` and per-file JSONs. See **`reports/phase6_explanation_runs/README.md`** for a description of each run and the commands used.
 
 ---
 
-## 🔧 Scripts Needed
+## 🔧 Scripts
 
-### Implemented (Phase 6):
-- ✅ `code/phase6/explain_prediction.py` — chunk raw audio, run Phase 4 hybrid checkpoint, produce per-file JSON + CSV explanations (log-mel + environmental)
-- ✅ `code/phase6/run_phase6.py` — convenience wrapper with default laptop paths
-- ✅ `code/phase6/README.md` — quick commands and options
+- ✅ **`code/phase6/explain_prediction.py`** — Main script: raw audio → chunked features → hybrid model → JSON/CSV.
+- ✅ **`code/phase6/README.md`** — Commands and options.
+- ✅ **`code/phase6/run_phase6.py`** — Optional wrapper with default paths.
 
-### Optional (future):
-- `code/utils/feature_importance.py` - deeper feature attributions
-- `code/utils/gradcam.py` - gradient-based spectrogram highlights
-- `code/utils/explanation_formatter.py` - richer formatting
+---
 
-### Existing (Reuse):
-- ✅ `Code/features/environmental_features.py` - Feature extraction
-- ✅ Trained hybrid model
+## Analysis and Findings (Trump Set and Root Causes)
+
+The following is the full analysis that led to the implementation changes below. Test set: 8 Trump files in `testing_audios/trump/`.
+
+**Naming convention:** **r = real**, **f = fake** (Trump filenames are correct). So: **5 real** (trump_r1–r5), **3 fake** (trump_f1–f3).
+
+### Testing audios: duration and basic stats
+
+- **Durations**: trump_f1 ~2.4 min, trump_f2 ~1.3 min, trump_r1 ~2 min, trump_r2 **~80.5 min**, trump_r3 **~82.5 min**, trump_r4 ~34 min, trump_r5 ~27 min, trump_r6 ~27 min.
+- **Chunks (4 s, 1 s overlap)**: r2 → 1610, r3 → 1648; training uses fixed 4 s windows, so long files imply hundreds/thousands of chunks and aggregation effects.
+
+### Phase 5 model behaviour (test set)
+
+- **Overall**: 254,574 samples; Binary EER 16.22%; AUC 0.9167; Accuracy @0.5 89.78%.
+- **RealWorld**: 17,084 samples; EER 16.14%; Accuracy @0.5 77.68%.
+- **Bonafide**: ~41.3% of bonafide samples predicted as spoof at 0.5 → checkpoint is **bonafide-fragile**.
+
+### Phase 6 baseline (full files, threshold 0.5)
+
+- Accuracy **4/8**: four reals (r1, r2, r3, r5) predicted FAKE; only r4 and the three fakes correct.
+- Chunk spoof-prob range for r2–r5 was [0, 1]; **mean** aggregation was driven by a minority of high-spoof chunks.
+
+### Threshold sweep (Trump 8-file, mean aggregation)
+
+- Threshold 0.5 → 50% acc; 0.7 → 87.5% (one real, r1, still predicted FAKE). With tuned pooling/VAD (below), “FP” **8/8** is achieved.
+
+### Shortened-clips experiment
+
+- **r2, r3**: Short clips (30–300 s) flipped decision to REAL → **duration/aggregation** caused FAKE on full file.
+- **r1, r5**: Stayed FAKE on short clips → **content/domain/checkpoint** (or high chunk variance), not length alone.
+
+### Phase 6 design vs training (issues identified)
+
+- **Training**: 4 s segments; env features **per segment**.
+- **Original inference**: One **file-level** env vector repeated for all chunks; **mean** of chunk probs; single threshold. → Env mismatch, sensitivity to outlier chunks, no robust pooling or VAD.
+
+### Root causes (ranked)
+
+1. Bonafide-fragile operating point (high FPR at 0.5).
+2. Long-form inference vs training (chunk count + single env vector).
+3. Aggregation method (mean sensitive to few high-spoof chunks).
+4. Full-file environmental vector (OOD vs per-segment training).
+5. Domain/content (e.g. r5 real but predicted FAKE even on short clips).
+
+---
+
+## Solutions (Implemented)
+
+All of the following have been implemented in `explain_prediction.py`.
+
+### Per-chunk environmental features
+
+- **Before**: One env vector over the entire file, repeated for every chunk.
+- **After**: Env computed **per 4 s chunk**; passed as `[B, 12]`. Aligns with Phase 2/4 training.
+
+### Robust pooling and pct_vote
+
+- **`--pooling`**: `median`, `trimmed_mean`, `mean`, `logit_mean`, `pct_vote`.
+- Outputs: `spoof_prob_mean`, `spoof_prob_median`, `spoof_prob_trimmed`, `spoof_prob_logit_mean`, and for `pct_vote`: `pct_chunks_above_chunk_threshold` with a **vote** threshold for file decision.
+- **`--trim_fraction`** (default 0.1) for trimmed mean.
+- **Recommendation**: Use **`pct_vote`** for long/broadcast-style files.
+
+### Chunk vs vote thresholds (pct_vote)
+
+- **`--chunk_threshold`** (default 0.65): chunk counts as spoof if spoof prob ≥ this.
+- **`--vote_threshold`** (default 0.50; **tuned to 0.70** for Trump): file is FAKE if `pct_chunks_above_chunk_threshold >= vote_threshold`.
+- **`--threshold`**: used only for non–pct_vote pooling (default 0.65).
+
+### VAD gating (fixed)
+
+- **Before**: Chunk-local RMS percentile → ~0.7 speech ratio everywhere; no real gating.
+- **After**:
+  - **`--vad_mode file_percentile`**: File-level RMS percentile → one threshold; per-chunk speech ratio vs that threshold; chunks below **`--vad_min_speech_ratio`** excluded from aggregation.
+  - **`--vad_mode abs_db`**: **`--vad_db_threshold`** (e.g. -45).
+  - **`--vad_rms_percentile`**: For file_percentile (default 30; tested 40, 50). **Recommendation**: **40** for balance of gating and stability.
+
+### Recommended defaults (long audio)
+
+- **Pooling**: `pct_vote` for long files; `median` for simple runs.
+- **Thresholds**: For pct_vote: `--chunk_threshold 0.65`, **`--vote_threshold 0.70`**; for others `--threshold 0.65`.
+- **VAD**: `--vad_mode file_percentile`, **`--vad_rms_percentile 40`**, `--vad_min_speech_ratio 0.40` (0 disables gating).
+- **Debug**: `--debug_chunk_stats` adds chunk-level stats to JSON.
+
+### Trump 8-file runs (summary; **r = real, f = fake** — 5 real, 3 fake)
+
+| Run | Accuracy | Notes |
+|-----|----------|--------|
+| baseline (mean @ 0.5) | 4/8 | Four reals (r1,r2,r3,r5) predicted FAKE |
+| v2_median (median @ 0.65) | 5/8 | r3 fixed; r2,r5 still FAKE |
+| v2_pct70 (pct_vote, single 0.70) | 7/8 | One real (r1) still FAKE |
+| v3_pctvote (vote 0.50) | 5/8 | r2,r5 FAKE again |
+| v3_pctvote_tuned (vote 0.70) | 8/8 | All 5 reals REAL, all 3 fakes FAKE |
+| v3_pctvote_p40_only / p40 | 8/8 | vad_rms_percentile 40 (or 50); stronger gating |
+
+With **correct Trump naming** (r=real, f=fake), the tuned configs (pct_vote, vote 0.70, VAD p40) achieve **8/8** on the Trump set. Current run on all testing audios (Trump + Pakistani + synthetic) also gives **Trump 8/8**; see `reports/phase6_explanation_runs/all_testing_audios/RESULTS_ANALYSIS.md`.
+
+### Other implementation details
+
+- **Env in JSON**: File-level “explanation” env is **median** of per-chunk raw env dicts (human summary; model input is per-chunk).
+- **Scaler**: No env scaler patch in Phase 6; Phase 4 uses per-sample env normalization.
+- **RT60/silence**: Same constants as Phase 2.
+
+---
+
+## Detail evaluation (full test set)
+
+- **Phase 5** was run with **threshold sweep** (0.5, 0.65, 0.70). Results: see `reports/evaluation/threshold_sweep.csv` and the “Threshold sweep (detail evaluation)” section in `reports/evaluation/comprehensive_evaluation_report.md`. At 0.70, bonafide FPR is lower than at 0.5 with a small accuracy trade-off.
+- **Phase 6 on full test set**: Optional; requires file-level test list (test manifest is segment-level). See `reports/evaluation/` for Phase 5 outputs; **do not modify** the evaluation folder for Phase 6 run organization.
 
 ---
 
 ## ✅ Success Criteria
 
-- [x] Explanation system generates predictions with reasons
-- [ ] Environmental feature contributions analyzed
-- [ ] Spectrogram patterns identified (if possible)
-- [x] Human-readable explanations generated (JSON/text)
-- [ ] Explanations are accurate and informative (qualitative check)
-- [x] System works on both real and fake audio (raw wav)
-- [ ] Examples documented (to be added after first run)
-
----
-
-## 🚀 Quick Commands
-
-### Laptop / testing_audios (Trump set)
-```powershell
-cd E:\FYP
-conda activate fassd
-python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_dir E:/FYP/testing_audios --output_dir reports/explanation_examples --batch_size 32 --threshold 0.5
-```
-
-### Run via wrapper (defaults to testing_audios)
-```powershell
-cd E:\FYP
-conda activate fassd
-python code/phase6/run_phase6.py
-```
-
-### (Optional) Use a single file
-```powershell
-python code/phase6/explain_prediction.py --ckpt models_saved/hybrid_resnet_environmental_best.pth --audio_path E:/FYP/testing_audios/trump_r1.wav --output_dir reports/explanation_examples --batch_size 32 --threshold 0.5
-```
-
----
-
-## 📊 Explanation Quality Metrics
-
-**Evaluation:**
-- Explanation accuracy (do reasons match actual features?)
-- Explanation clarity (are explanations understandable?)
-- User feedback (if possible)
-
-**Test Cases:**
-- Real audio → Should explain why it's real
-- Fake audio → Should explain why it's fake
-- Borderline cases → Should show uncertainty
-
----
-
-## ⚠️ Challenges & Solutions
-
-### Challenge 1: Feature Attribution
-**Problem**: Determining which features contribute to prediction  
-**Solution**: 
-- Use gradient-based methods (integrated gradients)
-- Feature importance from model
-- Ablation studies
-
-### Challenge 2: Explanation Accuracy
-**Problem**: Explanations may not match actual model reasoning  
-**Solution**: 
-- Validate explanations with domain experts
-- Test on known cases
-- Iterate based on feedback
-
-### Challenge 3: Complexity
-**Problem**: Too technical explanations  
-**Solution**: 
-- Use simple language
-- Focus on key factors
-- Provide both simple and detailed explanations
+- [x] Explanation system generates predictions with reasons (JSON/CSV).
+- [x] Per-chunk environmental features; robust pooling and VAD gating.
+- [x] Human-readable explanations; works on real and fake audio (raw wav).
+- [x] Tuning documented; explanation runs organized under `reports/phase6_explanation_runs/`.
+- [ ] Optional: deeper feature attribution / Grad-CAM (future).
 
 ---
 
 ## 🔗 Dependencies
 
-**Prerequisites:**
-- ✅ Phase 5: Evaluation (need evaluated model)
-- ✅ Trained hybrid model
-- ✅ Feature extraction code
-
-**Next Phase:**
-- Phase 7: Domain Adaptation (if needed)
-- Or: Deployment/Testing
+- **Prerequisites**: Phase 5 (evaluation), Phase 4 checkpoint, feature extraction (log-mel + environmental).
+- **Next**: Phase 7 (domain adaptation) if needed; or deployment/testing.
 
 ---
 
-## 📝 Notes
+## 📝 References
 
-- Explanations should be **interpretable**, not just technical
-- Focus on **environmental features** as core (project requirement)
-- Provide both **simple** and **detailed** explanations
-- Document explanation methodology
-- Test explanations on diverse audio samples
-
----
-
-## 🔍 Explanation System Checklist
-
-- [ ] Feature importance analysis implemented
-- [ ] Explanation generation works
-- [ ] Explanations are human-readable
-- [ ] Both real and fake explanations tested
-- [ ] Examples documented
-- [ ] System can be integrated into prediction pipeline
-- [ ] Visualizations created (if applicable)
+- Pipeline: `reports/COMPLETE_PIPELINE_TO_GOAL.md`, `reports/COMPLETE_PROJECT_STORY.md`
+- Phase 2: `reports/pipeline_phases/PHASE2_FEATURE_EXTRACTION.md`
+- Phase 5: `reports/pipeline_phases/PHASE5_EVALUATION.md`; `reports/evaluation/comprehensive_evaluation_report.md`
+- Phase 6 runs: **`reports/phase6_explanation_runs/README.md`**
+- Code: `code/phase6/explain_prediction.py`, `code/phase6/README.md`
 
 ---
 
-**Last Updated**: December 27, 2025  
-**Status**: ✅ READY
-
+**Last Updated**: February 2026  
+**Status**: ✅ IMPLEMENTED

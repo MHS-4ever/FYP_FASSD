@@ -64,6 +64,7 @@ def parse_args():
     p.add_argument("--batch_size", type=int, default=256)
     p.add_argument("--mixed_precision", type=int, default=1, help="1 to enable autocast, 0 to disable")
     p.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"])
+    p.add_argument("--thresholds", type=str, default="0.5 0.65 0.70", help="Space-separated thresholds for detail evaluation (accuracy + bonafide FPR)")
     return p.parse_args()
 
 
@@ -317,6 +318,23 @@ def main():
             })
     pd.DataFrame(per_attack_rows).to_csv(os.path.join(args.output_dir, "per_attack_metrics.csv"), index=False)
 
+    # Threshold sweep (detail evaluation): accuracy and bonafide FPR at each threshold
+    thresh_list = [float(x) for x in args.thresholds.split()]
+    y_true = overall["y_true_bin"]
+    y_score = overall["y_score_spoof"]
+    bonafide_mask = y_true == 0
+    sweep_rows = []
+    for t in thresh_list:
+        pred = (y_score >= t).astype(int)
+        acc = float((pred == y_true).mean()) * 100
+        # Bonafide FPR: among bonafide samples, fraction predicted as spoof (1)
+        if bonafide_mask.any():
+            bonafide_fpr = float((pred[bonafide_mask] == 1).mean()) * 100
+        else:
+            bonafide_fpr = float("nan")
+        sweep_rows.append({"threshold": t, "accuracy_pct": round(acc, 4), "bonafide_fpr_pct": round(bonafide_fpr, 4) if np.isfinite(bonafide_fpr) else None})
+    pd.DataFrame(sweep_rows).to_csv(os.path.join(args.output_dir, "threshold_sweep.csv"), index=False)
+
     # Figures
     _save_confusion_matrix_png(overall["bin_cm"], ["bonafide(0)", "spoof(1)"], "Binary Confusion (Overall)", os.path.join(args.output_dir, "confusion_matrices", "overall_binary_cm.png"))
     _save_confusion_matrix_png(overall["mc_cm"], ATTACK_TYPE_NAMES, "Multiclass Confusion (Overall)", os.path.join(args.output_dir, "confusion_matrices", "overall_multiclass_cm.png"))
@@ -365,7 +383,15 @@ def main():
             f.write(f"- Binary AUC: **N/A (single-class subset)**\n")
         f.write(f"- Binary Accuracy (@0.5): **{overall['acc']*100:.2f}%**\n")
         f.write(f"- Multiclass Accuracy: **{overall['mc_acc']*100:.2f}%**\n\n")
-
+        f.write("## Threshold sweep (detail evaluation)\n\n")
+        f.write("Accuracy and bonafide FPR at multiple operating points (full test set):\n\n")
+        f.write("| Threshold | Accuracy (%) | Bonafide FPR (%) |\n")
+        f.write("|-----------|--------------|------------------|\n")
+        for r in sweep_rows:
+            bfpr = f"{r['bonafide_fpr_pct']:.2f}" if r["bonafide_fpr_pct"] is not None else "N/A"
+            f.write(f"| {r['threshold']} | {r['accuracy_pct']:.2f} | {bfpr} |\n")
+        f.write("\n- **Bonafide FPR**: among real (bonafide) samples, % predicted as spoof. Lower is better.\n")
+        f.write("- Saved: `threshold_sweep.csv`\n\n")
         if asv is not None:
             f.write("## ASVspoof (Test)\n\n")
             f.write(f"- Samples: **{asv['n']}**\n")

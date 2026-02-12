@@ -1,0 +1,63 @@
+{
+  "filename": "trump_f3.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump\\trump_f3.wav",
+  "prediction": "FAKE",
+  "confidence": 0.9444444444444444,
+  "spoof_prob": 0.9444444444444444,
+  "decision_score": 0.9444444444444444,
+  "pooling": "pct_vote",
+  "spoof_prob_mean": 0.9508957266807556,
+  "spoof_prob_median": 0.9999990463256836,
+  "spoof_prob_trimmed": 0.9986572265625,
+  "spoof_prob_logit_mean": 1.0,
+  "pct_chunks_above_chunk_threshold": 0.9444444444444444,
+  "threshold": 0.65,
+  "effective_threshold": 0.7,
+  "chunk_threshold": 0.65,
+  "vote_threshold": 0.7,
+  "attack_type": "synthesis",
+  "attack_type_idx": 1,
+  "attack_type_conf": 0.4922179579734802,
+  "attack_probs": [
+    0.0575438067317009,
+    0.4922179579734802,
+    0.4502369165420532,
+    1.2892364793515299e-06
+  ],
+  "n_chunks": 36,
+  "n_chunks_total": 38,
+  "n_chunks_used": 36,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 40.0,
+  "vad_mode": "file_percentile",
+  "vad_db_threshold": -45.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6117345525076199,
+  "speech_ratio_median_used": 0.6197007481296758,
+  "vad_file_rms_threshold": 0.012855400331318378,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.31016403436660767,
+    "snr": 17.58536720275879,
+    "background_level": -43.45201110839844,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.8810392618179321,
+    "spectral_flatness": 0.038837336003780365,
+    "spectral_rolloff": 2925.22314453125,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.004563280381262302,
+    "background_consistency": 0.6222491264343262,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.046, 1.000] across 36 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=pct_vote: mean=0.951, median=1.000, trimmed=0.999, logit_mean=1.000, pct_over_chunk_threshold=0.944",
+    "VAD(file_percentile) kept 36/38 chunks (min speech ratio=0.40).",
+    "pct_vote thresholds: chunk_threshold=0.650, vote_threshold=0.700."
+  ],
+  "overall_explanation": "Model predicts FAKE (decision_score=0.944, pooling=pct_vote, threshold=0.700). Most likely attack type: synthesis (conf=0.492)."
+}

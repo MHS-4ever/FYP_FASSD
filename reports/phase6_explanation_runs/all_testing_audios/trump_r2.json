@@ -1,0 +1,63 @@
+{
+  "filename": "trump_r2.wav",
+  "filepath": "E:\\FYP\\testing_audios\\trump\\trump_r2.wav",
+  "prediction": "REAL",
+  "confidence": 0.32352941176470584,
+  "spoof_prob": 0.6764705882352942,
+  "decision_score": 0.6764705882352942,
+  "pooling": "pct_vote",
+  "spoof_prob_mean": 0.703925371170044,
+  "spoof_prob_median": 0.910862922668457,
+  "spoof_prob_trimmed": 0.7526776194572449,
+  "spoof_prob_logit_mean": 0.96044921875,
+  "pct_chunks_above_chunk_threshold": 0.6764705882352942,
+  "threshold": 0.65,
+  "effective_threshold": 0.7,
+  "chunk_threshold": 0.65,
+  "vote_threshold": 0.7,
+  "attack_type": "conversion",
+  "attack_type_idx": 2,
+  "attack_type_conf": 0.4657297134399414,
+  "attack_probs": [
+    0.30991119146347046,
+    0.21858210861682892,
+    0.4657297134399414,
+    0.005777216982096434
+  ],
+  "n_chunks": 1326,
+  "n_chunks_total": 1610,
+  "n_chunks_used": 1326,
+  "vad_min_speech_ratio": 0.4,
+  "vad_rms_percentile": 40.0,
+  "vad_mode": "file_percentile",
+  "vad_db_threshold": -45.0,
+  "vad_fallback_all": false,
+  "speech_ratio_mean_used": 0.6639227722548832,
+  "speech_ratio_median_used": 0.5860349127182045,
+  "vad_file_rms_threshold": 0.10804520547389984,
+  "env_features": {
+    "rt60": 0.0,
+    "drr": 0.30621328949928284,
+    "snr": 8.834352493286133,
+    "background_level": -22.25165367126465,
+    "silence_ratio": 0.1031746044754982,
+    "spectral_tilt": -0.6256328821182251,
+    "spectral_flatness": 0.09117855876684189,
+    "spectral_rolloff": 4068.79345703125,
+    "cleanliness_score": 0.0,
+    "high_freq_content": 0.03697826713323593,
+    "background_consistency": 0.8119522333145142,
+    "env_stability": 1.0
+  },
+  "env_reasons": [
+    "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+  ],
+  "spec_reasons": [
+    "Chunk consistency: spoof prob range [0.000, 1.000] across 1326 chunks.",
+    "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+    "Pooling=pct_vote: mean=0.704, median=0.911, trimmed=0.753, logit_mean=0.960, pct_over_chunk_threshold=0.676",
+    "VAD(file_percentile) kept 1326/1610 chunks (min speech ratio=0.40).",
+    "pct_vote thresholds: chunk_threshold=0.650, vote_threshold=0.700."
+  ],
+  "overall_explanation": "Model predicts REAL (bonafide) with confidence=0.324 (pooling=pct_vote, threshold=0.700)."
+}
