@@ -1,0 +1,2 @@
+test_id,priority,audio_path,source_origin,manipulation_type,language,speaker_type,device_chain,platform,ground_truth_origin,ground_truth_manipulation,expected_forensic_result,notes
+P0_EXAMPLE_DELETE_ME,P0,testing_audios/forensic_p0/PLACEHOLDER.wav,human,clean_direct,english,self_recorded,example_device,none,human,clean,Human-likely origin; clean direct recording; low manipulation risk,Delete this example row when filling the real manifest

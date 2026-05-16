@@ -1,213 +1,139 @@
-# Phase 7: Domain Adaptation (If Needed)
+# Phase 7: Domain Adaptation & Forensic Improvement
 
-**Status**: 🟢 **NEXT** (Phase 6 closed; start Phase 7)  
-**Priority**: 🟡 CONDITIONAL  
-**Duration**: Week 5  
-**Dependencies**: Phase 5 (Evaluation), Phase 6 (complete). Trigger: Real-world EER > 20% or domain adaptation desired.
-
----
-
-## 🎯 Objective
-
-Fine-tune the hybrid model on additional real-world data if cross-domain performance is below target (Real-world EER > 20%).
+**Status**: 🟡 **SPLIT** — Phase 7A is next; fine-tuning (7C) blocked until 7A review  
+**Priority**: 🟡 CONDITIONAL (7C) / 🔴 CRITICAL (7A first)  
+**Dependencies**: Phase 5 ✅, Phase 6 ✅  
 
 ---
 
-## ⚠️ Trigger Condition
+## Phase 7 structure (updated)
 
-**This phase is ONLY needed if:**
-- Real-world EER > 20% after Phase 5 evaluation
-- Significant performance gap between ASVspoof and Real-world domains
-- Model fails to generalize to real-world audio
+Phase 7 is no longer “fine-tune if EER > 20%” only. It is a **sequence**:
 
-**If Real-world EER < 20%:** Skip this phase and proceed to deployment/testing.
+| Sub-phase | Name | Training? | Document |
+|-----------|------|-----------|----------|
+| **7A** | Controlled forensic test suite | **No** | [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md) |
+| **7B** | Controlled local dataset + manifest | Prepare labels only | TBD |
+| **7C** | Fine-tune current `HybridResNetEnvironmental` | **Yes** | This file (Section below) |
+| **7D** | Report generation + UI labels | Optional | [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md) |
+| **7E** | Compare SSL/transformer/AASIST-style + possible ensemble | After 7C | [FORENSIC_PRODUCT_ROADMAP.md](../FORENSIC_PRODUCT_ROADMAP.md) |
 
----
-
-## 📋 Tasks
-
-### 1. Collect Additional Real-World Data
-
-**If Performance is Poor:**
-- Identify which domains are failing (broadcast/phone/podcast/social)
-- Collect additional samples from failing domains
-- Minimum: 1,000+ samples per failing domain
-- Focus on diverse recording conditions
-
-**Data Collection:**
-- Same process as Phase 0
-- Target failing domains specifically
-- Ensure quality and proper labeling
-
-### 2. Fine-Tuning Strategy
-
-**Option 1: Full Fine-Tuning**
-- Train entire model on real-world data
-- Lower learning rate (1e-4 or 1e-5)
-- Fewer epochs (5-10)
-- Monitor for overfitting
-
-**Option 2: Transfer Learning**
-- Freeze ResNet branch (keep spectrogram knowledge)
-- Freeze Environmental branch (keep environmental knowledge)
-- Train only fusion layer and output heads
-- Faster training, less risk of catastrophic forgetting
-
-**Option 3: Progressive Unfreezing**
-- Start with frozen branches
-- Gradually unfreeze layers
-- Fine-tune progressively
-
-**Recommended:** Option 2 (Transfer Learning) - safer, faster
-
-### 3. Fine-Tuning Process
-
-**Data Preparation:**
-- Combine original training data + new real-world data
-- Maintain 50/50 ASVspoof/Real-world mix (or adjust)
-- Use speaker-independent splits
-
-**Training Configuration:**
-- Learning rate: 1e-4 (lower than initial training)
-- Epochs: 5-10 (fewer than initial training)
-- Batch size: 128 (same)
-- Monitor: Real-world validation EER (key metric)
-
-**Loss Weights:**
-- May adjust binary/multiclass weights
-- Focus on binary task (real/fake) if multiclass is less important
-
-### 4. Evaluation After Fine-Tuning
-
-**Compare:**
-- Before fine-tuning: Real-world EER
-- After fine-tuning: Real-world EER
-- Improvement: Target > 5% EER reduction
-
-**Metrics:**
-- Real-world EER (should be < 20%)
-- ASVspoof EER (should not degrade significantly)
-- Overall EER
-- Per-domain breakdown
+**Product direction:** [FORENSIC_PRODUCT_ROADMAP.md](../FORENSIC_PRODUCT_ROADMAP.md)
 
 ---
 
-## 📁 Output Files
+## Immediate rule
+
+> **Fine-tuning (Phase 7C) starts only after Phase 7A results are created and reviewed.**
+
+Phase 5 met RealWorld EER &lt; 20%, but **manual forensic conditions** (Urdu, replay chains, WhatsApp, mixer) still fail. Measure them in 7A before changing weights.
+
+---
+
+## Phase 7A (do this first)
+
+- Fill `reports/phase7_forensic_tests/forensic_test_manifest.csv` (≥ 40 P0 clips).
+- Run baseline Phase 6 inference — no training.
+- Produce `forensic_test_results.csv` and `FORENSIC_TEST_ANALYSIS.md`.
+
+See [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md).
+
+---
+
+## Phase 7B (dataset preparation)
+
+- Record/collect controlled audio with `ground_truth_origin` and `ground_truth_manipulation`.
+- Extend manifest for training (speaker-independent splits preserved).
+- Label: human vs AI origin; clean vs replayed vs processed vs compressed vs edited.
+
+---
+
+## Phase 7C — Fine-tuning (this document’s original scope)
+
+### Trigger (revised)
+
+Proceed with 7C when **Phase 7A analysis** shows:
+
+- Clear failure modes (e.g. Urdu FP, human-replay misinterpretation), and
+- A labeled dataset plan from 7B, and
+- Agreement that fine-tuning is the right fix (vs report rules-only in 7D).
+
+**Note:** Real-world EER &lt; 20% on Phase 5 **does not** skip 7A.
+
+### Fine-tuning strategies (unchanged recommendations)
+
+**Option 1: Full fine-tuning** — entire model, LR 1e-4–1e-5, 5–10 epochs  
+
+**Option 2: Transfer learning (recommended)** — freeze ResNet + environmental branches; train fusion + heads  
+
+**Option 3: Progressive unfreezing** — gradual unfreeze  
+
+### Data mix
+
+- Keep ASVspoof + RealWorld mix to limit catastrophic forgetting.
+- Add 7B controlled clips (Urdu, phone, replay chains, WhatsApp).
+- Maintain speaker-independent splits.
+
+### Outputs
 
 ```
 models_saved/
-└── hybrid_resnet_environmental_finetuned.pth    # Fine-tuned model
+└── hybrid_resnet_environmental_finetuned.pth
 
 reports/
-├── logs/
-│   └── finetuning_metrics.csv                   # Fine-tuning metrics
-└── evaluation/
-    └── finetuned_evaluation_report.md           # Post-finetuning evaluation
+├── logs/finetuning_metrics.csv
+└── evaluation/finetuned_evaluation_report.md
 ```
 
----
+### Success criteria (7C)
 
-## 🔧 Scripts Needed
-
-### To Create:
-- `Code/finetune_on_realworld.py` - Fine-tuning script
-- `Code/compare_before_after.py` - Before/after comparison
-
-### Existing (Reuse):
-- ✅ `Code/train_hybrid_model.py` - Base training code
-- ✅ `Code/evaluate_hybrid_model.py` - Evaluation code
+- [ ] 7A failure modes addressed or documented as residual
+- [ ] Real-world / target domain metrics improved on held-out forensic set
+- [ ] ASVspoof EER degradation &lt; ~2% vs baseline (tune per project)
+- [ ] Before/after comparison saved
 
 ---
 
-## ✅ Success Criteria
+## Phase 7D — Report & UI
 
-- [ ] Additional real-world data collected (if needed)
-- [ ] Fine-tuning completed without catastrophic forgetting
-- [ ] Real-world EER < 20% (target met)
-- [ ] ASVspoof performance maintained (no significant degradation)
-- [ ] Improvement documented (before/after comparison)
-- [ ] Fine-tuned model saved
+- Map Phase 6 JSON → layered `origin_label`, `manipulation_label`, `risk_level`
+- Implement [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md)
+- Avoid “proved fake” wording
 
 ---
 
-## 📊 Expected Improvement
+## Phase 7E — SSL / transformer / AASIST comparison (after 7C)
 
-**Target:**
-```
-Metric                    | Before | After  | Improvement
---------------------------|--------|--------|------------
-Real-world EER            | > 20%  | < 20%  | > 5% reduction
-ASVspoof EER              | < 5%   | < 6%   | < 1% degradation
-Overall EER                | > 10%  | < 10%  | Improvement
-```
+**Start only after Phase 7A (testing) and Phase 7C (hybrid fine-tune) are reviewed.**
 
-**Minimum Acceptable:**
-- Real-world EER reduction: > 3%
-- ASVspoof EER increase: < 2%
+Phase 7E is **not** “optional because GPU is too small.” A **12 GB VRAM** PC makes these **practical** once the hybrid path is baselined:
 
----
+| Approach | Notes on 12 GB VRAM |
+|----------|---------------------|
+| WavLM-base | Frozen backbone + head, LoRA/adapters, or careful small-batch fine-tune |
+| wav2vec2-base | Same patterns as WavLM-base |
+| AASIST-style front-end | Feasible as experiment or frozen-feature probe |
+| Small SSL ablations | Compare against hybrid on **same** 7A forensic manifest |
+| Ensemble | Only after side-by-side 7C hybrid vs 7E SSL metrics |
 
-## ⚠️ Challenges & Solutions
+**Do not start 7E yet** — no transformer implementation or training in the current step.
 
-### Challenge 1: Catastrophic Forgetting
-**Problem**: Fine-tuning may forget ASVspoof knowledge  
-**Solution**: 
-- Use transfer learning (freeze branches)
-- Mix ASVspoof + Real-world data
-- Monitor ASVspoof performance
-
-### Challenge 2: Overfitting
-**Problem**: Model may overfit to new real-world data  
-**Solution**: 
-- Lower learning rate
-- Fewer epochs
-- Early stopping
-- Regularization (dropout, weight decay)
-
-### Challenge 3: Limited Data
-**Problem**: Not enough real-world data for fine-tuning  
-**Solution**: 
-- Collect more data (Phase 0 again)
-- Use data augmentation
-- Consider semi-supervised learning
+**7E success:** Document whether SSL/transformer beats fine-tuned hybrid on priority gaps (Urdu, replay, WhatsApp, mixer); if not, keep hybrid as primary scorer.
 
 ---
 
-## 🔗 Dependencies
+## Legacy trigger note (superseded)
 
-**Prerequisites:**
-- ✅ Phase 5: Evaluation (need to identify poor performance)
-- ✅ Trained hybrid model
-
-**Next Phase:**
-- Phase 6: Explanation System (if fine-tuning succeeds)
-- Or: Re-evaluate and iterate
+Previously: “Skip Phase 7 if Real-world EER &lt; 20%.”  
+**Superseded by:** forensic product requirements and Phase 7A gate. EER alone does not cover replay/mixer/Urdu gaps.
 
 ---
 
-## 📝 Notes
+## Related
 
-- This phase is **OPTIONAL** - only if needed
-- Don't proceed if Real-world EER already < 20%
-- Monitor ASVspoof performance to avoid degradation
-- Document fine-tuning process and results
-- Consider multiple fine-tuning strategies if first attempt fails
+- [NEXT_ACTIONS.md](../NEXT_ACTIONS.md)
+- [PROJECT_STATE_AUDIT.md](../PROJECT_STATE_AUDIT.md)
+- `code/phase7/README.md` — planned scripts
 
----
-
-## 🔍 Fine-Tuning Checklist
-
-- [ ] Poor performance identified (Real-world EER > 20%)
-- [ ] Additional data collected (if needed)
-- [ ] Fine-tuning strategy chosen
-- [ ] Fine-tuning completed
-- [ ] Real-world EER improved (< 20%)
-- [ ] ASVspoof performance maintained
-- [ ] Before/after comparison documented
-- [ ] Fine-tuned model saved
-
----
-
-**Last Updated**: [Date]  
-**Status**: ⏳ PENDING (CONDITIONAL)
-
+**Last Updated**: May 2026  
+**Status**: 7A next; 7C pending 7A sign-off
