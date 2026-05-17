@@ -1,0 +1,12 @@
+metric,value,notes
+total_rows,1893919,unified_manifest
+bonafide_pct,16.9284,
+spoof_pct,83.0716,
+top_dataset,PA,943110 rows (49.8%)
+top_domain,studio,1819660 rows (96.08%)
+pa_rows,943110,replay_attack_rows=816480
+studio_domain_rows,1819660,pct=96.08
+realworld_rows,157414,non-ASVspoof real-world YouTube clips
+train_rows,1483741,bonafide_pct=16.9348
+val_rows,155604,bonafide_pct=19.0265
+test_rows,254574,bonafide_pct=15.6092

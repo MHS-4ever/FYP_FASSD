@@ -1,5 +1,7 @@
 # Phase 7D — Forensic Report Layer
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. Canonical 7D spec: [phase7/PHASE7D_FORENSIC_REPORT_LAYER.md](../phase7/PHASE7D_FORENSIC_REPORT_LAYER.md).
+
 **Status:** 📋 **SPECIFIED** (implementation after Phase 7A review)  
 **Priority:** 🔴 **MANDATORY** (not optional)  
 **Dependencies:** Phase 6 inference outputs; Phase 7A failure patterns; optional Phase 7C fine-tuned checkpoint  
@@ -178,7 +180,7 @@ Dynamic additions when applicable:
 
 - Only *N* chunks used after VAD.  
 - Decision score near threshold.  
-- `partial_fabrication_detected` with whole-file REAL.
+- `partial_fabrication_detected` with whole-file REAL (e.g. `T5_FAB_001`: 34 s file, insert 14–21 s — use inside/outside chunk metrics; see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).
 
 ---
 

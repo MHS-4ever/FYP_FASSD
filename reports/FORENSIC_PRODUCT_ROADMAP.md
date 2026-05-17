@@ -1,5 +1,7 @@
 # FASSD Forensic Voice Authenticity Analyzer — Product Roadmap
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. See also [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) and [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md).
+
 **Last updated:** May 2026  
 **Status:** Direction document (baseline model exists; forensic product in progress)
 
@@ -157,7 +159,7 @@ One or more paragraphs in plain language for the reviewer, following rules in Se
 
 2. **REAL + replay/conversion/channel artifacts:** Report **“human-origin with manipulation risk”** — not “authentic” or “clean original.”
 
-3. **Mostly human-like + suspicious region(s):** Report **“partial fabrication risk detected”** (or `mixed_or_partial_ai` / `edited_or_spliced` as appropriate) even when pooled vote is REAL.
+3. **Mostly human-like + suspicious region(s):** Report **“partial fabrication risk detected”** (or `mixed_or_partial_ai` / `edited_or_spliced` as appropriate) even when pooled vote is REAL. Example: **34 s** file with AI insert **14–21 s** (`T5_FAB_001`) — whole-file may be REAL; chunk inside 14–21 s must show higher spoof/synthesis/conversion than outside (see `phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md`).
 
 4. **Attack hint is auxiliary** — never the sole forensic verdict.
 

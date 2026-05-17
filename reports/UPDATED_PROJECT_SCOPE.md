@@ -1,5 +1,7 @@
 # FASSD Updated Project Scope — Forensic Voice Authenticity Analyzer
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility.
+
 **Effective:** May 2026  
 **Supersedes:** “Simple AI-vs-human deepfake detector” as the sole product definition  
 **Baseline model:** `HybridResNetEnvironmental` (unchanged until Phase 7C review)
@@ -49,7 +51,10 @@ Detect whether the audio is **clean/original** or affected by replay, mixer/equa
 
 Detect cases where a **mostly real** recording contains a small AI-generated, converted, cloned, or spliced section.
 
-**Example:** 120 s human audio + 10 s AI/cloned inserted segment.
+**Examples:**
+
+- 120 s human audio + 10 s AI/cloned inserted segment.  
+- **P0 reference:** `T5_FAB_001` — 34 s mostly real, AI insert **14.0–21.0 s** (`testing_audios/fabricated/fabricated_001.wav`). Whole-file may stay REAL; pass/fail uses **inside vs outside** chunk spoof scores ([PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).
 
 | Output | Meaning |
 |--------|---------|

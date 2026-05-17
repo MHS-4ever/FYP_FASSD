@@ -1,0 +1,162 @@
+[
+  {
+    "path": "data/features/logmel_chunked.h5",
+    "exists": true,
+    "size_gb": 193.9835,
+    "top_level_keys": [
+      "features",
+      "indices",
+      "metadata"
+    ],
+    "datasets": {
+      "features": {
+        "present": true,
+        "shape": [
+          1893919,
+          64,
+          400
+        ],
+        "dtype": "float32",
+        "ndim": 3,
+        "chunks": [
+          256,
+          64,
+          400
+        ]
+      },
+      "indices": {
+        "type": "group",
+        "keys": [
+          "h5_idx",
+          "manifest_idx"
+        ]
+      },
+      "indices/h5_idx": {
+        "present": true,
+        "shape": [
+          1893919
+        ],
+        "dtype": "int32",
+        "ndim": 1
+      },
+      "indices/manifest_idx": {
+        "present": true,
+        "shape": [
+          1893919
+        ],
+        "dtype": "int64",
+        "ndim": 1
+      },
+      "metadata": {
+        "type": "group",
+        "keys": []
+      }
+    },
+    "attrs": {},
+    "sample_stats": {
+      "features": {
+        "min": -80.0,
+        "max": 0.0,
+        "mean": -31.46032107327366,
+        "std": 29.32580427487891,
+        "nan_count": 0,
+        "inf_count": 0
+      }
+    },
+    "shape_checks": {
+      "logmel_shape_ok": true,
+      "expected": "[64,400] or [1,64,400]",
+      "actual": "(64, 400)"
+    },
+    "errors": [],
+    "num_samples": 1893919,
+    "feature_shape": [
+      64,
+      400
+    ]
+  },
+  {
+    "path": "data/features/environmental_packed.h5",
+    "exists": true,
+    "size_gb": 0.1145,
+    "top_level_keys": [
+      "features",
+      "indices",
+      "metadata"
+    ],
+    "datasets": {
+      "features": {
+        "present": true,
+        "shape": [
+          1893919,
+          12
+        ],
+        "dtype": "float32",
+        "ndim": 2,
+        "chunks": [
+          100,
+          12
+        ]
+      },
+      "indices": {
+        "type": "group",
+        "keys": [
+          "h5_idx",
+          "manifest_idx"
+        ]
+      },
+      "indices/h5_idx": {
+        "present": true,
+        "shape": [
+          1893919
+        ],
+        "dtype": "int32",
+        "ndim": 1
+      },
+      "indices/manifest_idx": {
+        "present": true,
+        "shape": [
+          1893919
+        ],
+        "dtype": "int64",
+        "ndim": 1
+      },
+      "metadata": {
+        "type": "group",
+        "keys": []
+      }
+    },
+    "attrs": {},
+    "sample_stats": {
+      "features": {
+        "min": -62.13546371459961,
+        "max": 38.628475189208984,
+        "mean": -1.1030053309548338,
+        "std": 12.60873853693047,
+        "nan_count": 0,
+        "inf_count": 0
+      }
+    },
+    "shape_checks": {
+      "env_dim_ok": true,
+      "expected": "12",
+      "actual": "12"
+    },
+    "errors": [],
+    "num_samples": 1893919,
+    "feature_shape": [
+      12
+    ]
+  },
+  {
+    "path": "data/features/logmel_packed.h5",
+    "exists": false,
+    "size_gb": null,
+    "top_level_keys": [],
+    "datasets": {},
+    "attrs": {},
+    "sample_stats": {},
+    "shape_checks": {},
+    "errors": []
+  }
+]

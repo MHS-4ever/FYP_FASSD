@@ -1,0 +1,3 @@
+test_id,audio_path,review_status,exclusion_reason,product_status,notes,manipulation_type
+T1.1,E:\FYP\testing_audios\T1\T1.1.mp3,needs_review,,clean_human_borderline,Clean human direct mobile recording (Urdu/Pakistani local),clean_direct
+T4.1,E:\FYP\testing_audios\T4\T4.1.mp3,needs_review,,clean_human_borderline,Known speaker real reference,clean_direct

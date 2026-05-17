@@ -1,9 +1,11 @@
 # FASSD Next Actions
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility.
+
 **Product:** [Forensic Voice Authenticity Analyzer](UPDATED_PROJECT_SCOPE.md)  
 **Scope:** [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) (Scopes 1–6)  
 **Roadmap:** [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md)  
-**Gate:** No training until [Phase 7A](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) is reviewed.
+**Gate:** No training until [Phase 7A](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) is reviewed.
 
 ---
 
@@ -11,7 +13,7 @@
 
 1. Read [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) and [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) (layered output + product rules).
 2. **Complete P0 controlled test audios** (~40 core + partial-fabrication cases in 7A spec).
-3. **Include partial-fabrication test cases** (long real + short AI insert; see Phase 7A §5.2).
+3. **Include partial-fabrication test cases** — start with **`T5_FAB_001`** (34 s, fake **14–21 s**); see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).
 4. Copy `forensic_test_manifest_template.csv` → `forensic_test_manifest.csv` and fill forensic label columns.
 5. **Run Phase 7A** — Phase 6 inference per file (no training).
 6. **Review whole-file predictions** and **chunk-level suspicious behavior** (can current logic flag segments when file is REAL?).
@@ -22,7 +24,7 @@
 
 ## After Phase 7A (signed off)
 
-1. **Implement Phase 7D report layer** — schema, mapping, timeline, wording ([PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md)).
+1. **Implement Phase 7D report layer** — schema, mapping, timeline, wording ([PHASE7D_FORENSIC_REPORT_LAYER.md](phase7/PHASE7D_FORENSIC_REPORT_LAYER.md)).
 2. **Add suspicious timeline detection** (chunk-level → `suspicious_timeline`).
 3. **Prepare forensic-labeled dataset** (Phase 7B fields).
 4. **Fine-tune hybrid model** (Phase 7C) on priority domains.

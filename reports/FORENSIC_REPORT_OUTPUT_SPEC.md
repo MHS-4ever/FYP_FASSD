@@ -1,5 +1,7 @@
 # FASSD Forensic Report Output Specification
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. Report layer spec: [phase7/PHASE7D_FORENSIC_REPORT_LAYER.md](phase7/PHASE7D_FORENSIC_REPORT_LAYER.md).
+
 **Purpose:** Define what the **Forensic Voice Authenticity Analyzer** report should show to users, reviewers, and API consumers.  
 **Status:** Specification only (UI/API implementation in Phase 7D / Phase 8)  
 **Baseline model:** `HybridResNetEnvironmental` + Phase 6 chunk inference (interim scorer)

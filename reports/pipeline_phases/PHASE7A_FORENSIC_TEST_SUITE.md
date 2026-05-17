@@ -1,5 +1,7 @@
 # Phase 7A — Controlled Forensic Test Suite
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. Canonical 7A spec: [phase7/PHASE7A_CONTROLLED_TEST_SUITE.md](../phase7/PHASE7A_CONTROLLED_TEST_SUITE.md).
+
 **Status:** 🟡 **NEXT** (documentation + templates ready; audio files not yet recorded)  
 **Priority:** 🔴 CRITICAL (before any fine-tuning)  
 **Dependencies:** Phase 6 complete, baseline checkpoint available  
@@ -173,6 +175,34 @@ These cases test **Scope 3**: mostly real audio with a short inserted suspicious
 
 Priority: include at least **PF1–PF2** in first partial-fabrication batch (P1 if P0 is already full).
 
+### 5.3 Canonical example: `T5_FAB_001` (34 s, fake insert 14–21 s)
+
+**Reference file:** `testing_audios/fabricated/fabricated_001.wav`  
+**Full chunk-analysis spec:** [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)
+
+| Property | Value |
+|----------|--------|
+| Duration | 34 s total |
+| Suspicious region (ground truth) | **14.0 – 21.0 s** (AI insert) |
+| `partial_fabrication_detected` (GT) | `true` |
+| Expected whole-file | Often **REAL** — **do not use as sole pass/fail** |
+
+**Chunk rules:**
+
+- Mark chunk **inside** if its `[start, end]` **overlaps** 14.0–21.0 s.  
+- Compare **inside** vs **outside** spoof scores and attack hints.  
+- Compute `partial_region_detected` = true if any of:
+  - `inside_region_avg_spoof >= outside_region_avg_spoof + 0.15`, OR  
+  - `inside_region_max_spoof >= 0.65`, OR  
+  - inside dominant attack is synthesis/conversion while outside is mostly bonafide.
+
+**Manifest row (copy-ready):**
+
+```csv
+test_id,priority,audio_path,source_origin,manipulation_type,language,speaker_type,device_chain,platform,ground_truth_origin,ground_truth_manipulation,partial_fabrication_detected,suspicious_start_time,suspicious_end_time,expected_forensic_result,notes
+T5_FAB_001,P0,E:/FYP/testing_audios/fabricated/fabricated_001.wav,mixed,partial_ai_insert,urdu,known_public,edited_real_plus_ai,none,mixed,mixed,true,14.0,21.0,Mostly real audio with inserted AI-generated segment from 14s to 21s,Total duration 34 seconds. Fake inserted region is 14s to 21s.
+```
+
 ---
 
 ## 6. Current Inference Command
@@ -245,6 +275,18 @@ Aggregated file: `reports/phase7_forensic_tests/results/forensic_test_results.cs
 | `expected_forensic_interpretation` | Manifest expected narrative |
 | `max_chunk_spoof_prob` | Optional: highest chunk spoof prob |
 | `n_suspicious_chunks` | Optional: count of chunks ≥ chunk_threshold |
+| `whole_file_prediction` | Phase 6 `prediction` (context only for partial-fab cases) |
+| `whole_file_decision_score` | Phase 6 `decision_score` |
+| `n_chunks_inside` | Chunks overlapping `suspicious_start_time`–`suspicious_end_time` |
+| `n_chunks_outside` | Remaining used chunks |
+| `inside_region_avg_spoof` | Mean spoof prob inside region |
+| `outside_region_avg_spoof` | Mean spoof prob outside region |
+| `inside_region_max_spoof` | Max spoof prob inside region |
+| `outside_region_max_spoof` | Max spoof prob outside region |
+| `inside_region_dominant_attack` | Mode attack class inside region |
+| `outside_region_dominant_attack` | Mode attack class outside region |
+| `partial_region_detected` | Computed — see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md) |
+| `correct_partial_region_detected` | `yes` / `no` vs ground-truth `partial_fabrication_detected` |
 
 Rule mapping for layered labels: `reports/FORENSIC_PRODUCT_ROADMAP.md` and `pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md`.
 

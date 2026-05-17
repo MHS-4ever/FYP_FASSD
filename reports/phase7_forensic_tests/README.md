@@ -1,7 +1,7 @@
 # Phase 7A — Forensic Test Suite (Workspace)
 
 **Status:** Templates ready — **test audio not yet recorded**  
-**Spec:** `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md`  
+**Spec:** `reports/phase7/PHASE7A_CONTROLLED_TEST_SUITE.md`  
 **Scope:** `reports/UPDATED_PROJECT_SCOPE.md` (includes partial-fabrication / Scope 3)
 
 ---
@@ -25,7 +25,8 @@ You will:
 
 | File | Purpose |
 |------|---------|
-| `forensic_test_manifest_template.csv` | Column headers + example row (delete example when filling) |
+| `forensic_test_manifest_template.csv` | Column headers + **`T5_FAB_001`** partial-fabrication example |
+| `PARTIAL_FABRICATION_CHUNK_ANALYSIS.md` | Inside/outside region metrics + `partial_region_detected` rules |
 | `forensic_test_manifest.csv` | **You create** — filled manifest |
 | `results/json_outputs/` | One Phase 6 JSON per test |
 | `results/forensic_test_results.csv` | Merged manifest + scores |
@@ -48,9 +49,13 @@ testing_audios/
     ├── human_mixer/
     ├── ai_mixer/
     └── whatsapp_compressed/
+└── fabricated/
+    └── fabricated_001.wav   # T5_FAB_001 — 34 s, AI insert 14–21 s
 ```
 
 Paths in the manifest should point to actual files under `E:/FYP/testing_audios/...` or similar.
+
+**Partial-fabrication P0:** See `T5_FAB_001` in the manifest template and [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).
 
 ---
 

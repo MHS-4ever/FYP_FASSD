@@ -1,0 +1,7 @@
+check,split_a,split_b,overlap_count,severity,sample_ids
+train_val_speaker_overlap,train,val,0,none,
+train_test_speaker_overlap,train,test,0,none,
+val_test_speaker_overlap,val,test,0,none,
+duplicate_filepath_train_val,train,val,0,none,
+duplicate_filepath_train_test,train,test,0,none,
+duplicate_filepath_val_test,val,test,0,none,

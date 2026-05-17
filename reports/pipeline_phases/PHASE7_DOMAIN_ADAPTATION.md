@@ -1,5 +1,7 @@
 # Phase 7 — Forensic Product Upgrade
 
+> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. Start at [phase7/README.md](../phase7/README.md) and [phase7/PHASE7_MASTER_PLAN.md](../phase7/PHASE7_MASTER_PLAN.md).
+
 **Status:** 🟡 **IN PROGRESS** (7A next; no training until 7A reviewed)  
 **Priority:** 🔴 CRITICAL  
 **Dependencies:** Phase 5 ✅, Phase 6 ✅  

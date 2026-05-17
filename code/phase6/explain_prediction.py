@@ -411,6 +411,46 @@ def predict_file(path, model, device, args, env_extractor: EnvironmentalFeatureE
             f"(pooling={args.pooling}, threshold={effective_threshold:.3f})."
         )
 
+    chunk_timeline = []
+    chunk_timeline_includes_all = False
+    if getattr(args, "save_chunk_timeline", False):
+        used_idx = 0
+        for i, (c, keep, speech_ratio) in enumerate(zip(chunks, keep_mask, speech_ratios)):
+            entry = {
+                "chunk_index": int(i),
+                "start_time": float(c["start_sec"]),
+                "end_time": float(c["end_sec"]),
+                "vad_kept": bool(keep),
+                "speech_ratio": float(speech_ratio),
+            }
+            if keep:
+                ap = attack_probs[used_idx]
+                atk_idx = int(np.argmax(ap))
+                entry.update(
+                    {
+                        "evaluated": True,
+                        "spoof_probability": float(spoof_probs[used_idx]),
+                        "attack_probs": [float(x) for x in ap.tolist()],
+                        "attack_type": ATTACK_TYPE_NAMES[atk_idx]
+                        if 0 <= atk_idx < len(ATTACK_TYPE_NAMES)
+                        else str(atk_idx),
+                        "env_features": env_raw_chunks[used_idx] if used_idx < len(env_raw_chunks) else {},
+                    }
+                )
+                used_idx += 1
+            else:
+                entry.update(
+                    {
+                        "evaluated": False,
+                        "spoof_probability": None,
+                        "attack_probs": None,
+                        "attack_type": None,
+                        "env_features": None,
+                    }
+                )
+            chunk_timeline.append(entry)
+        chunk_timeline_includes_all = len(chunk_timeline) == len(chunks)
+
     if args.debug_chunk_stats:
         rt60_vals = np.array([float(d.get("rt60", 0.0)) for d in env_raw_chunks], dtype=np.float32)
         snr_vals = np.array([float(d.get("snr", 0.0)) for d in env_raw_chunks], dtype=np.float32)
@@ -468,6 +508,17 @@ def predict_file(path, model, device, args, env_extractor: EnvironmentalFeatureE
         "speech_ratio_median_used": float(np.median(speech_used)) if speech_used else 0.0,
         **vad_threshold_info,
         **debug_stats,
+        "chunk_timeline": chunk_timeline,
+        "chunk_timeline_includes_all_chunks": chunk_timeline_includes_all,
+        "chunk_timeline_note": (
+            "All file chunks listed; model scores only on vad_kept/evaluated chunks."
+            if chunk_timeline_includes_all
+            else (
+                "Timeline lists VAD-kept (evaluated) chunks only."
+                if chunk_timeline
+                else ""
+            )
+        ),
         "env_features": env_raw,  # raw values (interpretable)
         "env_reasons": env_reasons,
         "spec_reasons": spec_reasons,
@@ -542,6 +593,11 @@ def parse_args():
         "--debug_chunk_stats",
         action="store_true",
         help="Include per-file chunk distribution stats in CSV/JSON.",
+    )
+    p.add_argument(
+        "--save_chunk_timeline",
+        action="store_true",
+        help="Include per-chunk timeline (times, spoof prob, attack probs) in JSON output.",
     )
     p.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"])
     return p.parse_args()

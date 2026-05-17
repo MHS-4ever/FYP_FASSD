@@ -9,6 +9,22 @@ This document is a single reference for: what was built, how the model works, al
 
 ---
 
+## Phase 7 Documentation Reorganization
+
+Phase 7 planning is now centralized under **`reports/phase7/`**.
+
+| Document | Role |
+|----------|------|
+| [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md) | Why Phase 7 exists (thesis/report style) |
+| [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) | Root-level master product plan |
+| [phase7/README.md](phase7/README.md) | Phase 7 index and gates |
+| [phase7/PHASE7_MASTER_PLAN.md](phase7/PHASE7_MASTER_PLAN.md) | Overall 7A–7F plan |
+| [phase7/PHASE7A_CONTROLLED_TEST_SUITE.md](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) | Active phase — controlled testing |
+
+Legacy paths (`pipeline_phases/PHASE7*.md`, `FORENSIC_PRODUCT_ROADMAP.md`) remain with a redirect note at the top. Operational 7A templates: [phase7_forensic_tests/](phase7_forensic_tests/).
+
+---
+
 ## Current Scope Update — Forensic Voice Authenticity Analyzer
 
 The project scope has **expanded** from binary synthetic speech detection to **forensic audio authenticity analysis**.
@@ -35,9 +51,11 @@ The **final product** should generate a **forensic-style report** (origin, manip
 **Read next:**
 
 - [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) — full scope (Scopes 1–6)  
-- [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) — roadmap and product rules  
-- [pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) — test plan and manifest  
-- [pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) — report layer (mandatory)  
+- [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) — master product plan  
+- [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md) — thesis rationale for Phase 7  
+- [phase7/README.md](phase7/README.md) — Phase 7 index  
+- [phase7/PHASE7A_CONTROLLED_TEST_SUITE.md](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) — test plan (active)  
+- [phase7/PHASE7D_FORENSIC_REPORT_LAYER.md](phase7/PHASE7D_FORENSIC_REPORT_LAYER.md) — report layer (mandatory)  
 - [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) — report fields  
 - [NEXT_ACTIONS.md](NEXT_ACTIONS.md) — immediate checklist  
 

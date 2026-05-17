@@ -1,0 +1,10 @@
+file,exists,size_gb,num_samples,feature_shape,shape_check_ok,compression,notes
+data/features/logmel_chunked.h5,True,193.9835,1893919,"(64, 400)",True,,
+data/features/logmel_chunked.h5,True,,1893919,"(1893919, 64, 400)",,none,dataset=features
+data/features/logmel_chunked.h5,True,,1893919,"(1893919,)",,none,dataset=indices/h5_idx
+data/features/logmel_chunked.h5,True,,1893919,"(1893919,)",,none,dataset=indices/manifest_idx
+data/features/environmental_packed.h5,True,0.1145,1893919,"(12,)",True,,
+data/features/environmental_packed.h5,True,,1893919,"(1893919, 12)",,none,dataset=features
+data/features/environmental_packed.h5,True,,1893919,"(1893919,)",,none,dataset=indices/h5_idx
+data/features/environmental_packed.h5,True,,1893919,"(1893919,)",,none,dataset=indices/manifest_idx
+data/features/logmel_packed.h5,False,,,,,,

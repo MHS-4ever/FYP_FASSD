@@ -104,6 +104,25 @@ Copy this block for each group. Replace `_TBD_` after runs.
 
 ---
 
+### Partial fabrication (`partial_ai_insert`, e.g. `T5_FAB_001`)
+
+| Metric | Value |
+|--------|------:|
+| Total files | _TBD_ |
+| `partial_region_detected` matches GT | _TBD_ |
+| Whole-file REAL but region detected | _TBD_ |
+| Avg `inside_region_avg_spoof` | _TBD_ |
+| Avg `outside_region_avg_spoof` | _TBD_ |
+| Avg delta (inside − outside) | _TBD_ |
+
+**Reference case:** `T5_FAB_001` — 34 s, fake insert **14–21 s**; do not score on whole-file alone.
+
+**Common failure pattern:** _TBD_
+
+**Recommended next action:** _TBD_
+
+---
+
 ### WhatsApp / platform compressed
 
 | Metric | Value |
