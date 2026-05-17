@@ -1,40 +1,37 @@
-# Phase 7 — Forensic Testing & Adaptation (Planned)
+# Phase 7 — Forensic Product Upgrade (Planned)
 
-**Status:** Documentation and templates only. **Scripts not implemented yet.**
+**Status:** Documentation and templates only. **No Python implementation yet.**
+
+**Master plan:** [reports/pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md](../../reports/pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md)  
+**Scope:** [reports/UPDATED_PROJECT_SCOPE.md](../../reports/UPDATED_PROJECT_SCOPE.md)
 
 ---
 
-## Sub-phases
+## Sub-phases (fixed order)
 
 | Phase | Doc | Code | Training |
 |-------|-----|------|----------|
-| **7A** | `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md` | Planned below | **No** |
-| **7B** | TBD (dataset manifest) | TBD | Prepare data only |
-| **7C** | `reports/pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md` | `train_hybrid_fast.py` (reuse) | **Yes** (after 7A) |
-| **7D** | `reports/FORENSIC_REPORT_OUTPUT_SPEC.md` | Report mapper / UI | Optional |
-| **7E** | Roadmap Section 7 | Compare WavLM/wav2vec2/AASIST + ensemble | **After 7C** (12 GB VRAM — practical, not started) |
+| **7A** | [PHASE7A_FORENSIC_TEST_SUITE.md](../../reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) | Planned batch runner | **No** |
+| **7B** | PHASE7_DOMAIN_ADAPTATION §7B | TBD | Labels only |
+| **7C** | PHASE7_DOMAIN_ADAPTATION §7C | Reuse `train_hybrid_fast.py` | **Yes** (after 7A) |
+| **7D** | [PHASE7D_FORENSIC_REPORT_LAYER.md](../../reports/pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) | Planned report mapper | **Mandatory** (rules) |
+| **7E** | Roadmap §7E | AASIST → WavLM → wav2vec2 **separate** | After 7C |
+| **7F** | Roadmap §7F | Late fusion / ensemble | After 7E |
 
 ---
 
 ## Planned scripts (not created yet)
 
-### `run_forensic_test_suite.py` (planned)
+- `run_forensic_test_suite.py` — loop manifest → Phase 6 JSON  
+- `analyze_forensic_test_results.py` — merge CSV, chunk-level partial-fabrication analysis  
+- `build_forensic_report.py` (7D) — Phase 6 JSON → forensic report schema  
 
-- Read `reports/phase7_forensic_tests/forensic_test_manifest.csv`
-- For each row, call Phase 6 inference with fixed baseline settings
-- Write JSON to `reports/phase7_forensic_tests/results/json_outputs/{test_id}.json`
-- Append/merge rows into `forensic_test_results.csv`
-
-### `analyze_forensic_test_results.py` (planned)
-
-- Load manifest + JSON outputs
-- Compute `origin_interpretation`, `manipulation_interpretation`, `failure_type` via rules in roadmap
-- Update `FORENSIC_TEST_ANALYSIS.md` sections or emit markdown tables
-
-**Until these exist:** run `code/phase6/explain_prediction.py` manually per `reports/phase7_forensic_tests/README.md`.
+Until then: manual Phase 6 per [phase7_forensic_tests/README.md](../../reports/phase7_forensic_tests/README.md).
 
 ---
 
-## Do not implement training here without Phase 7A sign-off
+## Do not start yet
 
-See `reports/FORENSIC_PRODUCT_ROADMAP.md` — Immediate Rule.
+- Training (7C), transformers (7E), ensemble (7F)  
+- Phase 6 inference logic changes  
+- Early model fusion  

@@ -1,139 +1,190 @@
-# Phase 7: Domain Adaptation & Forensic Improvement
+# Phase 7 — Forensic Product Upgrade
 
-**Status**: 🟡 **SPLIT** — Phase 7A is next; fine-tuning (7C) blocked until 7A review  
-**Priority**: 🟡 CONDITIONAL (7C) / 🔴 CRITICAL (7A first)  
-**Dependencies**: Phase 5 ✅, Phase 6 ✅  
+**Status:** 🟡 **IN PROGRESS** (7A next; no training until 7A reviewed)  
+**Priority:** 🔴 CRITICAL  
+**Dependencies:** Phase 5 ✅, Phase 6 ✅  
+**Scope:** [UPDATED_PROJECT_SCOPE.md](../UPDATED_PROJECT_SCOPE.md)
 
----
+Phase 7 upgrades FASSD from binary detection to a **Forensic Voice Authenticity Analyzer** with layered reports, segment analysis, and (later) optional transformer models.
 
-## Phase 7 structure (updated)
-
-Phase 7 is no longer “fine-tune if EER > 20%” only. It is a **sequence**:
-
-| Sub-phase | Name | Training? | Document |
-|-----------|------|-----------|----------|
-| **7A** | Controlled forensic test suite | **No** | [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md) |
-| **7B** | Controlled local dataset + manifest | Prepare labels only | TBD |
-| **7C** | Fine-tune current `HybridResNetEnvironmental` | **Yes** | This file (Section below) |
-| **7D** | Report generation + UI labels | Optional | [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md) |
-| **7E** | Compare SSL/transformer/AASIST-style + possible ensemble | After 7C | [FORENSIC_PRODUCT_ROADMAP.md](../FORENSIC_PRODUCT_ROADMAP.md) |
-
-**Product direction:** [FORENSIC_PRODUCT_ROADMAP.md](../FORENSIC_PRODUCT_ROADMAP.md)
+**Fixed order:** **7A → 7B → 7C → 7D → 7E → 7F → Phase 8**
 
 ---
 
-## Immediate rule
+## Phase 7A — Controlled Forensic Test Suite
 
-> **Fine-tuning (Phase 7C) starts only after Phase 7A results are created and reviewed.**
+**Purpose:** Run current `HybridResNetEnvironmental` on controlled test cases **before** any training.
 
-Phase 5 met RealWorld EER &lt; 20%, but **manual forensic conditions** (Urdu, replay chains, WhatsApp, mixer) still fail. Measure them in 7A before changing weights.
+**Training:** **None**
 
----
+**Test groups:**
 
-## Phase 7A (do this first)
+- clean human  
+- direct AI  
+- human replay  
+- AI replay  
+- mixer/equalizer processed  
+- WhatsApp/social compressed  
+- YouTube/broadcast  
+- Urdu/Pakistani local audio  
+- edited/spliced audio  
+- partial AI insertion  
 
-- Fill `reports/phase7_forensic_tests/forensic_test_manifest.csv` (≥ 40 P0 clips).
-- Run baseline Phase 6 inference — no training.
-- Produce `forensic_test_results.csv` and `FORENSIC_TEST_ANALYSIS.md`.
+**Outputs:**
 
-See [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md).
+- `reports/phase7_forensic_tests/results/forensic_test_results.csv`  
+- `reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md`  
+- Per-file JSON under `results/json_outputs/`
 
----
+**Spec:** [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md)
 
-## Phase 7B (dataset preparation)
-
-- Record/collect controlled audio with `ground_truth_origin` and `ground_truth_manipulation`.
-- Extend manifest for training (speaker-independent splits preserved).
-- Label: human vs AI origin; clean vs replayed vs processed vs compressed vs edited.
-
----
-
-## Phase 7C — Fine-tuning (this document’s original scope)
-
-### Trigger (revised)
-
-Proceed with 7C when **Phase 7A analysis** shows:
-
-- Clear failure modes (e.g. Urdu FP, human-replay misinterpretation), and
-- A labeled dataset plan from 7B, and
-- Agreement that fine-tuning is the right fix (vs report rules-only in 7D).
-
-**Note:** Real-world EER &lt; 20% on Phase 5 **does not** skip 7A.
-
-### Fine-tuning strategies (unchanged recommendations)
-
-**Option 1: Full fine-tuning** — entire model, LR 1e-4–1e-5, 5–10 epochs  
-
-**Option 2: Transfer learning (recommended)** — freeze ResNet + environmental branches; train fusion + heads  
-
-**Option 3: Progressive unfreezing** — gradual unfreeze  
-
-### Data mix
-
-- Keep ASVspoof + RealWorld mix to limit catastrophic forgetting.
-- Add 7B controlled clips (Urdu, phone, replay chains, WhatsApp).
-- Maintain speaker-independent splits.
-
-### Outputs
-
-```
-models_saved/
-└── hybrid_resnet_environmental_finetuned.pth
-
-reports/
-├── logs/finetuning_metrics.csv
-└── evaluation/finetuned_evaluation_report.md
-```
-
-### Success criteria (7C)
-
-- [ ] 7A failure modes addressed or documented as residual
-- [ ] Real-world / target domain metrics improved on held-out forensic set
-- [ ] ASVspoof EER degradation &lt; ~2% vs baseline (tune per project)
-- [ ] Before/after comparison saved
+**Success includes:** Whether current chunking can flag **suspicious segments** when whole-file prediction is **REAL** (partial fabrication).
 
 ---
 
-## Phase 7D — Report & UI
+## Phase 7B — Dataset Preparation for Forensic Labels
 
-- Map Phase 6 JSON → layered `origin_label`, `manipulation_label`, `risk_level`
-- Implement [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md)
-- Avoid “proved fake” wording
+**Purpose:** Prepare proper labels for future fine-tuning and report evaluation.
 
----
+**Training:** Data preparation only
 
-## Phase 7E — SSL / transformer / AASIST comparison (after 7C)
+**Required labels (manifest / training CSV):**
 
-**Start only after Phase 7A (testing) and Phase 7C (hybrid fine-tune) are reviewed.**
+| Label field | Description |
+|-------------|-------------|
+| `origin_label` | human_likely / ai_likely / mixed_or_partial_ai / uncertain |
+| `manipulation_label` | clean_original, replayed, channel_processed, etc. |
+| `attack_hint` | bonafide, synthesis, voice_conversion, replay, unknown |
+| `risk_level` | low, medium, high, inconclusive |
+| `partial_fabrication_detected` | true / false |
+| `suspicious_start_time` | seconds |
+| `suspicious_end_time` | seconds |
+| `language` | english, urdu, … |
+| `device_chain` | free text |
+| `platform` | none, whatsapp, … |
+| `recording_condition` | clean_direct, human_replay, … |
 
-Phase 7E is **not** “optional because GPU is too small.” A **12 GB VRAM** PC makes these **practical** once the hybrid path is baselined:
-
-| Approach | Notes on 12 GB VRAM |
-|----------|---------------------|
-| WavLM-base | Frozen backbone + head, LoRA/adapters, or careful small-batch fine-tune |
-| wav2vec2-base | Same patterns as WavLM-base |
-| AASIST-style front-end | Feasible as experiment or frozen-feature probe |
-| Small SSL ablations | Compare against hybrid on **same** 7A forensic manifest |
-| Ensemble | Only after side-by-side 7C hybrid vs 7E SSL metrics |
-
-**Do not start 7E yet** — no transformer implementation or training in the current step.
-
-**7E success:** Document whether SSL/transformer beats fine-tuned hybrid on priority gaps (Urdu, replay, WhatsApp, mixer); if not, keep hybrid as primary scorer.
+Maintain **speaker-independent** splits when merging with ASVspoof/RealWorld.
 
 ---
 
-## Legacy trigger note (superseded)
+## Phase 7C — Fine-tune Current HybridResNetEnvironmental Model
 
-Previously: “Skip Phase 7 if Real-world EER &lt; 20%.”  
-**Superseded by:** forensic product requirements and Phase 7A gate. EER alone does not cover replay/mixer/Urdu gaps.
+**Purpose:** Improve the **current hybrid** on local forensic conditions **before** large transformer models.
+
+**Training:** **Yes** — only after **Phase 7A** (and preferably 7B manifest) reviewed
+
+**Focus areas:**
+
+- Urdu/Pakistani speech  
+- phone recordings  
+- replayed human audio  
+- replayed AI audio  
+- mixer/channel processed audio  
+- WhatsApp/social compression  
+- partial inserted AI segments (if labeled in 7B)  
+
+**Strategies:** Freeze branches + train fusion/heads (recommended on 12 GB VRAM); or low-LR full fine-tune with ASVspoof mix.
+
+**Output:** `models_saved/hybrid_resnet_environmental_finetuned.pth` + before/after evaluation on 7A manifest.
+
+---
+
+## Phase 7D — Forensic Report Layer
+
+**Purpose:** Convert raw model outputs into **forensic-style report** wording and structured JSON.
+
+**Priority:** 🔴 **MANDATORY** (not optional)
+
+**Must include:**
+
+- Report JSON schema  
+- Risk mapping logic (origin + manipulation + risk_level)  
+- Suspicious timeline builder  
+- Wording templates (Cases A–K)  
+- Limitation wording  
+- UI-ready report fields  
+- Future PDF/HTML report support  
+
+**Spec:** [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md)  
+**Also:** [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md)
+
+**No training** — interpretation layer (rules first; ML optional later).
+
+---
+
+## Phase 7E — Transformer / Attention Model Experiments
+
+**Purpose:** Test **additional** models only after Phase 7A–7D direction is clear and hybrid path is baselined (7A + 7C).
+
+**Training:** Yes — experiments only; compare, do not replace blindly
+
+**Model order (evaluate separately):**
+
+1. **AASIST** (or AASIST-style spoof detector)  
+2. **WavLM-base**  
+3. **wav2vec2-base**  
+
+**Rules:**
+
+- Keep models **separate** at first — train/eval each standalone.  
+- Compare against **7C fine-tuned hybrid** on the **same** 7A forensic manifest.  
+- Use **late fusion / ensemble** only if metrics improve (Phase 7F).  
+- **Do not early-fuse** everything into one monolithic model initially.  
+
+**Hardware:** 12 GB VRAM — frozen backbone, LoRA/adapters, small-batch fine-tune practical.
+
+**Do not start 7E** until 7A reviewed and 7D spec agreed; **do not start before 7C** hybrid fine-tune unless analysis shows rules-only path is insufficient.
+
+---
+
+## Phase 7F — Ensemble and Final Forensic Decision Logic
+
+**Purpose:** Combine useful scores into **product-level** interpretation.
+
+**Possible inputs:**
+
+- Hybrid ResNet + Environmental score (primary)  
+- AASIST score (if 7E)  
+- WavLM / wav2vec score (if 7E)  
+- Chunk-level suspicious regions (7D timeline)  
+- Environmental inconsistency score  
+
+**Outputs:**
+
+- Final origin assessment  
+- Manipulation risk  
+- Suspicious timeline  
+- Complete forensic report (Scope 6)  
+
+**Rules:** Late fusion only after each model’s standalone 7A metrics are documented. No ensemble before 7E comparisons.
+
+---
+
+## Gates and immediate rules
+
+| Gate | Rule |
+|------|------|
+| **Before 7C** | Complete Phase 7A; document failure patterns |
+| **Before 7E** | Complete 7C hybrid fine-tune review |
+| **Before 7F** | Complete 7E separate model comparisons |
+| **Before any training** | No fine-tuning until 7A `FORENSIC_TEST_ANALYSIS.md` signed off |
+
+> Do not implement transformers, ensemble, or report code in the documentation-only step. See [NEXT_ACTIONS.md](../NEXT_ACTIONS.md).
+
+---
+
+## Legacy note
+
+Earlier “Phase 7 = domain adaptation only if EER > 20%” is **superseded**. RealWorld EER &lt; 20% does **not** skip forensic product work (replay, Urdu, partial fake, reports).
 
 ---
 
 ## Related
 
-- [NEXT_ACTIONS.md](../NEXT_ACTIONS.md)
-- [PROJECT_STATE_AUDIT.md](../PROJECT_STATE_AUDIT.md)
-- `code/phase7/README.md` — planned scripts
+- [FORENSIC_PRODUCT_ROADMAP.md](../FORENSIC_PRODUCT_ROADMAP.md)  
+- [NEXT_ACTIONS.md](../NEXT_ACTIONS.md)  
+- [PROJECT_STATE_AUDIT.md](../PROJECT_STATE_AUDIT.md)  
+- `code/phase7/README.md` — planned automation (not implemented)
 
-**Last Updated**: May 2026  
-**Status**: 7A next; 7C pending 7A sign-off
+**Last updated:** May 2026

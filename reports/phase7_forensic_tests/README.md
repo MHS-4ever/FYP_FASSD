@@ -1,7 +1,8 @@
 # Phase 7A — Forensic Test Suite (Workspace)
 
 **Status:** Templates ready — **test audio not yet recorded**  
-**Spec:** `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md`
+**Spec:** `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md`  
+**Scope:** `reports/UPDATED_PROJECT_SCOPE.md` (includes partial-fabrication / Scope 3)
 
 ---
 

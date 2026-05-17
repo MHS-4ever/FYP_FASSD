@@ -5,9 +5,26 @@
 
 ---
 
+## 0. Official scope expansion
+
+The project scope is **officially expanded** from simple AI-vs-human detection to **forensic voice authenticity analysis**.
+
+Full scope definition (six areas): [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md)
+
+| Scope | Topic |
+|-------|--------|
+| 1 | AI vs human **origin** |
+| 2 | **Manipulation** / processing risk |
+| 3 | **Partial fabrication** / inserted segments |
+| 4 | **Replay** (human-origin vs AI-origin) |
+| 5 | **Environmental** acoustic profiling |
+| 6 | **Forensic report** generation |
+
+---
+
 ## 1. Current Product Direction
 
-FASSD is moving from a **simple AI-vs-human voice detector** toward a **Forensic Voice Authenticity Analyzer**.
+FASSD is a **Forensic Voice Authenticity Analyzer** — not only a simple AI-vs-human voice detector.
 
 The system should take an audio file and produce a **forensic-style report** that helps a reviewer understand:
 
@@ -134,6 +151,18 @@ Future product output uses **layered labels** derived from model scores, rules, 
 
 One or more paragraphs in plain language for the reviewer, following rules in Section 6 and `reports/FORENSIC_REPORT_OUTPUT_SPEC.md`.
 
+### Product rules (mandatory)
+
+1. **Never rely on whole-file REAL/FAKE alone.** Every file-level verdict must be supported by **segment-level** analysis (chunk scores, suspicious timeline) and **forensic interpretation** (Phase 7D).
+
+2. **REAL + replay/conversion/channel artifacts:** Report **“human-origin with manipulation risk”** — not “authentic” or “clean original.”
+
+3. **Mostly human-like + suspicious region(s):** Report **“partial fabrication risk detected”** (or `mixed_or_partial_ai` / `edited_or_spliced` as appropriate) even when pooled vote is REAL.
+
+4. **Attack hint is auxiliary** — never the sole forensic verdict.
+
+5. **Layered labels are the product output** — binary `prediction` is an internal detector score.
+
 ---
 
 ## 6. Important Interpretation Rules
@@ -155,34 +184,34 @@ One or more paragraphs in plain language for the reviewer, following rules in Se
 
 | Phase | Name | Training? | Focus |
 |-------|------|-----------|--------|
-| **7A** | Controlled forensic test suite | **No** | Measure baseline failures by condition |
-| **7B** | Controlled local dataset + manifest | Prepare only | Origin + manipulation labels |
-| **7C** | Fine-tune current `HybridResNetEnvironmental` | **Yes** (after 7A review) | Domain adaptation on hybrid baseline |
-| **7D** | Report generation + UI labels | Optional light | Layered forensic output, wording |
-| **7E** | Compare SSL / transformer / AASIST-style + possible ensemble | **Yes** (after 7C) | Second model path vs hybrid; not a replacement without comparison |
-| **8** | Product / API / report system | Deploy | End-to-end forensic workflow |
+| **7A** | Controlled forensic test suite | **No** | Baseline failures; **partial-fabrication** segment probe |
+| **7B** | Forensic dataset + labels | Prepare only | origin, manipulation, partial_fabrication, timeline fields |
+| **7C** | Fine-tune `HybridResNetEnvironmental` | **Yes** (after 7A) | Urdu, phone, replay, mixer, WhatsApp, partial AI |
+| **7D** | Forensic report layer | **Mandatory** (rules/schema) | Wording, timeline, JSON — [PHASE7D](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) |
+| **7E** | Transformer experiments | **Yes** (after 7C, 7D clear) | **1. AASIST → 2. WavLM → 3. wav2vec2** (separate, then compare) |
+| **7F** | Ensemble + final decision logic | After 7E | Late fusion only if standalone models help |
+| **8** | Product / API / report system | Deploy | PDF/HTML, full workflow |
 
-### Phase 7E — transformers / SSL (timing and hardware)
+**Order:** 7A → 7B → 7C → **7D** → 7E → 7F. Do not skip 7D. Do not early-fuse all models.
 
-Phase **7E** is **not** deferred only because of GPU limits. It is deferred because the **hybrid baseline must be measured (7A), adapted (7C), and reported (7D)** before adding a second architecture.
+### Phase 7E — transformers (separate evaluation first)
 
-**Hardware update:** A **12 GB VRAM** PC is available. After Phase 7A and 7C, the following are **practical** on that machine (with frozen backbone, LoRA/adapters, or small-batch experiments):
+- **Not** blocked only by GPU — **12 GB VRAM** available.  
+- **Blocked by process:** need 7A metrics, 7C hybrid, and **7D report spec** before adding models.  
+- Evaluate **AASIST, then WavLM-base, then wav2vec2-base** each alone vs hybrid on 7A manifest.  
+- **No early fusion** into one big model at first.  
 
-- WavLM-base  
-- wav2vec2-base  
-- AASIST-style or similar spoof-detection front-ends  
-- Frozen SSL encoder + trainable head  
-- Small SSL ablation runs before any full fine-tune  
+### Phase 7F — ensemble
 
-**Do not start Phase 7E yet.** No WavLM/AASIST implementation, training, or ensemble until 7A results and 7C hybrid fine-tune are reviewed.
-
-**7E deliverables (when started):** comparative metrics on the same forensic test manifest as 7A, document whether SSL beats hybrid on Urdu/replay/WhatsApp conditions, and only then consider ensemble or replacement.
+Combine hybrid + best 7E model(s) + chunk timeline + env inconsistency → final report. Only after 7E comparisons.
 
 **Specs:**
 
-- Phase 7A: `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md`
-- Phase 7 (legacy domain adaptation): `reports/pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md` (updated structure)
-- Report format: `reports/FORENSIC_REPORT_OUTPUT_SPEC.md`
+- Scope: [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md)  
+- Phase 7 master: [pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md](pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md)  
+- Phase 7A: [pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md)  
+- Phase 7D: [pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md)  
+- Report format: [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md)
 
 ---
 
@@ -207,7 +236,11 @@ Not allowed before 7A review:
 
 Not allowed before **7C** review:
 
-- Starting Phase **7E** (transformer/SSL comparison or ensemble)
+- Starting Phase **7E** (AASIST / WavLM / wav2vec experiments)
+
+Not allowed before **7E** review:
+
+- Starting Phase **7F** (ensemble / late fusion)
 
 ---
 
@@ -215,8 +248,10 @@ Not allowed before **7C** review:
 
 | Document | Purpose |
 |----------|---------|
+| `reports/UPDATED_PROJECT_SCOPE.md` | Six scope areas (official) |
 | `reports/pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md` | Test plan and manifest |
-| `reports/FORENSIC_REPORT_OUTPUT_SPEC.md` | Future report fields |
+| `reports/pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md` | Mandatory report layer |
+| `reports/FORENSIC_REPORT_OUTPUT_SPEC.md` | Report field spec |
 | `reports/NEXT_ACTIONS.md` | Immediate checklist |
 | `reports/PROJECT_STATE_AUDIT.md` | Current repo/model state |
 | `reports/FULL_PROJECT_DOCUMENTATION.md` | Technical baseline |

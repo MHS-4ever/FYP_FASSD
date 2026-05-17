@@ -28,6 +28,20 @@ Fill this when you create test audio. Consistent protocols make Phase 7A analysi
 | Partial AI insertion (`partial_ai_insert`) | **30–45 s** |
 | Long broadcast / multi-segment simulation | **60–120 s** (later batches only) |
 
+### Partial fabrication (Scope 3) — Phase 7A
+
+| Case | Build | Duration guidance |
+|------|-------|-------------------|
+| Long + AI insert | Record ~110 s human, insert ~10 s AI/cloned in editor | **~120–130 s** total; note insert times in manifest |
+| Medium + AI insert | ~55 s human + ~5 s AI | **~60–65 s** |
+| Cloned sentence | Single AI sentence in real paragraph | **30–45 s** |
+| Human splice (different room) | Insert human clip from other recording | **30–45 s**; ground truth `partial_fabrication_detected=false` but `edited` |
+| WhatsApp + AI insert | Compress then or insert before forward | Document order in `notes` |
+
+Log **exact** `suspicious_start_time` / `suspicious_end_time` (seconds) in manifest for evaluation.
+
+---
+
 ### Paired recording workflow (recommended)
 
 For each script ID (e.g. `SCRIPT_01`):

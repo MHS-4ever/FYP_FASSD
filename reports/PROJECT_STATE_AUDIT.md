@@ -659,7 +659,9 @@ Phase **7E** is delayed for **process reasons** (need hybrid baseline + forensic
 3. Execute [PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md).  
 4. Follow [NEXT_ACTIONS.md](NEXT_ACTIONS.md).  
 
-Fine-tuning (**Phase 7C**) only after `FORENSIC_TEST_ANALYSIS.md` is reviewed. **Phase 7E** (SSL/transformer/AASIST) only after **7C** — 12 GB VRAM makes 7E practical, not immediate.
+Fine-tuning (**Phase 7C**) only after `FORENSIC_TEST_ANALYSIS.md` is reviewed.
+
+**Expanded scope:** [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) — six areas including partial fabrication and mandatory report layer (7D). Phase order: **7A → 7B → 7C → 7D → 7E (AASIST, WavLM, wav2vec separate) → 7F (ensemble)**.
 
 ---
 

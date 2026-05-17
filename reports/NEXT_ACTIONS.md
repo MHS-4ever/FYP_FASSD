@@ -1,53 +1,59 @@
 # FASSD Next Actions
 
-**Direction:** [Forensic Voice Authenticity Analyzer](FORENSIC_PRODUCT_ROADMAP.md)  
+**Product:** [Forensic Voice Authenticity Analyzer](UPDATED_PROJECT_SCOPE.md)  
+**Scope:** [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) (Scopes 1–6)  
+**Roadmap:** [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md)  
 **Gate:** No training until [Phase 7A](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) is reviewed.
 
 ---
 
 ## Immediate
 
-1. **Read** `reports/FORENSIC_PRODUCT_ROADMAP.md` and agree on layered output (origin + manipulation + risk).
-2. **Copy** `reports/phase7_forensic_tests/forensic_test_manifest_template.csv` → `forensic_test_manifest.csv`.
-3. **Record or collect** ~40 P0 test clips per `notes/recording_protocols.md` (not done yet).
-4. **Fill** manifest: paths, ground truth, `manipulation_type`, language, device chain.
-5. **Run** Phase 6 on each file (command in `phase7_forensic_tests/README.md`).
-6. **Merge** results into `results/forensic_test_results.csv` (manual or future script).
-7. **Complete** `results/FORENSIC_TEST_ANALYSIS.md` from template.
-8. **List** false positives / false negatives **by condition** (not only overall accuracy).
-9. **Decide** fine-tuning dataset priorities for Phase 7B–7C.
+1. Read [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) and [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) (layered output + product rules).
+2. **Complete P0 controlled test audios** (~40 core + partial-fabrication cases in 7A spec).
+3. **Include partial-fabrication test cases** (long real + short AI insert; see Phase 7A §5.2).
+4. Copy `forensic_test_manifest_template.csv` → `forensic_test_manifest.csv` and fill forensic label columns.
+5. **Run Phase 7A** — Phase 6 inference per file (no training).
+6. **Review whole-file predictions** and **chunk-level suspicious behavior** (can current logic flag segments when file is REAL?).
+7. Merge `forensic_test_results.csv` and complete `FORENSIC_TEST_ANALYSIS.md`.
+8. **Do not fine-tune** until failure patterns are documented and agreed.
 
 ---
 
-## After Phase 7A (only when analysis is signed off)
+## After Phase 7A (signed off)
 
-1. Build **controlled local dataset** with `ground_truth_origin` + `ground_truth_manipulation` labels (Phase 7B).
-2. Record clips per duration rules: **20–30 s** default P0, **≥ 8 s** minimum, paired same-script sets.
-3. **Fine-tune** current `HybridResNetEnvironmental` (Phase 7C) — not a new architecture.
-4. Implement **forensic report mapper** per `FORENSIC_REPORT_OUTPUT_SPEC.md` (Phase 7D).
-5. Update UI/API wording (avoid “proved fake”).
-6. **Only after 7C review:** Phase 7E — compare WavLM-base / wav2vec2-base / AASIST-style on same forensic manifest; consider ensemble (12 GB VRAM makes frozen-backbone, LoRA, and small SSL experiments practical).
+1. **Implement Phase 7D report layer** — schema, mapping, timeline, wording ([PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md)).
+2. **Add suspicious timeline detection** (chunk-level → `suspicious_timeline`).
+3. **Prepare forensic-labeled dataset** (Phase 7B fields).
+4. **Fine-tune hybrid model** (Phase 7C) on priority domains.
+5. **Test AASIST separately** (Phase 7E step 1).
+6. **Test WavLM-base** if needed (Phase 7E step 2).
+7. **Test wav2vec2-base** if needed (Phase 7E step 3).
+8. **Consider late fusion / ensemble** (Phase 7F) only if standalone comparisons improve metrics.
 
-## Recording checklist (when creating P0 audio)
+---
 
-- [ ] **20–30 s** speech per default test case  
+## Recording checklist (P0 + partial fabrication)
+
+- [ ] **20–30 s** speech for standard P0 cases  
 - [ ] No clip **&lt; 8 s**  
 - [ ] **0.5–1 s** silence at start/end  
-- [ ] **Paired** clean / AI / replay / mixer / WhatsApp from same script where possible  
-- [ ] **30–45 s** only for edited or partial-AI cases (P1+)  
-- [ ] **60–120 s** reserved for later long-evidence tests only  
+- [ ] **Paired** same-script across clean / AI / replay / mixer / WhatsApp  
+- [ ] **Partial-fabrication** cases per 7A §5.2 (e.g. 120 s + 10 s AI insert)  
+- [ ] **30–45 s** for edited/spliced; **60–120 s** only where 7A specifies long files  
 
 ---
 
 ## Do not do yet
 
-- Do **not** train or fine-tune blindly on Pakistani/Trump clips only.
-- Do **not** replace `HybridResNetEnvironmental` without 7A + 7C baseline comparison.
-- Do **not** start Phase **7E** (WavLM / wav2vec2 / AASIST) before 7C is reviewed — even with 12 GB VRAM available.
-- Do **not** claim forensic proof from binary `REAL`/`FAKE` alone.
-- Do **not** ignore **human-origin replayed/processed** cases (REAL ≠ original recording).
-- Do **not** permanently change thresholds without per-condition 7A stats.
-- Do **not** implement Phase 7 Python automation until you explicitly request it.
+- Do **not** train or fine-tune blindly.
+- Do **not** claim **“authentic”** only because `prediction` is REAL.
+- Do **not** ignore **suspicious segments** inside long mostly-real audio.
+- Do **not** **early-fuse** all models before separate 7E evaluation.
+- Do **not** start Phase **7E** before 7C (and 7D spec) review.
+- Do **not** start Phase **7F** before 7E comparisons.
+- Do **not** implement Phase 7 Python automation until explicitly requested.
+- Do **not** change Phase 6 core inference until a documented bug requires it.
 
 ---
 
@@ -55,8 +61,11 @@
 
 | Doc | Use |
 |-----|-----|
-| [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) | Product direction |
-| [PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) | Test plan |
-| [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) | Future report fields |
-| [PROJECT_STATE_AUDIT.md](PROJECT_STATE_AUDIT.md) | Current baseline state |
-| [AUDIO_TESTING_OUTPUT_GUIDE.md](AUDIO_TESTING_OUTPUT_GUIDE.md) | Phase 6 output fields |
+| [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) | Official six scopes |
+| [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) | Roadmap + rules |
+| [pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md](pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md) | Phase 7A–7F |
+| [pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) | Test plan |
+| [pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) | Report layer |
+| [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) | Report fields |
+| [PROJECT_STATE_AUDIT.md](PROJECT_STATE_AUDIT.md) | Baseline state |
+| [AUDIO_TESTING_OUTPUT_GUIDE.md](AUDIO_TESTING_OUTPUT_GUIDE.md) | Phase 6 outputs |

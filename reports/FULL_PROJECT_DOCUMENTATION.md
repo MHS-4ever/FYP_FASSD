@@ -9,23 +9,36 @@ This document is a single reference for: what was built, how the model works, al
 
 ---
 
-## Current Direction Update — Forensic Product Roadmap
+## Current Scope Update — Forensic Voice Authenticity Analyzer
 
-FASSD is moving from **binary AI-vs-human detection** toward **forensic voice authenticity analysis** (origin + manipulation + segment-level risk + narrative report).
+The project scope has **expanded** from binary synthetic speech detection to **forensic audio authenticity analysis**.
+
+The system will still detect AI-generated voices, but it will also analyze:
+
+- **Replay** and re-recording (human-origin vs AI-origin)  
+- **Mixer / channel** processing and equalization  
+- **Platform compression** (WhatsApp, social, codec)  
+- **Editing / splicing** and environmental inconsistency  
+- **Partial AI insertion** inside mostly real long recordings  
+- **Environmental** acoustic cues (noise, reverb, SNR, stability)  
+
+The **final product** should generate a **forensic-style report** (origin, manipulation risk, suspicious segments, limitations) — **not only** a REAL/FAKE label.
 
 | Point | Detail |
 |-------|--------|
-| **Baseline unchanged** | `HybridResNetEnvironmental` + Phase 6 inference remain the current scorer. |
-| **Next step** | **Phase 7A** — controlled forensic test suite (**no training** until results are reviewed). |
-| **Product goal** | Answer whether speech is human/AI/mixed, whether the recording is clean/replayed/processed/compressed/edited, and which segments are suspicious. |
-| **Phase order** | 7A test → 7B data → **7C hybrid fine-tune** → 7D report/UI → **7E SSL/transformer compare** (12 GB VRAM; start only after 7C) |
-| **P0 recording** | **20–30 s** default per clip; **≥ 8 s** minimum; paired same-script sets — see `phase7_forensic_tests/notes/recording_protocols.md` |
+| **Official scope** | Six areas — [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) |
+| **Baseline unchanged** | `HybridResNetEnvironmental` + Phase 6 remain the current scorer until 7C. |
+| **Next step** | **Phase 7A** — controlled tests including **partial-fabrication** cases (**no training**). |
+| **Phase order** | 7A → 7B → 7C → **7D (mandatory report layer)** → 7E (AASIST, WavLM, wav2vec separate) → 7F (ensemble) |
+| **P0 recording** | **20–30 s** default; **≥ 8 s** min; partial-AI cases **30–45 s** or **60–120 s** as specified in 7A |
 
 **Read next:**
 
-- [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) — product direction and layered labels  
+- [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) — full scope (Scopes 1–6)  
+- [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) — roadmap and product rules  
 - [pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) — test plan and manifest  
-- [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) — future report format  
+- [pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) — report layer (mandatory)  
+- [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) — report fields  
 - [NEXT_ACTIONS.md](NEXT_ACTIONS.md) — immediate checklist  
 
 ---

@@ -85,7 +85,23 @@ File: `forensic_test_manifest.csv` (copy from `forensic_test_manifest_template.c
 | `ground_truth_origin` | Yes | Labeler truth for origin |
 | `ground_truth_manipulation` | Yes | Labeler truth for manipulation |
 | `expected_forensic_result` | No | Short expected narrative for reviewer |
-| `notes` | No | Recording date, mic model, etc. |
+| `notes` | No | Recording date, mic model, `pair_id`, etc. |
+
+### Forensic label columns (planning / expected outputs)
+
+Use for test design and results merge (populated after inference + rule mapping in 7D):
+
+| Column | Description |
+|--------|-------------|
+| `origin_label` | Expected or derived: human_likely, ai_likely, mixed_or_partial_ai, uncertain |
+| `manipulation_label` | Expected or derived: clean_original, replayed_or_re_recorded, channel_processed, etc. |
+| `attack_hint` | bonafide, synthesis, voice_conversion, replay, unknown |
+| `risk_level` | low, medium, high, inconclusive |
+| `partial_fabrication_detected` | true / false (ground truth for Scope 3 tests) |
+| `suspicious_start_time` | Ground truth or detected start (seconds) |
+| `suspicious_end_time` | Ground truth or detected end (seconds) |
+| `expected_report_wording` | Short template case ID (A–K from Phase 7D) |
+| `expected_forensic_interpretation` | One-line expected narrative for reviewer |
 
 ### Allowed values
 
@@ -140,6 +156,22 @@ Full detail: `reports/phase7_forensic_tests/notes/recording_protocols.md`
 | **Long-evidence tests** | **60–120 seconds** — later batches only, not default P0 |
 | **Silence** | **~0.5–1 s** at start and end |
 | **Paired samples** | Same script/content across clean, direct AI, replay, mixer, WhatsApp, and AI variants where possible; use `pair_id` in manifest `notes` |
+
+### 5.2 Partial fabrication tests (required in 7A plan)
+
+These cases test **Scope 3**: mostly real audio with a short inserted suspicious segment. Record when ready; document in manifest with `manipulation_type=partial_ai_insert` and `partial_fabrication_detected=true` in ground-truth columns.
+
+| Test case | Description | Suggested duration |
+|-----------|-------------|-------------------|
+| PF1 | **120 s** real audio + **~10 s** AI/cloned insert | ~120–130 s total |
+| PF2 | **60 s** real audio + **~5 s** AI insert | ~60–65 s total |
+| PF3 | Real audio + **one cloned/converted sentence** inserted | 30–45 s or per script |
+| PF4 | Real audio + **human sentence** inserted from **different room** (splice, not AI) | 30–45 s |
+| PF5 | **WhatsApp-compressed** real audio with **inserted AI segment** | After compression pipeline |
+
+**7A research question:** When whole-file `prediction` is **REAL**, do high spoof-probability **chunks** appear only in the inserted region? If not, document gap for 7C/7D.
+
+Priority: include at least **PF1–PF2** in first partial-fabrication batch (P1 if P0 is already full).
 
 ---
 
@@ -200,10 +232,21 @@ Aggregated file: `reports/phase7_forensic_tests/results/forensic_test_results.cs
 | `manipulation_interpretation` | **Rule-based** |
 | `forensic_summary` | **Rule-based** one-line |
 | `correct_origin_basic` | `yes` / `no` / `borderline` vs ground_truth_origin |
-| `failure_type` | e.g. `fp_processed_human`, `fn_direct_ai`, `borderline` |
+| `failure_type` | e.g. `fp_processed_human`, `fn_direct_ai`, `borderline`, `missed_partial_insert` |
 | `notes` | reviewer |
+| `origin_label` | Derived (7D rules) or expected from manifest |
+| `manipulation_label` | Derived or expected |
+| `attack_hint` | Derived from `attack_type` / probs |
+| `risk_level` | Derived |
+| `partial_fabrication_detected` | true/false — **detected** vs ground truth |
+| `suspicious_start_time` | Detected segment start (s) |
+| `suspicious_end_time` | Detected segment end (s) |
+| `expected_report_wording` | Case A–K id (manifest) |
+| `expected_forensic_interpretation` | Manifest expected narrative |
+| `max_chunk_spoof_prob` | Optional: highest chunk spoof prob |
+| `n_suspicious_chunks` | Optional: count of chunks ≥ chunk_threshold |
 
-Rule mapping for `origin_interpretation` / `manipulation_interpretation` should follow `reports/FORENSIC_PRODUCT_ROADMAP.md` Section 6.
+Rule mapping for layered labels: `reports/FORENSIC_PRODUCT_ROADMAP.md` and `pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md`.
 
 ---
 
@@ -249,6 +292,9 @@ Phase 7A is **complete** when:
 - [ ] `forensic_test_results.csv` exists and merges manifest + JSON
 - [ ] `FORENSIC_TEST_ANALYSIS.md` is filled with per-group tables and failure patterns
 - [ ] Team has agreed on **top 3 failure modes** before Phase 7C training
+- [ ] **Partial-fabrication cases** run and documented (whole-file vs chunk-level behavior)
+- [ ] For each partial-fabrication file: recorded whether **suspicious chunks align** with inserted region when whole-file is REAL
+- [ ] Phase 7A answers: **Can current chunking/report logic detect suspicious segments without whole-file FAKE?** (yes/no/partial — with evidence)
 
 ---
 
