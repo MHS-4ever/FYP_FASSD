@@ -9,6 +9,13 @@ Audit of manifests and HDF5 features used to train **HybridResNetEnvironmental**
 - [phase7c_data_collection_recommendations.md](phase7c_data_collection_recommendations.md)
 - [feature_hdf5_audit.md](feature_hdf5_audit.md)
 
+## File-level balance CSVs
+
+- `file_level_balance_summary.csv`
+- `file_level_attack_distribution.csv`
+- `file_level_domain_distribution.csv`
+- `chunk_vs_file_balance_comparison.csv`
+
 ## Regenerate
 
 ```text

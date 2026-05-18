@@ -1,6 +1,6 @@
 # Phase 7A — Controlled Forensic Test Suite
 
-**Status:** **NEXT** (active phase)  
+**Status:** **Signed off**  
 **Training:** **None**  
 **Inference:** Existing Phase 6 only — no logic changes in 7A planning step
 
@@ -18,7 +18,7 @@ Run the **current** `HybridResNetEnvironmental` model (Phase 6) on controlled **
 - Fine-tuning without controlled tests risks **catastrophic forgetting** or wrong priorities.  
 - Forensic labels and report rules need **evidence** from real local chains (phone, WhatsApp, replay, edit).  
 
-**Gate:** No Phase 7C training until `FORENSIC_TEST_ANALYSIS.md` is reviewed.
+**Gate (historical):** Phase 7A signed off; next gate is **7C1** collection before Phase 7C fine-tuning.
 
 ---
 
@@ -50,7 +50,7 @@ Run product analysis: `python code/phase7/analyze_forensic_test_results.py --res
 
 **Review priority:** use **product-level** report for 7B/7C decisions; legacy binary accuracy alone understates manipulation detection on human replay.
 
-Partial fabrication: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md). Rows without suspicious timestamps (e.g. T4.3) → `partial_not_evaluated_missing_timestamp`, not a miss.
+Partial fabrication: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md). **T4.3** timestamps filled (**35.0–58.0 s**); partial region evaluated. Rows without timestamps → `partial_not_evaluated_missing_timestamp`, not a miss.
 
 ---
 
@@ -92,12 +92,27 @@ Recording rules: [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md).
 
 ## 6. Success criteria
 
-- [ ] All **T1–T5** priority files processed.  
-- [ ] False positives and false negatives known **per group**.  
-- [ ] Fabricated audio: segment **14–21 s** evaluated separately from whole-file prediction.  
-- [ ] Partial-fabrication: `partial_region_detected` compared to ground truth where applicable.  
-- [ ] **No training** in this phase.  
-- [ ] Analysis signed off → unlock 7B/7C planning.
+- [x] All **T1–T5** priority files processed (25/25).  
+- [x] False positives and false negatives documented **per group** (product + legacy analysis).  
+- [x] Fabricated audio: segment **14–21 s** evaluated separately from whole-file prediction (`T5_FAB_001`).  
+- [x] Partial-fabrication: `partial_region_detected` compared to ground truth where timestamps exist.  
+- [x] **No training** in this phase.  
+- [x] Analysis signed off → fed Phase 7B labels.
+
+---
+
+## Final Phase 7A findings
+
+- **Binary REAL/FAKE was not enough** — legacy origin accuracy was low (~9/25 strict binary), but product-level interpretation was more meaningful.
+- **Product-level metrics** (manipulation detected, segment suspicious, partial region) better match forensic use than file-level REAL alone.
+- **Human replay / processed human** often predicted **FAKE** — interpret as **manipulation-risk signal**, not simply “AI fake” (origin confusion vs useful manipulation sensitivity).
+- **Direct AI** cases **T1.3, T1.5, T3.1**: file-level **REAL** but **suspicious chunks** (`direct_ai_file_level_missed_but_segment_suspicious`).
+- **T3.5** (AI replay): file-level **REAL** but segment suspicious.
+- **Whole-file `pct_vote`** can hide segment evidence — segment timelines required for review.
+- **T5_FAB_001**: partial fabrication **detected at segment level** (insert region 14–21 s).
+- **T4.3**: timestamps later filled (**35.0 s – 58.0 s**); partial evaluation unblocked in 7B re-run.
+
+**Final status:** Phase 7A is **signed off** and feeds into Phase 7B labels and Phase 7C1 collection priorities.
 
 ---
 
@@ -115,7 +130,8 @@ Recording rules: [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md).
 | Next | Uses 7A results for |
 |------|---------------------|
 | **7B** | Which labels and recording conditions to collect for training CSV |
-| **7C** | Which domains to fine-tune (Urdu, replay, mixer, WhatsApp, partial AI) |
+| **7C1** | Which domains to collect (Urdu, replay, mixer, WhatsApp, partial AI) |
+| **7C** | Fine-tune after 7C1 data validated |
 | **7D** | Rule thresholds and wording cases validated against real failures |
 
 ---

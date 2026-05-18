@@ -1,0 +1,17 @@
+scope,dimension,value,row_count,unique_file_count,row_pct,file_pct,avg_rows_per_file
+unified,attack_type,replay,816480,816480,43.1106,43.1106,1.0
+unified,attack_type,conversion,589212,589212,31.1107,31.1107,1.0
+unified,attack_type,bonafide,320611,320611,16.9284,16.9284,1.0
+unified,attack_type,synthesis,167616,167616,8.8502,8.8502,1.0
+train,attack_type,replay,646380,646380,43.5642,43.5642,1.0
+train,attack_type,conversion,456417,456417,30.7612,30.7612,1.0
+train,attack_type,bonafide,251268,251268,16.9348,16.9348,1.0
+train,attack_type,synthesis,129676,129676,8.7398,8.7398,1.0
+val,attack_type,replay,68040,68040,43.7264,43.7264,1.0
+val,attack_type,conversion,42210,42210,27.1266,27.1266,1.0
+val,attack_type,bonafide,29606,29606,19.0265,19.0265,1.0
+val,attack_type,synthesis,15748,15748,10.1206,10.1206,1.0
+test,attack_type,replay,102060,102060,40.0905,40.0905,1.0
+test,attack_type,conversion,90585,90585,35.583,35.583,1.0
+test,attack_type,bonafide,39737,39737,15.6092,15.6092,1.0
+test,attack_type,synthesis,22192,22192,8.7173,8.7173,1.0

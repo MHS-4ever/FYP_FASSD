@@ -1,6 +1,6 @@
 # Phase 7B — Forensic Dataset Preparation
 
-**Status:** Implemented (label normalization + manifests; **no training**)  
+**Status:** **Signed off** (label normalization + manifests; **no training**)  
 **Depends on:** Phase 7A complete (`forensic_test_results_product.csv`, product analysis)
 
 ---
@@ -43,7 +43,7 @@ Convert Phase 7A controlled tests into a **structured forensic label dataset** f
 | `forensic_file_level_labels.csv` | One row per file (training/review columns) |
 | `forensic_segment_labels.csv` | Segment rows (T5_FAB_001 pre/insert/post + full-file segments) |
 | `forensic_training_manifest_preview.csv` | Preview for 7C (**not** final training set) |
-| `rejected_or_needs_review.csv` | T4.3 (missing timestamps), borderline cases |
+| `rejected_or_needs_review.csv` | Review-required files (e.g. **T1.1**, **T4.1**) |
 | `forensic_dataset_validation_report.md` | Schema / path validation |
 | `forensic_dataset_gap_analysis.md` | What to collect before 7C |
 | `label_mapping_rules.md` | Mapping documentation |
@@ -69,7 +69,7 @@ python code/phase7/validate_forensic_labels.py ^
   --allow_warnings
 ```
 
-Re-run after filling **T4.3** `suspicious_start_time` / `suspicious_end_time` in the manifest.
+T4.3 timestamps: **35.0–58.0 s** (filled and validated).
 
 ---
 
@@ -86,9 +86,9 @@ Re-run after filling **T4.3** `suspicious_start_time` / `suspicious_end_time` in
 | Edited/spliced | human_likely | edited_or_spliced |
 | Partial AI insert | mixed_or_partial_ai | edited_or_spliced |
 
-**Review flags:**
-- `T4.3` → `needs_review` (missing partial timestamps)
-- `T1.1` → `needs_review` (`clean_human_borderline` at threshold)
+**Review flags (current):**
+- `T1.1`, `T4.1` → `needs_review` (`clean_human_borderline`)
+- `T4.3` → **approved** (timestamps 35.0–58.0 s; segment rows generated)
 - `T5_FAB_001` → approved with 3 segment rows (14–21 s insert)
 
 ---
@@ -118,11 +118,26 @@ Re-run after filling **T4.3** `suspicious_start_time` / `suspicious_end_time` in
 ## 9. Success criteria
 
 - [x] File-level labels with origin + manipulation (not binary-only)
-- [x] Segment labels for T5_FAB_001
-- [x] T4.3 flagged needs_review (no false partial miss)
-- [x] Validation report + gap analysis
-- [ ] Team sign-off before Phase 7C
-- [ ] Expanded dataset per gap analysis
+- [x] Segment labels for T5_FAB_001 and T4.3
+- [x] All 25 rows `controlled_holdout`; `use_for_training=false`
+- [x] Validation: **0 errors**, **0 warnings**
+- [x] Team sign-off — Phase 7B complete
+- [ ] Expanded dataset per gap analysis → **Phase 7C1**
+
+---
+
+## Final Phase 7B findings
+
+- **File-level labels** created: `origin_label`, `manipulation_label`, `attack_hint`, `risk_level`, binary preview fields.
+- **Segment-level labels** created with parent context (`T5_FAB_001`, **T4.3** pre/insert/post).
+- **T5_FAB_001** and **T4.3** have partial insertion timestamps and segment rows.
+- All **25** T1–T5 samples are **`controlled_holdout`** — **`use_for_training=false`** on every row.
+- This set is a **label-schema prototype / validation holdout**, **not** fine-tuning data.
+- **Validation:** errors = **0**, warnings = **0**.
+- **Needs review:** **T1.1**, **T4.1** only.
+- **T4.3** is no longer blocked.
+
+**Final status:** Phase 7B is **signed off**. Reuse this label schema for **Phase 7C1** data collection.
 
 ---
 
@@ -134,5 +149,6 @@ Re-run after filling **T4.3** `suspicious_start_time` / `suspicious_end_time` in
 
 ## 11. Connection to next phases
 
-- **7C:** Fine-tune using expanded 7B manifest (origin + manipulation targets)
+- **7C1:** Collect new forensic data using this label schema ([PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md))
+- **7C:** Fine-tune only after 7C1 collection is validated
 - **7D:** Report mapping validated against same labels

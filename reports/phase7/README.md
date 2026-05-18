@@ -1,51 +1,51 @@
 # Phase 7 Documentation Index
 
-**Status:** Canonical planning home for Phase 7 (documentation only until 7A code is requested)  
-**Active phase:** **Phase 7A** — controlled forensic testing  
-**No training** until Phase 7A analysis is reviewed.
+**Status:** Phase **7A**, **7B**, **7C0** signed off  
+**Active phase:** **Phase 7C1** — new forensic data collection plan  
+**No Phase 7C fine-tuning** until 7C1 data is collected and validated.
 
 ---
 
 ## What this folder is
 
-All **Phase 7 planning** (7A–7F) lives here. High-level thesis and product reasoning stay in `reports/` root:
+All **Phase 7 planning** (7A–7F, 7C0, 7C1) lives here. High-level thesis and product reasoning stay in `reports/` root:
 
 | Root document | Purpose |
 |---------------|---------|
 | [PHASE7_THESIS_RATIONALE.md](../PHASE7_THESIS_RATIONALE.md) | Why Phase 7 exists (thesis/report style) |
 | [FORENSIC_PRODUCT_MASTER_PLAN.md](../FORENSIC_PRODUCT_MASTER_PLAN.md) | Master product plan and output layers |
-| [UPDATED_PROJECT_SCOPE.md](../UPDATED_PROJECT_SCOPE.md) | Six official scope areas |
-| [FORENSIC_REPORT_OUTPUT_SPEC.md](../FORENSIC_REPORT_OUTPUT_SPEC.md) | Report field specification |
-
-Legacy paths under `reports/pipeline_phases/` and `reports/FORENSIC_PRODUCT_ROADMAP.md` are **retained for reference** with a redirect note at the top.
+| [NEXT_ACTIONS.md](../NEXT_ACTIONS.md) | Current next steps |
+| [CURSOR_WORKFLOW_GUIDE.md](../CURSOR_WORKFLOW_GUIDE.md) | Token-efficient Cursor workflow |
 
 ---
 
 ## Phase 7 documents
 
-| File | Purpose |
-|------|---------|
-| [PHASE7_MASTER_PLAN.md](PHASE7_MASTER_PLAN.md) | Overall Phase 7 plan, gates, allowed/not allowed |
-| [PHASE7A_CONTROLLED_TEST_SUITE.md](PHASE7A_CONTROLLED_TEST_SUITE.md) | Current phase — testing before training |
-| [PHASE7B_FORENSIC_DATASET_PREPARATION.md](PHASE7B_FORENSIC_DATASET_PREPARATION.md) | Dataset and labels for fine-tuning |
-| [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) | Fine-tune current hybrid model |
-| [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | Report generation and safe wording |
-| [PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md](PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md) | AASIST / WavLM / wav2vec experiments |
-| [PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md](PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md) | Late fusion and final decision logic |
-| [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md) | T1–T5 test groups and recording rules |
-| [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md) | Label definitions and allowed values |
+| File | Purpose | Status |
+|------|---------|--------|
+| [PHASE7_MASTER_PLAN.md](PHASE7_MASTER_PLAN.md) | Overall plan, gates, sign-off summary | Updated |
+| [PHASE7A_CONTROLLED_TEST_SUITE.md](PHASE7A_CONTROLLED_TEST_SUITE.md) | Controlled T1–T5 testing | **Signed off** |
+| [PHASE7B_FORENSIC_DATASET_PREPARATION.md](PHASE7B_FORENSIC_DATASET_PREPARATION.md) | Forensic labels (holdout) | **Signed off** |
+| [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) | Fine-tune hybrid (includes 7C0 audit) | 7C0 signed off; 7C blocked |
+| [PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md) | Round-1 plan (15+ × 8 ≈ 120 files) | **Active** |
+| [../phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md](../phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md) | Templates, protocols, manifest | **Active** |
+| [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | Report generation and safe wording | Planned |
+| [PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md](PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md) | Transformer experiments | Planned |
+| [PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md](PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md) | Late fusion | Planned |
+| [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md) | T1–T5 recording rules | Reference |
+| [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md) | Label definitions | Reference |
 
 ---
 
-## Operational assets (7A execution)
+## Operational assets
 
-Templates and manifests are under **[../phase7_forensic_tests/](../phase7_forensic_tests/)**:
-
-- `forensic_test_manifest_template.csv`  
-- `PARTIAL_FABRICATION_CHUNK_ANALYSIS.md`  
-- `results/forensic_test_results_template.csv`  
-
-Planned code (not implemented): `code/phase7/README.md`
+| Area | Path |
+|------|------|
+| **7C1 collection** | [../phase7c1_collection/](../phase7c1_collection/) (Round-1: 15+ × 8 ≈ 120 files) |
+| 7A tests | [../phase7_forensic_tests/](../phase7_forensic_tests/) |
+| 7B labels | [../phase7_dataset/](../phase7_dataset/) |
+| 7C0 audit | [../phase7_current_dataset_audit/](../phase7_current_dataset_audit/) |
+| Code | [../../code/phase7/README.md](../../code/phase7/README.md) |
 
 ---
 
@@ -53,7 +53,8 @@ Planned code (not implemented): `code/phase7/README.md`
 
 | Before… | Requirement |
 |---------|-------------|
-| **7B / 7C** | Phase 7A complete; `FORENSIC_TEST_ANALYSIS.md` reviewed |
-| **7E** | 7C hybrid review; 7D report spec agreed |
-| **7F** | 7E standalone model comparisons documented |
-| **Any training** | No fine-tuning until 7A signed off |
+| **7C1 collection** | 7A + 7B + 7C0 signed off |
+| **7C fine-tuning** | 7C1 plan complete + new data collected and validated |
+| **7E** | 7C hybrid review; 7D spec agreed |
+| **7F** | 7E comparisons documented |
+| **Training on T1–T5** | **Never** — `controlled_holdout` |

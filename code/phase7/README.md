@@ -1,5 +1,35 @@
 # Phase 7 — Forensic Test Suite & Dataset (Code)
 
+**Sign-off status:** Phase **7A**, **7B**, **7C0** signed off.  
+**Next:** Phase **7C1** Round-1 recording (~120 files) → validate manifest → then Phase **7C** fine-tuning.
+
+| Phase | Scripts | Status |
+|-------|---------|--------|
+| 7A | `run_forensic_test_suite.py`, `analyze_forensic_test_results.py` | Signed off |
+| 7B | `prepare_forensic_dataset.py`, `validate_forensic_labels.py` | Signed off |
+| 7C0 | `audit_current_training_dataset.py`, `audit_hdf5_features.py` | Signed off |
+| 7C1 | `validate_phase7c1_collection_manifest.py` + [phase7c1_collection/](../../reports/phase7c1_collection/) | **Active** (Round-1: 15+ × 8 ≈ 120 files) |
+| 7C | (existing `train_hybrid_fast.py` in phase4) | Blocked |
+
+---
+
+## Phase 7C1 — Round-1 collection manifest
+
+**Status:** Active (docs + validation — **no training**)
+
+```text
+python code/phase7/validate_phase7c1_collection_manifest.py ^
+  --input reports/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --output reports/phase7c1_collection/phase7c1_validation_report.md ^
+  --allow_warnings
+```
+
+Copy `reports/phase7c1_collection/phase7c1_collection_manifest_template.csv` → `phase7c1_collection_manifest.csv` when recording.
+
+**Round-1:** 15+ speakers × **8 variants** ≈ **120 files**. See [PHASE7C1_DATA_COLLECTION_PLAN.md](../../reports/phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md).
+
+---
+
 ## Phase 7C0 — Current training dataset audit
 
 **Status:** Implemented (audit only — **no training**)
@@ -113,7 +143,7 @@ Also writes legacy `FORENSIC_TEST_ANALYSIS.md` unless `--skip_legacy_md`.
 | **Segment-suspicious miss** | `max_chunk_spoof ≥ 0.95` OR `suspicious_chunk_ratio ≥ 0.30` while whole-file REAL |
 | **Statuses** | `direct_ai_file_level_missed_but_segment_suspicious`, `ai_replay_file_level_missed_but_segment_suspicious`, `processed_ai_file_level_missed_but_segment_suspicious` |
 | **Clean human borderline** | \|decision_score − threshold\| ≤ 0.05 — review, not confirmed false alarm |
-| **Partial fab** | Segment metrics in product CSV; T4.3 = `partial_not_evaluated_missing_timestamp` until times filled |
+| **Partial fab** | Segment metrics in product CSV; T4.3 timestamps **35.0–58.0 s** (evaluated) |
 
 ---
 

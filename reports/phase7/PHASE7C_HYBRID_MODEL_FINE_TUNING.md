@@ -1,20 +1,25 @@
 # Phase 7C — Hybrid Model Fine-Tuning
 
-**Status:** Planned (after Phase 7A + 7B + **7C0 audit**)  
-**Training:** **Yes** — hybrid only; **no transformers** in this phase
+**Status:** **Blocked** — after 7A, 7B, 7C0 sign-off; **active prerequisite: Phase 7C1**  
+**Training:** **Yes** (when unblocked) — hybrid only; **no transformers** in this phase
 
 ---
 
-## Phase 7C0 — Current Dataset Audit Before Fine-Tuning
+## Phase 7C0 — Current Training Dataset Audit Results
 
-Before collecting new training data or fine-tuning, the **existing** HybridResNetEnvironmental training corpus must be audited for:
+**Status:** **Signed off.**
 
-- Label balance (bonafide vs spoof)
-- Attack-type balance (synthesis, conversion, replay)
-- Domain balance (studio vs real-world / social / phone)
-- Speaker-independent split integrity
-- Language and product-domain gaps (Urdu/Pakistani, phone, WhatsApp)
-- HDF5 feature consistency (`logmel_chunked.h5`, `environmental_packed.h5`)
+| Metric | Result |
+|--------|--------|
+| Total rows | **1,893,919** |
+| Unique files | **1,893,919** |
+| Avg rows per file | **1.0** |
+| Chunk/file weighting bias | **low** |
+| Speaker leakage (train∩val, train∩test) | **0** |
+| Missing audio (stratified sample) | **0** missing |
+| Duplicate filepath report | **0** major issue |
+| Label conflict report | **0** major issue |
+| HDF5 feature shapes | **log-mel** `[64,400]` / `[1,64,400]`; **environmental** **12-D** |
 
 **Audit outputs:**
 
@@ -22,7 +27,8 @@ Before collecting new training data or fine-tuning, the **existing** HybridResNe
 |----------|------|
 | Main audit report | [CURRENT_TRAINING_DATASET_AUDIT.md](../phase7_current_dataset_audit/CURRENT_TRAINING_DATASET_AUDIT.md) |
 | Risk assessment | [dataset_risk_assessment.md](../phase7_current_dataset_audit/dataset_risk_assessment.md) |
-| Data collection plan | [phase7c_data_collection_recommendations.md](../phase7_current_dataset_audit/phase7c_data_collection_recommendations.md) |
+| Data collection recommendations | [phase7c_data_collection_recommendations.md](../phase7_current_dataset_audit/phase7c_data_collection_recommendations.md) |
+| File-level balance CSVs | `file_level_balance_summary.csv`, `chunk_vs_file_balance_comparison.csv` |
 
 **Regenerate audit:**
 
@@ -32,13 +38,25 @@ python code/phase7/audit_current_training_dataset.py ^
   --output_dir reports/phase7_current_dataset_audit ^
   --sample_per_group 20 ^
   --check_audio_exists_sample 5000
-
-python code/phase7/audit_hdf5_features.py ^
-  --features_dir data/features ^
-  --output_dir reports/phase7_current_dataset_audit
 ```
 
-**Rule:** **No Phase 7C fine-tuning should begin until this audit is reviewed** and minimum new forensic data (see recommendations doc) is collected and labeled.
+---
+
+## Why Phase 7C Fine-Tuning Cannot Start Yet
+
+The legacy dataset is **technically clean** (speaker-independent splits, valid features, no major duplicates/conflicts) but **not aligned with the forensic product goal**:
+
+- **Spoof-heavy** (~83% spoof rows)
+- **Replay / PA-heavy** (PA ~50%, replay attack ~43%)
+- **Studio-domain-heavy** (~96% studio domain)
+- **Weak Urdu/Pakistani** local coverage
+- **Weak phone / WhatsApp / social compression** forensic conditions
+- **No separate origin + manipulation** training labels (only `label` + `attack_type`)
+- **No partial AI insertion** segment timestamp labels
+
+**Rule:** Do **not** start Phase 7C fine-tuning until **[Phase 7C1](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md)** is completed and new data is **collected and validated** (Phase 7B label schema).
+
+**Next active phase:** [PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md).
 
 ---
 

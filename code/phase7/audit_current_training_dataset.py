@@ -61,6 +61,26 @@ SAMPLE_GROUPS = [
     ("domain", "synthetic"),
 ]
 
+# Best-available column for utterance/file identity (chunk rows may repeat per file).
+FILE_ID_COLUMN_PRIORITY = [
+    "filepath",
+    "file_path",
+    "audio_path",
+    "path",
+    "file_id",
+    "utt_id",
+    "utterance_id",
+    "filename",
+]
+
+FILE_BALANCE_DIMENSIONS = [
+    ("label", "label", "files_by_label"),
+    ("attack_type", "attack_type", "files_by_attack"),
+    ("dataset", "dataset", "files_by_dataset"),
+    ("domain", "domain", "files_by_domain"),
+    ("source", "source", "files_by_source"),
+]
+
 
 def _repo_rel(path: Path) -> str:
     try:
@@ -95,6 +115,15 @@ def _safe_str(val: Any) -> str:
     return str(val).strip()
 
 
+def detect_file_id_column(columns: list[str] | pd.Index) -> str | None:
+    """Return first available file/utterance identity column."""
+    cols = {str(c).strip() for c in columns}
+    for name in FILE_ID_COLUMN_PRIORITY:
+        if name in cols:
+            return name
+    return None
+
+
 def _parse_duration(val: Any) -> float | None:
     s = _safe_str(val)
     if not s:
@@ -123,6 +152,15 @@ class ChunkAggregator:
         self.filepath_counts: Counter = Counter()
         self.file_id_counts: Counter = Counter()
         self.filename_counts: Counter = Counter()
+        self.file_id_col: str | None = None
+        self.file_key_counts: Counter = Counter()
+        self.rows_without_file_key = 0
+        self.files_by_label: dict[str, set[str]] = defaultdict(set)
+        self.files_by_attack: dict[str, set[str]] = defaultdict(set)
+        self.files_by_dataset: dict[str, set[str]] = defaultdict(set)
+        self.files_by_domain: dict[str, set[str]] = defaultdict(set)
+        self.files_by_source: dict[str, set[str]] = defaultdict(set)
+        self.has_source_col = False
         self.conflicts: list[dict] = []
         self.max_conflicts = 50_000
         self.duration_sum = 0.0
@@ -168,6 +206,13 @@ class ChunkAggregator:
             self.has_duration_col = True
         if "file_id" in chunk.columns:
             self.has_file_id = True
+        if "source" in chunk.columns:
+            self.has_source_col = True
+
+        if self.file_id_col is None:
+            self.file_id_col = detect_file_id_column(chunk.columns)
+
+        self._process_file_balance(chunk)
 
         for col, counter in (
             ("label", self.label),
@@ -246,6 +291,39 @@ class ChunkAggregator:
                     sample = d.sample(n=min(need, len(d)), random_state=42).tolist()
                     self._durations_for_median.extend(sample)
 
+    def _process_file_balance(self, chunk: pd.DataFrame) -> None:
+        if not self.file_id_col or self.file_id_col not in chunk.columns:
+            return
+        keys = chunk[self.file_id_col].fillna("").astype(str).str.strip()
+        valid = keys != ""
+        self.rows_without_file_key += int((~valid).sum())
+        if not valid.any():
+            return
+        sub = chunk.loc[valid].copy()
+        sub["_file_key"] = keys[valid]
+        self.file_key_counts.update(sub["_file_key"].value_counts().to_dict())
+        self.filepaths.update(sub["_file_key"].unique().tolist())
+
+        for dim_name, col, attr in FILE_BALANCE_DIMENSIONS:
+            if col not in sub.columns:
+                continue
+            if col == "source":
+                self.has_source_col = True
+            vals = sub[col].fillna("").astype(str).str.strip().replace("", "<missing>")
+            files_map: dict[str, set[str]] = getattr(self, attr)
+            for val, fk in zip(vals, sub["_file_key"]):
+                files_map[val].add(fk)
+
+    @property
+    def unique_file_count(self) -> int:
+        return len(self.file_key_counts) or len(self.filepaths)
+
+    def avg_rows_per_file(self) -> float:
+        n_files = self.unique_file_count
+        if n_files == 0:
+            return 0.0
+        return round(self.total_rows / n_files, 4)
+
     def duration_stats(self) -> dict:
         if self.duration_n == 0:
             return {}
@@ -268,6 +346,10 @@ class ChunkAggregator:
             "manifest": self.name,
             "total_rows": self.total_rows,
             "unique_filepaths": len(self.filepaths),
+            "unique_files": self.unique_file_count,
+            "file_id_column": self.file_id_col or "",
+            "avg_rows_per_file": self.avg_rows_per_file(),
+            "rows_without_file_key": self.rows_without_file_key,
             "unique_speakers": len(self.speakers),
             "bonafide_count": bonafide,
             "spoof_count": spoof,
@@ -641,6 +723,98 @@ def build_balance_summary(unified: ChunkAggregator, splits: dict[str, ChunkAggre
     return rows
 
 
+def build_file_level_rows(agg: ChunkAggregator) -> list[dict]:
+    """Row/chunk vs unique-file counts per dimension value."""
+    if not agg.file_id_col or agg.unique_file_count == 0:
+        return []
+    total_rows = agg.total_rows or 1
+    total_files = agg.unique_file_count or 1
+    rows: list[dict] = []
+    for dim_name, col, attr in FILE_BALANCE_DIMENSIONS:
+        counter = getattr(agg, col, None)
+        if not isinstance(counter, Counter):
+            continue
+        files_map: dict[str, set[str]] = getattr(agg, attr)
+        for val, row_count in counter.most_common():
+            ufiles = len(files_map.get(val, set()))
+            rows.append({
+                "scope": agg.name,
+                "dimension": dim_name,
+                "value": val,
+                "row_count": row_count,
+                "unique_file_count": ufiles,
+                "row_pct": round(100.0 * row_count / total_rows, 4),
+                "file_pct": round(100.0 * ufiles / total_files, 4),
+                "avg_rows_per_file": round(row_count / max(1, ufiles), 4),
+            })
+    return rows
+
+
+def assign_chunk_weighting_bias_risk(rows: list[dict]) -> list[dict]:
+    """Flag groups where chunk rows per file diverge strongly within a dimension."""
+    by_dim: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        by_dim[r["dimension"]].append(r)
+
+    out: list[dict] = []
+    for dim, group in by_dim.items():
+        eligible = [g for g in group if g.get("unique_file_count", 0) > 0]
+        avgs = [g["avg_rows_per_file"] for g in eligible]
+        if not avgs:
+            for g in group:
+                g["chunk_weighting_bias_risk"] = "n/a"
+                out.append(g)
+            continue
+        min_avg = min(avgs)
+        max_avg = max(avgs)
+        ratio = max_avg / max(min_avg, 1e-9)
+        mean_avg = sum(avgs) / len(avgs)
+        dim_severity = "high" if ratio > 3.0 else "medium" if ratio > 1.75 else "low"
+        for g in group:
+            rpf = g.get("avg_rows_per_file", 0.0)
+            if g.get("unique_file_count", 0) == 0:
+                g["chunk_weighting_bias_risk"] = "n/a"
+            elif rpf >= mean_avg * 2.5 and ratio > 2.0:
+                g["chunk_weighting_bias_risk"] = "high"
+            elif rpf >= mean_avg * 1.75 and ratio > 1.5:
+                g["chunk_weighting_bias_risk"] = "medium"
+            elif dim_severity in ("high", "medium"):
+                g["chunk_weighting_bias_risk"] = dim_severity
+            else:
+                g["chunk_weighting_bias_risk"] = "low"
+            out.append(g)
+    return out
+
+
+def build_chunk_vs_file_comparison(unified: ChunkAggregator) -> list[dict]:
+    rows = build_file_level_rows(unified)
+    return assign_chunk_weighting_bias_risk(rows)
+
+
+def summarize_chunk_weighting_bias(comparison: list[dict]) -> dict[str, Any]:
+    """Overall severity and top overweighted group."""
+    if not comparison:
+        return {
+            "severity": "n/a",
+            "file_id_column": "",
+            "total_unique_files": 0,
+            "avg_rows_per_file": 0.0,
+            "top_group": "",
+            "top_avg_rows_per_file": 0.0,
+        }
+    high = [r for r in comparison if r.get("chunk_weighting_bias_risk") == "high"]
+    medium = [r for r in comparison if r.get("chunk_weighting_bias_risk") == "medium"]
+    severity = "high" if high else "medium" if medium else "low"
+    top = max(comparison, key=lambda r: (r.get("avg_rows_per_file", 0), r.get("row_count", 0)))
+    return {
+        "severity": severity,
+        "top_group": f"{top.get('dimension')}={top.get('value')}",
+        "top_avg_rows_per_file": top.get("avg_rows_per_file", 0),
+        "high_risk_groups": len(high),
+        "medium_risk_groups": len(medium),
+    }
+
+
 def assess_risks(
     unified: ChunkAggregator | None,
     split_info: dict,
@@ -648,6 +822,7 @@ def assess_risks(
     conflict_count: int,
     missing_audio: int,
     audio_checked: int,
+    file_balance: dict[str, Any] | None = None,
 ) -> list[dict]:
     risks = []
 
@@ -729,6 +904,32 @@ def assess_risks(
         "Fine-tuning only REAL/FAKE will not fix 7A origin vs manipulation confusion",
         "Train/calibrate separate origin and manipulation outputs in 7C")
 
+    if file_balance:
+        fb_sev = file_balance.get("severity", "n/a")
+        if fb_sev == "n/a" and not file_balance.get("file_id_column"):
+            add(
+                "chunk_weighting_bias",
+                "Chunk weighting bias (file-level audit unavailable)",
+                "medium",
+                "No filepath/file_id/utterance_id column detected in manifest",
+                "Cannot verify whether some classes are overweighted by more chunks per file",
+                "Add a stable file identifier column to manifests before Phase 7C training design",
+            )
+        elif fb_sev in ("high", "medium", "low"):
+            add(
+                "chunk_weighting_bias",
+                "Chunk weighting bias (rows vs unique files)",
+                fb_sev,
+                file_balance.get(
+                    "evidence",
+                    f"top_group={file_balance.get('top_group')}; "
+                    f"avg_rows_per_file={file_balance.get('avg_rows_per_file')}; "
+                    f"max_group_avg={file_balance.get('top_avg_rows_per_file')}",
+                ),
+                "Model may overlearn conditions with more chunks per file (long clips or heavy chunking)",
+                "Use file-balanced or speaker-balanced sampling in Phase 7C; cap chunks per file if needed",
+            )
+
     return risks
 
 
@@ -802,6 +1003,17 @@ Based on **Phase 7C0 current-dataset audit** + **Phase 7A product analysis** + *
 
 ---
 
+## 4b. Chunk vs file / utterance balance (sampler design)
+
+The unified manifest is **chunk-level** (multiple rows per source file). Phase 7C0 audit reports both row counts and **unique-file** counts.
+
+- **Balance by speaker/file first**, then by chunks — do not let one long file or heavily chunked domain dominate gradients.
+- Keep **paired variants** in the same split (see above).
+- Use a **file-balanced sampler** or **cap chunks per file** when `avg_rows_per_file` differs widely across label, attack, dataset, or domain (see `chunk_vs_file_balance_comparison.csv`).
+- Review `file_level_balance_summary.csv` before finalizing batch composition.
+
+---
+
 ## 5. Training warning
 
 - **Do not** fine-tune on REAL/FAKE alone.
@@ -833,6 +1045,8 @@ def write_main_audit_md(
     dup_rows: list[dict],
     risks: list[dict],
     hdf5_note: str,
+    file_balance: dict[str, Any] | None = None,
+    chunk_comparison: list[dict] | None = None,
 ) -> None:
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     lines = [
@@ -884,7 +1098,61 @@ def write_main_audit_md(
                 lines.append(f"- **{k}:** {v:,} ({pct:.2f}%)")
             lines.append("")
 
-    lines += ["## 4. Train/val/test split distribution", ""]
+    lines += [
+        "## 4. Chunk-level vs file-level balance",
+        "",
+        "Row counts in sections 3–4 are **chunk/row-level** (one manifest row per training chunk). "
+        "Because the unified manifest may contain **multiple rows per source file**, file-level balance can differ from row-level balance.",
+        "",
+    ]
+    if file_balance and file_balance.get("file_id_column"):
+        lines += [
+            f"- **File identity column:** `{file_balance['file_id_column']}`",
+            f"- **Unique files (unified):** {file_balance.get('total_unique_files', 0):,}",
+            f"- **Avg rows per file:** {file_balance.get('avg_rows_per_file', 0)}",
+            f"- **Chunk weighting bias severity:** {file_balance.get('severity', 'n/a')}",
+            f"- **Highest avg chunks/file:** {file_balance.get('top_group', 'n/a')} "
+            f"({file_balance.get('top_avg_rows_per_file', 0)} rows/file)",
+            "",
+        ]
+        if float(file_balance.get("avg_rows_per_file", 0) or 0) <= 1.01:
+            lines += [
+                "- **Current corpus:** Each manifest row maps to a **distinct** `filepath` "
+                "(~1.0 rows/file). Row-% and file-% are therefore aligned for this dataset; "
+                "re-run this comparison after adding manifests with multiple chunks per source file.",
+                "",
+            ]
+        lines += [
+            "**Interpretation:** If some labels, attack types, datasets, or domains have much higher "
+            "`avg_rows_per_file`, training may overweight those conditions unless sampling is file-balanced.",
+            "",
+            "**Phase 7C sampler:** Avoid over-weighting long files or heavily chunked domains; prefer "
+            "file-balanced or speaker-balanced batching (see `chunk_vs_file_balance_comparison.csv`).",
+            "",
+        ]
+        if chunk_comparison:
+            high = [r for r in chunk_comparison if r.get("chunk_weighting_bias_risk") == "high"][:8]
+            if high:
+                lines.append("**Groups flagged high chunk-weighting bias risk:**")
+                lines.append("")
+                for r in high:
+                    lines.append(
+                        f"- `{r['dimension']}={r['value']}`: {r['row_count']:,} rows / "
+                        f"{r['unique_file_count']:,} files (avg {r['avg_rows_per_file']} rows/file)"
+                    )
+                lines.append("")
+        lines += [
+            "CSV outputs: `file_level_balance_summary.csv`, `file_level_attack_distribution.csv`, "
+            "`file_level_domain_distribution.csv`, `chunk_vs_file_balance_comparison.csv`.",
+            "",
+        ]
+    else:
+        lines += [
+            "- **File-level audit could not be performed** — no filepath / file_id / utterance_id column found.",
+            "",
+        ]
+
+    lines += ["## 5. Train/val/test split distribution", ""]
     for split_name in ("train", "val", "test"):
         agg = splits.get(split_name)
         if not agg:
@@ -897,7 +1165,7 @@ def write_main_audit_md(
         )
     lines += ["", "See `split_balance_summary.csv` for detail.", ""]
 
-    lines += ["## 5. Speaker independence check", ""]
+    lines += ["## 6. Speaker independence check", ""]
     lines.append(
         f"- train ∩ val speakers: **{split_info.get('train_val_speaker_overlap', 'n/a')}**"
     )
@@ -915,7 +1183,7 @@ def write_main_audit_md(
     lines.append("Full matrix: `speaker_split_integrity.csv`")
     lines.append("")
 
-    lines += ["## 6. Duration analysis", ""]
+    lines += ["## 7. Duration analysis", ""]
     if unified and unified.duration_n:
         ds = unified.duration_stats()
         pct_dur = 100 * unified.duration_n / max(1, unified.total_rows)
@@ -932,7 +1200,7 @@ def write_main_audit_md(
     else:
         lines += ["- Duration column sparse or missing in manifest.", ""]
 
-    lines += ["## 7. Missing audio check", ""]
+    lines += ["## 8. Missing audio check", ""]
     miss = sum(1 for r in missing_audio_rows if not r.get("file_exists"))
     lines += [
         f"- Stratified sample checked: **{len(missing_audio_rows)}** files",
@@ -942,20 +1210,20 @@ def write_main_audit_md(
         "",
     ]
 
-    lines += ["## 8. Duplicate / leakage check", ""]
+    lines += ["## 9. Duplicate / leakage check", ""]
     lines += [f"- Duplicate filepath reports: **{len(dup_rows)}** (see `duplicate_file_report.csv`)", ""]
 
-    lines += ["## 9. Label conflict check", ""]
+    lines += ["## 10. Label conflict check", ""]
     if unified:
         lines += [f"- Conflict rows captured: **{len(unified.conflicts)}**", "", "Detail: `label_conflict_report.csv`", ""]
-    lines += ["## 10. Feature HDF5 summary", "", hdf5_note, ""]
-    lines += ["## 11. Phase 7 risks", ""]
+    lines += ["## 11. Feature HDF5 summary", "", hdf5_note, ""]
+    lines += ["## 12. Phase 7 risks", ""]
     for r in risks:
         if r["severity"] in ("high", "medium"):
             lines.append(f"- **{r['title']}** ({r['severity']}): {r['evidence']}")
     lines += [
         "",
-        "## 12. What this means for Phase 7C",
+        "## 13. What this means for Phase 7C",
         "",
         "- **Do not fine-tune blindly** on the legacy unified corpus without addressing imbalance and domain gaps.",
         "- **Collect controlled forensic labels** (origin + manipulation) per Phase 7B schema.",
@@ -978,6 +1246,7 @@ def print_terminal_summary(
     audio_n: int,
     hdf5_found: list[str],
     risks: list[dict],
+    file_balance: dict[str, Any] | None = None,
 ) -> None:
     print("\n" + "=" * 72)
     print("PHASE 7C0 — CURRENT TRAINING DATASET AUDIT SUMMARY")
@@ -1004,6 +1273,17 @@ def print_terminal_summary(
     print(f"HDF5 found: {', '.join(hdf5_found) or 'none'}")
     high = [r["title"] for r in risks if r["severity"] == "high"]
     print(f"Major risks ({len(high)}): {', '.join(high[:5])}")
+    print("")
+    print("File-level balance:")
+    if file_balance and file_balance.get("file_id_column"):
+        print(f"  File identity column: {file_balance['file_id_column']}")
+        print(f"  Total unique files (unified): {file_balance.get('total_unique_files', 0):,}")
+        print(f"  Avg rows per file: {file_balance.get('avg_rows_per_file', 0)}")
+        print(f"  Top avg rows/file: {file_balance.get('top_group', 'n/a')} "
+              f"({file_balance.get('top_avg_rows_per_file', 0)})")
+        print(f"  Chunk weighting bias severity: {file_balance.get('severity', 'n/a')}")
+    else:
+        print("  File-level audit unavailable (no file identity column)")
     print("Recommended next action: Review audit markdown + collect Phase 7C local data before fine-tuning.")
     print("=" * 72)
 
@@ -1105,6 +1385,41 @@ def main() -> None:
     if hdf5_audit.is_file():
         hdf5_note = "HDF5 audit completed — see `feature_hdf5_audit.md` and `feature_shape_summary.csv`."
 
+    file_level_summary: list[dict] = []
+    chunk_comparison: list[dict] = []
+    file_balance: dict[str, Any] = {}
+
+    if unified:
+        for agg in [unified] + [splits[s] for s in ("train", "val", "test") if splits.get(s)]:
+            file_level_summary.extend(build_file_level_rows(agg))
+        chunk_comparison = build_chunk_vs_file_comparison(unified)
+        bias_summary = summarize_chunk_weighting_bias(chunk_comparison)
+        file_balance = {
+            "file_id_column": unified.file_id_col or "",
+            "total_unique_files": unified.unique_file_count,
+            "avg_rows_per_file": unified.avg_rows_per_file(),
+            "severity": bias_summary["severity"],
+            "top_group": bias_summary["top_group"],
+            "top_avg_rows_per_file": bias_summary["top_avg_rows_per_file"],
+            "evidence": (
+                f"unique_files={unified.unique_file_count:,}; "
+                f"avg_rows_per_file={unified.avg_rows_per_file()}; "
+                f"highest={bias_summary['top_group']} @ {bias_summary['top_avg_rows_per_file']} rows/file; "
+                f"high_risk_groups={bias_summary.get('high_risk_groups', 0)}; "
+                f"medium_risk_groups={bias_summary.get('medium_risk_groups', 0)}"
+            ),
+        }
+        write_csv(output_dir / "file_level_balance_summary.csv", file_level_summary)
+        write_csv(
+            output_dir / "file_level_attack_distribution.csv",
+            [r for r in file_level_summary if r.get("dimension") == "attack_type"],
+        )
+        write_csv(
+            output_dir / "file_level_domain_distribution.csv",
+            [r for r in file_level_summary if r.get("dimension") == "domain"],
+        )
+        write_csv(output_dir / "chunk_vs_file_balance_comparison.csv", chunk_comparison)
+
     risks = assess_risks(
         unified,
         split_info,
@@ -1112,6 +1427,7 @@ def main() -> None:
         len(conflict_rows) if unified else 0,
         missing_count,
         len(missing_rows),
+        file_balance=file_balance or None,
     )
     write_risk_markdown(risks, output_dir / "dataset_risk_assessment.md")
     write_recommendations(output_dir / "phase7c_data_collection_recommendations.md")
@@ -1125,6 +1441,8 @@ def main() -> None:
         dup_rows,
         risks,
         hdf5_note,
+        file_balance=file_balance or None,
+        chunk_comparison=chunk_comparison,
     )
 
     readme = output_dir / "README.md"
@@ -1136,6 +1454,11 @@ def main() -> None:
         "- [dataset_risk_assessment.md](dataset_risk_assessment.md)\n"
         "- [phase7c_data_collection_recommendations.md](phase7c_data_collection_recommendations.md)\n"
         "- [feature_hdf5_audit.md](feature_hdf5_audit.md)\n\n"
+        "## File-level balance CSVs\n\n"
+        "- `file_level_balance_summary.csv`\n"
+        "- `file_level_attack_distribution.csv`\n"
+        "- `file_level_domain_distribution.csv`\n"
+        "- `chunk_vs_file_balance_comparison.csv`\n\n"
         "## Regenerate\n\n"
         "```text\n"
         "python code/phase7/audit_current_training_dataset.py ^\n"
@@ -1166,8 +1489,20 @@ def main() -> None:
         len(missing_rows),
         hdf5_found,
         risks,
+        file_balance=file_balance or None,
     )
     print(f"\n[OK] Reports written to: {output_dir}")
+
+    if unified and file_balance:
+        print("\n--- File-level balance (Phase 7C0) ---")
+        print(f"File identity column: {file_balance.get('file_id_column', 'n/a')}")
+        print(f"Total unique files: {file_balance.get('total_unique_files', 0):,}")
+        print(f"Avg rows per file: {file_balance.get('avg_rows_per_file', 0)}")
+        print(
+            f"Top class/domain (highest rows/file): {file_balance.get('top_group', 'n/a')} "
+            f"({file_balance.get('top_avg_rows_per_file', 0)} rows/file)"
+        )
+        print(f"Chunk weighting bias severity: {file_balance.get('severity', 'n/a')}")
 
 
 if __name__ == "__main__":

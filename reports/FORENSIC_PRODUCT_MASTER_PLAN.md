@@ -102,17 +102,22 @@ This baseline stays **active** until Phase 7A results show what must improve and
 
 ## 4. Development Strategy
 
-| Phase | Name | Training? |
-|-------|------|-----------|
-| **7A** | Controlled forensic testing (T1–T5) | **No** |
-| **7B** | Forensic dataset + labels | Prepare only |
-| **7C** | Fine-tune hybrid model | **Yes** (after 7A) |
-| **7D** | Forensic report layer | Rules/schema (mandatory) |
-| **7E** | AASIST → WavLM → wav2vec2 (separate) | Yes (after 7C, 7D) |
-| **7F** | Ensemble + final decision | After 7E |
-| **8** | Product / API / PDF/HTML | Deploy |
+| Phase | Name | Training? | Status |
+|-------|------|-----------|--------|
+| **7A** | Controlled forensic testing (T1–T5) | **No** | **Signed off** |
+| **7B** | Forensic dataset + labels | Prepare only | **Signed off** |
+| **7C0** | Current training dataset audit | **No** | **Signed off** |
+| **7C1** | New forensic data collection plan | **No** | **Active** |
+| **7C** | Fine-tune hybrid model | **Yes** (after 7C1) | Blocked |
+| **7D** | Forensic report layer | Rules/schema (mandatory) | Planned |
+| **7E** | AASIST → WavLM → wav2vec2 (separate) | Yes (after 7C, 7D) | Planned |
+| **7F** | Ensemble + final decision | After 7E | Planned |
+| **8** | Product / API / PDF/HTML | Deploy | Planned |
 
-**Order:** 7A → 7B → 7C → **7D** → 7E → 7F. Do not skip 7D.
+**Order:** 7A → 7B → 7C0 → **7C1** → 7C → **7D** → 7E → 7F. Do not skip 7D.
+
+**Signed off:** Phase 7A, Phase 7B, Phase 7C0.  
+**Next active phase:** [Phase 7C1 — New Forensic Data Collection Plan](phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md).
 
 Detail per phase: [phase7/PHASE7_MASTER_PLAN.md](phase7/PHASE7_MASTER_PLAN.md).
 
@@ -139,10 +144,9 @@ They are still **Phase 7E**, not Phase 7A. Delay is **project discipline** (meas
 
 ## 7. Immediate Next Action
 
-1. Complete **T1–T5** controlled test cases (audio + manifest).  
-2. Include **fabricated / partial AI insertion** audio (e.g. `T5_FAB_001`: 34 s, fake insert **14–21 s**).  
-3. Run **Phase 7A** — Phase 6 inference per file; aggregate results; write analysis.  
-4. **Do not** fine-tune, run transformers, or build ensemble until 7A is reviewed.
+1. Complete **[Phase 7C1](phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md)** — collection manifest, naming, splits, minimum counts.  
+2. **Collect** new forensic audio using **Phase 7B** label schema (Urdu/Pakistani, replay, phone, WhatsApp, partial insert, etc.).  
+3. **Validate** new collection before any fine-tuning.  
+4. **Do not** fine-tune on the legacy corpus alone; **do not** merge Phase 7A T1–T5 into training.
 
-Operational templates: [phase7_forensic_tests/](phase7_forensic_tests/)  
-Test guide: [phase7/PHASE7_TEST_CASE_GUIDE.md](phase7/PHASE7_TEST_CASE_GUIDE.md)
+Operational references: [phase7_dataset/](phase7_dataset/), [phase7_current_dataset_audit/](phase7_current_dataset_audit/), [NEXT_ACTIONS.md](NEXT_ACTIONS.md)

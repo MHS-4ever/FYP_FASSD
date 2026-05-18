@@ -52,6 +52,17 @@ Based on **Phase 7C0 current-dataset audit** + **Phase 7A product analysis** + *
 
 ---
 
+## 4b. Chunk vs file / utterance balance (sampler design)
+
+The unified manifest is **chunk-level** (multiple rows per source file). Phase 7C0 audit reports both row counts and **unique-file** counts.
+
+- **Balance by speaker/file first**, then by chunks — do not let one long file or heavily chunked domain dominate gradients.
+- Keep **paired variants** in the same split (see above).
+- Use a **file-balanced sampler** or **cap chunks per file** when `avg_rows_per_file` differs widely across label, attack, dataset, or domain (see `chunk_vs_file_balance_comparison.csv`).
+- Review `file_level_balance_summary.csv` before finalizing batch composition.
+
+---
+
 ## 5. Training warning
 
 - **Do not** fine-tune on REAL/FAKE alone.

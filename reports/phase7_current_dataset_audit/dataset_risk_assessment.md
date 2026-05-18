@@ -52,7 +52,7 @@
 ## missing_audio: Missing audio files (sampled)
 
 - **Severity:** low
-- **Evidence:** 0/5000 missing in stratified sample (0.0%)
+- **Evidence:** 0/100 missing in stratified sample (0.0%)
 - **Impact:** Broken training indices; HDF5/manifest misalignment
 - **Mitigation:** Repair paths or re-extract features for missing files
 
@@ -62,3 +62,10 @@
 - **Evidence:** Training uses label+attack_type; Phase 7 product uses origin+manipulation
 - **Impact:** Fine-tuning only REAL/FAKE will not fix 7A origin vs manipulation confusion
 - **Mitigation:** Train/calibrate separate origin and manipulation outputs in 7C
+
+## chunk_weighting_bias: Chunk weighting bias (rows vs unique files)
+
+- **Severity:** low
+- **Evidence:** unique_files=1,893,919; avg_rows_per_file=1.0; highest=domain=studio @ 1.0 rows/file; high_risk_groups=0; medium_risk_groups=0
+- **Impact:** Model may overlearn conditions with more chunks per file (long clips or heavy chunking)
+- **Mitigation:** Use file-balanced or speaker-balanced sampling in Phase 7C; cap chunks per file if needed

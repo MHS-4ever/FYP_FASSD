@@ -1,7 +1,7 @@
 # Why Phase 7 Is Needed — Thesis Rationale
 
 **Project:** FASSD — Forensic Voice Authenticity Analyzer  
-**Status:** Planning / Phase 7A next  
+**Status:** Phase 7A, 7B, 7C0 signed off — Phase 7C1 active  
 **Canonical Phase 7 docs:** [phase7/README.md](phase7/README.md)
 
 ---
@@ -115,12 +115,18 @@ Controlled tests reveal whether the issue is **AI detection**, **replay**, **com
 
 ## 9. Current Phase 7 Decision
 
-**Immediate next step:** **Phase 7A** controlled testing on T1–T5 cases (including partial AI insertion, e.g. `T5_FAB_001`).
+**Completed (signed off):** Phase **7A** (controlled forensic testing), Phase **7B** (forensic label schema on T1–T5 holdout), Phase **7C0** (legacy training dataset audit).
 
-**Do not start until 7A is reviewed:**
+**Immediate next step:** **Phase 7C1** — new forensic data collection plan and recording.
+
+**Do not start until 7C1 data is collected and validated:**
 
 - Model fine-tuning (7C)  
 - Transformer experiments (7E)  
 - Ensemble / late fusion (7F)  
 
-See [phase7/PHASE7A_CONTROLLED_TEST_SUITE.md](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) and [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md).
+### Thesis-style summary (post–7A/7B/7C0)
+
+After controlled testing and the legacy dataset audit, the project found that the current **HybridResNetEnvironmental** model is **technically functional** but **product-mismatched**: it is sensitive to **manipulation artifacts** (replay, channel processing) yet tends to **confuse processed human audio with AI-origin spoofing** when interpreted through binary REAL/FAKE alone. Segment-level evidence and separate **origin** vs **manipulation** handling are required, together with **local forensic data** (Urdu/Pakistani, phone, WhatsApp, partial insertion) before fine-tuning. This justifies **Phase 7C1** as a necessary step before model improvement — not fine-tuning directly on the existing ~1.89M-row studio/replay-heavy corpus.
+
+See [phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md) and [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md).

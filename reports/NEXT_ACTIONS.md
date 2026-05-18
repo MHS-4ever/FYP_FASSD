@@ -1,61 +1,46 @@
 # FASSD Next Actions
 
-> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility.
-
 **Product:** [Forensic Voice Authenticity Analyzer](UPDATED_PROJECT_SCOPE.md)  
-**Scope:** [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) (Scopes 1–6)  
-**Roadmap:** [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md)  
-**Gate:** No training until [Phase 7A](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) is reviewed.
+**Canonical Phase 7 docs:** [phase7/README.md](phase7/README.md)  
+**Gate:** No Phase 7C fine-tuning until Phase 7C1 collection is planned, recorded, and validated.
 
 ---
 
-## Immediate
+## Signed off
 
-1. Read [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) and [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) (layered output + product rules).
-2. **Complete P0 controlled test audios** (~40 core + partial-fabrication cases in 7A spec).
-3. **Include partial-fabrication test cases** — start with **`T5_FAB_001`** (34 s, fake **14–21 s**); see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).
-4. Copy `forensic_test_manifest_template.csv` → `forensic_test_manifest.csv` and fill forensic label columns.
-5. **Run Phase 7A** — Phase 6 inference per file (no training).
-6. **Review whole-file predictions** and **chunk-level suspicious behavior** (can current logic flag segments when file is REAL?).
-7. Merge `forensic_test_results.csv` and complete `FORENSIC_TEST_ANALYSIS.md`.
-8. **Do not fine-tune** until failure patterns are documented and agreed.
+- **Phase 7A** — Controlled forensic testing  
+- **Phase 7B** — Forensic label preparation (T1–T5 `controlled_holdout`)  
+- **Phase 7C0** — Current/original training dataset audit  
 
 ---
 
-## After Phase 7A (signed off)
+## Current next actions
 
-1. **Implement Phase 7D report layer** — schema, mapping, timeline, wording ([PHASE7D_FORENSIC_REPORT_LAYER.md](phase7/PHASE7D_FORENSIC_REPORT_LAYER.md)).
-2. **Add suspicious timeline detection** (chunk-level → `suspicious_timeline`).
-3. **Prepare forensic-labeled dataset** (Phase 7B fields).
-4. **Fine-tune hybrid model** (Phase 7C) on priority domains.
-5. **Test AASIST separately** (Phase 7E step 1).
-6. **Test WavLM-base** if needed (Phase 7E step 2).
-7. **Test wav2vec2-base** if needed (Phase 7E step 3).
-8. **Consider late fusion / ensemble** (Phase 7F) only if standalone comparisons improve metrics.
+1. **Complete [Phase 7C1 — New Forensic Data Collection Plan](phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md)** — manifest schema, naming, pairing, splits, minimum counts.  
+2. **Collect** new forensic dataset using **Phase 7B** labels (`origin_label`, `manipulation_label`, segment timestamps where needed).  
+3. **Validate** new collection (audio exists, labels, no split leakage, category targets).  
+4. **Only then** start **Phase 7C** hybrid fine-tuning (not on legacy corpus alone; never merge Phase 7A holdout).
 
 ---
 
-## Recording checklist (P0 + partial fabrication)
+## Recording checklist (7C1 collection)
 
-- [ ] **20–30 s** speech for standard P0 cases  
-- [ ] No clip **&lt; 8 s**  
-- [ ] **0.5–1 s** silence at start/end  
-- [ ] **Paired** same-script across clean / AI / replay / mixer / WhatsApp  
-- [ ] **Partial-fabrication** cases per 7A §5.2 (e.g. 120 s + 10 s AI insert)  
-- [ ] **30–45 s** for edited/spliced; **60–120 s** only where 7A specifies long files  
+- [ ] **20–30 s** default clips; **30–45 s** for partial insertion  
+- [ ] No clip **&lt; 8 s**; **0.5–1 s** silence at start/end  
+- [ ] **Paired** variants (`human_001_clean`, `human_001_replay`, …) in **same split**  
+- [ ] Partial inserts: mandatory `suspicious_start_time` / `suspicious_end_time`  
+- [ ] Urdu/Pakistani prioritized across categories  
 
 ---
 
 ## Do not do yet
 
-- Do **not** train or fine-tune blindly.
-- Do **not** claim **“authentic”** only because `prediction` is REAL.
-- Do **not** ignore **suspicious segments** inside long mostly-real audio.
-- Do **not** **early-fuse** all models before separate 7E evaluation.
-- Do **not** start Phase **7E** before 7C (and 7D spec) review.
-- Do **not** start Phase **7F** before 7E comparisons.
-- Do **not** implement Phase 7 Python automation until explicitly requested.
-- Do **not** change Phase 6 core inference until a documented bug requires it.
+- Do **not** fine-tune on the legacy unified dataset alone.  
+- Do **not** merge **Phase 7A T1–T5** into training (`controlled_holdout`).  
+- Do **not** train binary REAL/FAKE only — use origin + manipulation labels.  
+- Do **not** split **paired** samples across train/test.  
+- Do **not** start Phase **7E** before 7C (and 7D spec) review.  
+- Do **not** change Phase 6 core inference unless explicitly requested.
 
 ---
 
@@ -63,11 +48,9 @@
 
 | Doc | Use |
 |-----|-----|
-| [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) | Official six scopes |
-| [FORENSIC_PRODUCT_ROADMAP.md](FORENSIC_PRODUCT_ROADMAP.md) | Roadmap + rules |
-| [pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md](pipeline_phases/PHASE7_DOMAIN_ADAPTATION.md) | Phase 7A–7F |
-| [pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md](pipeline_phases/PHASE7A_FORENSIC_TEST_SUITE.md) | Test plan |
-| [pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) | Report layer |
-| [FORENSIC_REPORT_OUTPUT_SPEC.md](FORENSIC_REPORT_OUTPUT_SPEC.md) | Report fields |
-| [PROJECT_STATE_AUDIT.md](PROJECT_STATE_AUDIT.md) | Baseline state |
-| [AUDIO_TESTING_OUTPUT_GUIDE.md](AUDIO_TESTING_OUTPUT_GUIDE.md) | Phase 6 outputs |
+| [phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](phase7/PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md) | **Active** collection plan |
+| [phase7/PHASE7_MASTER_PLAN.md](phase7/PHASE7_MASTER_PLAN.md) | Phase gates and sign-off status |
+| [phase7_dataset/](phase7_dataset/) | Phase 7B label outputs |
+| [phase7_current_dataset_audit/](phase7_current_dataset_audit/) | Phase 7C0 audit |
+| [CURSOR_WORKFLOW_GUIDE.md](CURSOR_WORKFLOW_GUIDE.md) | Efficient Cursor usage |
+| [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) | Product layers and strategy |

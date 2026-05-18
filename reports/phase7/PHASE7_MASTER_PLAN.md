@@ -1,6 +1,6 @@
 # Phase 7 — Forensic Product Upgrade Master Plan
 
-**Status:** 7A active — no training until 7A reviewed  
+**Status:** 7A, 7B, 7C0 **signed off** — **next active: Phase 7C1** (data collection plan; no fine-tuning yet)  
 **Product:** Forensic Voice Authenticity Analyzer  
 **Baseline:** `HybridResNetEnvironmental` + Phase 6 inference (unchanged in 7A)
 
@@ -48,22 +48,47 @@ Phase 7A runs this stack **unchanged** to document failure patterns.
 |-------|-----|----------|---------|
 | **7A** | [PHASE7A_CONTROLLED_TEST_SUITE.md](PHASE7A_CONTROLLED_TEST_SUITE.md) | **No** | T1–T5 controlled tests; CSV + analysis |
 | **7B** | [PHASE7B_FORENSIC_DATASET_PREPARATION.md](PHASE7B_FORENSIC_DATASET_PREPARATION.md) | Labels only | Manifest → training CSV with forensic fields |
-| **7C** | [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) | **Yes** | Fine-tune hybrid on 7A gaps |
+| **7C0** | [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) (audit) | **No** | Audit legacy training corpus — **signed off** |
+| **7C1** | [PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md) | **No** | Collection plan before fine-tuning — **active** |
+| **7C** | [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) | **Yes** | Fine-tune hybrid (after 7C1 collection + validation) |
 | **7D** | [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | No (rules) | **Mandatory** report JSON + wording |
 | **7E** | [PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md](PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md) | Yes (exp.) | AASIST → WavLM → wav2vec2 separate |
 | **7F** | [PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md](PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md) | Optional | Late fusion after 7E |
 
-**Order:** 7A → 7B → 7C → 7D → 7E → 7F → Phase 8.
+**Order:** 7A → 7B → 7C0 → **7C1** → 7C → 7D → 7E → 7F → Phase 8.
+
+---
+
+## Signed-off progress so far
+
+### Phase 7A — Controlled Forensic Testing
+
+**Status:** Signed off.
+
+**Main finding:** The current hybrid model is **manipulation-sensitive** but **confuses processed human manipulation with AI-origin spoofing**. Segment-level analysis is necessary; binary REAL/FAKE alone is insufficient for product decisions.
+
+### Phase 7B — Forensic Label Preparation
+
+**Status:** Signed off.
+
+**Main finding:** The T1–T5 controlled set is labeled with file-level and segment-level forensic labels but is kept as **`controlled_holdout`** — **not training data** (`use_for_training=false` on all 25 rows).
+
+### Phase 7C0 — Current Training Dataset Audit
+
+**Status:** Signed off.
+
+**Main finding:** The old training dataset (~1.89M rows) is **technically clean** and **speaker-independent**, but **product-mismatched** due to spoof/replay/studio dominance and missing local forensic conditions (Urdu/Pakistani, phone, WhatsApp, origin/manipulation dual labels, partial-insert timestamps).
+
+**Next active phase:** [Phase 7C1 — New Forensic Data Collection Plan](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md).
 
 ---
 
 ## 5. What is allowed now
 
-- Documentation and templates  
-- Recording T1–T5 test audio  
-- Running **existing** Phase 6 inference on test files  
-- Filling manifest / results CSV and `FORENSIC_TEST_ANALYSIS.md`  
-- Documented threshold **experiments** (not permanent product defaults without analysis)  
+- Phase **7C1** documentation, collection manifest design, and recording planning  
+- New forensic audio collection per [PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md)  
+- Re-running 7A/7B/7C0 audit scripts for verification (no logic changes without request)  
+- Phase **7D** report-layer **documentation** (rules/schema only — no training)  
 
 ---
 
@@ -71,9 +96,9 @@ Phase 7A runs this stack **unchanged** to document failure patterns.
 
 | Action | Blocked until |
 |--------|----------------|
-| Fine-tuning hybrid | 7A reviewed |
-| Phase 7B dataset merge into training | 7A reviewed |
-| Phase 7C training runs | 7A + 7B ready |
+| Fine-tuning hybrid (Phase 7C) | 7C1 collection plan complete + new data collected and validated |
+| Merging Phase 7A T1–T5 into training | **Never** (controlled holdout) |
+| Fine-tuning on legacy unified corpus alone | 7C0 sign-off + 7C1 new data |
 | Phase 7E transformers | 7C reviewed; 7D spec agreed |
 | Phase 7F ensemble | 7E comparisons done |
 | Phase 6 inference logic changes | Explicit user request |
@@ -81,17 +106,18 @@ Phase 7A runs this stack **unchanged** to document failure patterns.
 
 ---
 
-## 7. Success criteria for moving to 7B / 7C
+## 7. Success criteria — completed vs next
 
-**Phase 7A complete when:**
+**Signed off:** 7A (controlled testing), 7B (label schema + holdout labels), 7C0 (legacy dataset audit).
 
-- All **T1–T5** priority files are processed through Phase 6.  
-- `forensic_test_results.csv` and `FORENSIC_TEST_ANALYSIS.md` exist.  
-- False positives and false negatives are documented **per condition group**.  
-- **Fabricated** case (`T5_FAB_001` or equivalent): segment **14–21 s** evaluated with inside/outside chunk metrics (not whole-file only).  
-- Team agrees **which domains** need 7B labels and 7C fine-tuning.  
+**Phase 7C1 complete when:**
 
-**Important rule:** Phase 7A must **measure failure patterns** before any fine-tuning. Do not train on assumptions.
+- Collection manifest schema and naming rules are fixed  
+- Minimum per-category counts are defined  
+- Split strategy (speaker/file-level, paired variants) is documented  
+- Quality-check plan exists before any 7C fine-tuning  
+
+**Phase 7C fine-tuning** starts only after 7C1 data is collected, labeled (Phase 7B schema), and validated.
 
 ---
 
