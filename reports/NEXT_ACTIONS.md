@@ -17,16 +17,28 @@
 
 ---
 
-## Current next actions (Phase 7D — planning complete)
+## Current next actions (Phase 7D1)
 
-**Phase 7C decision record completed.** Do **not** train or fine-tune. Do **not** change Phase 7C4-v2 decision logic yet. Do **not** implement PDF or web UI.
+**Phase 7D planning approved.** 7D1 scripts implemented. Do **not** train or fine-tune. Do **not** change Phase 7C4-v2 logic. No PDF/web UI yet.
 
-1. **Review Phase 7D specs** in [phase7/phase7d_report_layer/](phase7/phase7d_report_layer/) (schema, wording, mapping, examples).  
-2. **Primary spec:** [phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md](phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md).  
-3. **Next implementation (7D1):** `code/phase7/build_phase7d_forensic_report.py` — JSON + Markdown from `phase7c4_v2_candidate_decisions.csv` (not started until approved).  
-4. **Inputs frozen:** `reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv` + baseline/R2/partial/chunk evidence.  
-5. Optional: run `check_phase7c4_holdout_impact.py` on Phase 7A before 7D2 holdout reports.  
-6. Resume training only after 7D integration and/or new controlled data + evaluation protocol.
+1. **Run report generator** (in `(fassd)`): see commands in [phase7/phase7d_report_layer/README.md](phase7/phase7d_report_layer/README.md).  
+2. **Validate outputs:** `validate_phase7d_reports.py` on `outputs/json` and `outputs/markdown`.  
+3. **Review sample pack:** `outputs/samples/SAMPLE_REPORT_INDEX.md` and 6–8 representative cases.  
+4. Fix any lint failures in `phase7d_rejected_or_failed_reports.csv` before external demo.  
+5. Optional: Phase 7A holdout reports (7D2) after 7C1 pack is accepted.  
+6. Resume training only after report layer review and/or new controlled data.
+
+### Generate reports
+
+```text
+python code/phase7/build_phase7d_forensic_report.py --decisions_csv reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --baseline_partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv --baseline_chunk_dir reports/phase7/phase7c1_baseline/results/chunk_timelines --output_dir reports/phase7/phase7d_report_layer/outputs --generate_samples --sample_count 8
+```
+
+### Validate reports
+
+```text
+python code/phase7/validate_phase7d_reports.py --json_dir reports/phase7/phase7d_report_layer/outputs/json --markdown_dir reports/phase7/phase7d_report_layer/outputs/markdown --output_md reports/phase7/phase7d_report_layer/outputs/phase7d_report_validation_report.md --output_csv reports/phase7/phase7d_report_layer/outputs/phase7d_rejected_or_failed_reports.csv
+```
 
 ### Phase 7D document index
 

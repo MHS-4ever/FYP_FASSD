@@ -1,7 +1,7 @@
 # Phase 7 — Forensic Test Suite & Dataset (Code)
 
 **Sign-off status:** Phase **7A**–**7C2** and **7C4-v2** (prototype) signed off.  
-**Active:** Phase **7D** — forensic report layer (planning complete; **7D1** implementation next).  
+**Active:** Phase **7D1** — forensic report generator (JSON + Markdown).  
 **Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md) · **7D specs:** [phase7d_report_layer/](../../reports/phase7/phase7d_report_layer/README.md)
 
 > **Environment:** Use `python` inside the activated **`(fassd)`** conda environment. Do **not** use `py -3` (system Python may lack pandas/torch).
@@ -17,7 +17,7 @@
 | 7C3-R2 | `build_phase7c3_r2_feature_cache.py`, `train_phase7c3_r2_hybrid.py`, … | Checkpoints **rejected standalone**; evidence-only in 7C4-v2 |
 | 7C4-v1 | `apply_phase7c4_decision_layer.py`, … | **Rejected** |
 | 7C4-v2 | `apply_phase7c4_v2_decision_layer.py` | **Accepted** as decision-layer prototype only |
-| 7D | `build_phase7d_forensic_report.py` (planned) | **Active** — spec in [phase7d_report_layer](../../reports/phase7d_report_layer/README.md); script **not implemented** |
+| 7D | `build_phase7d_forensic_report.py`, `validate_phase7d_reports.py`, `phase7d_common.py` | **Active** — 7D1 implemented |
 | 7E–7F | Transformers / ensemble | Planned — after 7D |
 
 **Accepted artifact:** `reports/phase7/phase7c4_calibration_v2/` — do not treat as final model.
@@ -321,6 +321,33 @@ py -3 code/phase7/apply_phase7c4_v2_decision_layer.py --baseline_csv reports/pha
 ```
 
 See [phase7c4_calibration_v2/README.md](../../reports/phase7/phase7c4_calibration_v2/README.md).
+
+---
+
+## Phase 7D1 — Forensic report generator (no training)
+
+Reads Phase 7C4-v2 decisions and evidence; writes JSON + Markdown reports. Shared mapping/lint: `phase7d_common.py`.
+
+Spec: [reports/phase7/phase7d_report_layer/README.md](../../reports/phase7/phase7d_report_layer/README.md)
+
+```text
+python code/phase7/build_phase7d_forensic_report.py ^
+  --decisions_csv reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv ^
+  --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv ^
+  --baseline_partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv ^
+  --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv ^
+  --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv ^
+  --baseline_chunk_dir reports/phase7/phase7c1_baseline/results/chunk_timelines ^
+  --output_dir reports/phase7/phase7d_report_layer/outputs ^
+  --generate_samples ^
+  --sample_count 8
+
+python code/phase7/validate_phase7d_reports.py ^
+  --json_dir reports/phase7/phase7d_report_layer/outputs/json ^
+  --markdown_dir reports/phase7/phase7d_report_layer/outputs/markdown ^
+  --output_md reports/phase7/phase7d_report_layer/outputs/phase7d_report_validation_report.md ^
+  --output_csv reports/phase7/phase7d_report_layer/outputs/phase7d_rejected_or_failed_reports.csv
+```
 
 ---
 
