@@ -1,0 +1,10 @@
+criterion,passed,detail
+clean_human_false_alarm_lte_7,True,7 (max 7)
+clean_human_accept_plus_borderline_gte_14,True,16/23 (min 14)
+direct_ai_detect_plus_segment_gte_19,True,19 (min 19)
+human_replay_detected_gte_20,True,23 (min 20)
+ai_replay_detect_plus_segment_gte_15,True,23 (min 15)
+human_mixer_detected_gte_23,True,23
+ai_mixer_detected_gte_23,True,23
+partial_fabrication_detected_gte_43,True,44 (min 43)
+clean_human_accept_reported_separately,True,accepted=1/23 borderline=15/23 false_alarm=7/23

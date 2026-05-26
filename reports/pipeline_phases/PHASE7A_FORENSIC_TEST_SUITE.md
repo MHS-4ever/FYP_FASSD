@@ -48,7 +48,7 @@ Phase 7A produces **forensic_test_results.csv** and **FORENSIC_TEST_ANALYSIS.md*
 Create and use this layout (templates provided; audio files added by you later):
 
 ```
-reports/phase7_forensic_tests/
+reports/phase7/phase7_forensic_tests/
 ├── README.md                              # How to fill manifest and run tests
 ├── forensic_test_manifest_template.csv      # Column template + allowed values
 ├── forensic_test_manifest.csv             # Your filled manifest (create when ready)
@@ -148,7 +148,7 @@ Store audio under a dedicated tree, e.g. `testing_audios/forensic_p0/` (create w
 
 ### 5.1 Recording duration and pairing (required)
 
-Full detail: `reports/phase7_forensic_tests/notes/recording_protocols.md`
+Full detail: `reports/phase7/phase7_forensic_tests/notes/recording_protocols.md`
 
 | Rule | Value |
 |------|--------|
@@ -178,7 +178,7 @@ Priority: include at least **PF1–PF2** in first partial-fabrication batch (P1 
 ### 5.3 Canonical example: `T5_FAB_001` (34 s, fake insert 14–21 s)
 
 **Reference file:** `testing_audios/fabricated/fabricated_001.wav`  
-**Full chunk-analysis spec:** [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)
+**Full chunk-analysis spec:** [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7/phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)
 
 | Property | Value |
 |----------|--------|
@@ -215,7 +215,7 @@ conda activate fassd
 python code/phase6/explain_prediction.py ^
   --ckpt models_saved/hybrid_resnet_environmental_best.pth ^
   --audio_path <AUDIO_PATH> ^
-  --output_dir reports/phase7_forensic_tests/results/json_outputs ^
+  --output_dir reports/phase7/phase7_forensic_tests/results/json_outputs ^
   --pooling pct_vote ^
   --chunk_threshold 0.65 ^
   --vote_threshold 0.70 ^
@@ -233,7 +233,7 @@ When `run_forensic_test_suite.py` exists, it will loop over `forensic_test_manif
 
 ## 7. Result CSV Columns
 
-Aggregated file: `reports/phase7_forensic_tests/results/forensic_test_results.csv`
+Aggregated file: `reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv`
 
 | Column | Source |
 |--------|--------|
@@ -285,7 +285,7 @@ Aggregated file: `reports/phase7_forensic_tests/results/forensic_test_results.cs
 | `outside_region_max_spoof` | Max spoof prob outside region |
 | `inside_region_dominant_attack` | Mode attack class inside region |
 | `outside_region_dominant_attack` | Mode attack class outside region |
-| `partial_region_detected` | Computed — see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md) |
+| `partial_region_detected` | Computed — see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7/phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md) |
 | `correct_partial_region_detected` | `yes` / `no` vs ground-truth `partial_fabrication_detected` |
 
 Rule mapping for layered labels: `reports/FORENSIC_PRODUCT_ROADMAP.md` and `pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md`.
@@ -294,7 +294,7 @@ Rule mapping for layered labels: `reports/FORENSIC_PRODUCT_ROADMAP.md` and `pipe
 
 ## 8. Analysis Markdown
 
-File: `reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md`
+File: `reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md`
 
 Group results by **manipulation_type** (and language where relevant):
 
@@ -321,7 +321,7 @@ Group results by **manipulation_type** (and language where relevant):
 | Common failure pattern | Narrative |
 | Recommended next action | e.g. collect more P0, adjust rules, fine-tune in 7C |
 
-Use template: `reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS_TEMPLATE.md` until data exists.
+Use template: `reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS_TEMPLATE.md` until data exists.
 
 ---
 
@@ -355,4 +355,4 @@ Phase 7A is **complete** when:
 - `reports/FORENSIC_PRODUCT_ROADMAP.md`
 - `reports/FORENSIC_REPORT_OUTPUT_SPEC.md`
 - `reports/AUDIO_TESTING_OUTPUT_GUIDE.md` — interpreting processed human audio
-- `reports/phase7_forensic_tests/README.md`
+- `reports/phase7/phase7_forensic_tests/README.md`

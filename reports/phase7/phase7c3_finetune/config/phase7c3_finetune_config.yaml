@@ -1,0 +1,46 @@
+# Phase 7C3 fine-tuning configuration (reference — CLI flags override)
+
+base_ckpt: models_saved/hybrid_resnet_environmental_best.pth
+
+manifests:
+  train: reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv
+  val: reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv
+  test: reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv
+
+feature_cache:
+  train_h5: reports/phase7/phase7c3_finetune/features/phase7c3_train_features.h5
+  val_h5: reports/phase7/phase7c3_finetune/features/phase7c3_val_features.h5
+  test_h5: reports/phase7/phase7c3_finetune/features/phase7c3_test_features.h5
+
+training:
+  epochs: 12
+  batch_size: 16
+  lr: 1.0e-5
+  weight_decay: 1.0e-4
+  freeze_backbone_epochs: 2
+  patience: 4
+  gradient_clip: 1.0
+  device: cuda
+
+loss_weights:
+  origin: 1.0
+  attack: 0.5
+  partial: 0.0  # no partial head in v1
+
+inference_thresholds:
+  pooling: pct_vote
+  chunk_threshold: 0.65
+  vote_threshold: 0.70
+  vad_mode: file_percentile
+  vad_rms_percentile: 40
+  vad_min_speech_ratio: 0.40
+
+checkpoints:
+  output_dir: reports/phase7/phase7c3_finetune/training/checkpoints
+  best: hybrid_resnet_environmental_phase7c3_best.pth
+  last: hybrid_resnet_environmental_phase7c3_last.pth
+
+evaluation:
+  phase7c1_after_dir: reports/phase7/phase7c3_finetune/evaluation/phase7c1_after_finetune
+  phase7a_holdout_after_dir: reports/phase7/phase7c3_finetune/evaluation/phase7a_holdout_after_finetune
+  before_after_md: reports/phase7/phase7c3_finetune/evaluation/before_after_comparison.md

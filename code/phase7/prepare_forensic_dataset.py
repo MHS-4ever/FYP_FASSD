@@ -765,15 +765,15 @@ The Phase 7A set has only **{len(file_df)}** files. It is **not** enough for fin
 
 ```text
 python code/phase7/prepare_forensic_dataset.py ^
-  --manifest reports/phase7_forensic_tests/forensic_test_manifest.csv ^
-  --product_results reports/phase7_forensic_tests/results/forensic_test_results_product.csv ^
-  --output_dir reports/phase7_dataset
+  --manifest reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --product_results reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv ^
+  --output_dir reports/phase7/phase7_dataset
 ```
 
 ```text
 python code/phase7/validate_forensic_labels.py ^
-  --input reports/phase7_dataset/forensic_labeled_master.csv ^
-  --output reports/phase7_dataset/forensic_dataset_validation_report.md ^
+  --input reports/phase7/phase7_dataset/forensic_labeled_master.csv ^
+  --output reports/phase7/phase7_dataset/forensic_dataset_validation_report.md ^
   --allow_warnings
 ```
 
@@ -852,7 +852,7 @@ def parse_args():
     p = argparse.ArgumentParser(description="Phase 7B — prepare forensic dataset labels")
     p.add_argument("--manifest", type=str, required=True)
     p.add_argument("--product_results", type=str, required=True)
-    p.add_argument("--output_dir", type=str, default="reports/phase7_dataset")
+    p.add_argument("--output_dir", type=str, default="reports/phase7/phase7_dataset")
     p.add_argument("--repo_root", type=str, default=str(_REPO_ROOT))
     return p.parse_args()
 

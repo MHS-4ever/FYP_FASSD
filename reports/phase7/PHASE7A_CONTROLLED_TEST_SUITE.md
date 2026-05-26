@@ -28,7 +28,7 @@ Run the **current** `HybridResNetEnvironmental` model (Phase 6) on controlled **
 |-------|----------|
 | Baseline checkpoint | `models_saved/hybrid_resnet_environmental_best.pth` |
 | Phase 6 script | `code/phase6/explain_prediction.py` |
-| Test manifest | `reports/phase7_forensic_tests/forensic_test_manifest.csv` (from template) |
+| Test manifest | `reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv` (from template) |
 | Test audio | `testing_audios/` (forensic_p0, fabricated, etc.) |
 
 Recommended inference settings: `pct_vote`, chunk_threshold **0.65**, vote_threshold **0.70**, VAD file_percentile **40**, vad_min_speech_ratio **0.40**.
@@ -39,18 +39,18 @@ Recommended inference settings: `pct_vote`, chunk_threshold **0.65**, vote_thres
 
 | Output | Path |
 |--------|------|
-| Per-file JSON | `reports/phase7_forensic_tests/results/json_outputs/` |
-| Merged results CSV | `reports/phase7_forensic_tests/results/forensic_test_results.csv` |
-| **Product CSV** | `reports/phase7_forensic_tests/results/forensic_test_results_product.csv` |
-| **Product analysis (main)** | `reports/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md` |
-| Legacy binary analysis | `reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md` |
-| Chunk timelines | `reports/phase7_forensic_tests/results/chunk_timelines/` |
+| Per-file JSON | `reports/phase7/phase7_forensic_tests/results/json_outputs/` |
+| Merged results CSV | `reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv` |
+| **Product CSV** | `reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv` |
+| **Product analysis (main)** | `reports/phase7/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md` |
+| Legacy binary analysis | `reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md` |
+| Chunk timelines | `reports/phase7/phase7_forensic_tests/results/chunk_timelines/` |
 
-Run product analysis: `python code/phase7/analyze_forensic_test_results.py --results_csv reports/phase7_forensic_tests/results/forensic_test_results.csv`
+Run product analysis: `python code/phase7/analyze_forensic_test_results.py --results_csv reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv`
 
 **Review priority:** use **product-level** report for 7B/7C decisions; legacy binary accuracy alone understates manipulation detection on human replay.
 
-Partial fabrication: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md). **T4.3** timestamps filled (**35.0–58.0 s**); partial region evaluated. Rows without timestamps → `partial_not_evaluated_missing_timestamp`, not a miss.
+Partial fabrication: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md). **T4.3** timestamps filled (**35.0–58.0 s**); partial region evaluated. Rows without timestamps → `partial_not_evaluated_missing_timestamp`, not a miss.
 
 ---
 
@@ -78,7 +78,7 @@ Recording rules: [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md).
 | Whole-file REAL | **Not necessarily failure** |
 | Key check | Chunk spoof scores **higher inside 14–21 s** than outside |
 
-`partial_region_detected` rules: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).
+`partial_region_detected` rules: [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).
 
 ### Execution checklist
 
@@ -144,7 +144,7 @@ conda activate fassd
 python code/phase6/explain_prediction.py ^
   --ckpt models_saved/hybrid_resnet_environmental_best.pth ^
   --audio_path <AUDIO_PATH> ^
-  --output_dir reports/phase7_forensic_tests/results/json_outputs ^
+  --output_dir reports/phase7/phase7_forensic_tests/results/json_outputs ^
   --pooling pct_vote ^
   --chunk_threshold 0.65 ^
   --vote_threshold 0.70 ^

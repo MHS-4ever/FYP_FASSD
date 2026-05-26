@@ -2,7 +2,7 @@
 
 **Status:** **Active** — Round-1 collection design (**no training**)  
 **Depends on:** Phase 7A, 7B, 7C0 signed off  
-**Operational pack:** [../phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md](../phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md)
+**Operational pack:** [phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md](phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md)
 
 ---
 
@@ -46,7 +46,7 @@ Phase 7C1 defines **what new data must be collected** before fine-tuning. It is 
 | 7 | `ai_{id}_mixer_processed.wav` | `ai_mixer_processed` |
 | 8 | `ai_{id}_fabricated.wav` | `ai_fabricated` |
 
-Details: [phase7c1_naming_convention.md](../phase7c1_collection/phase7c1_naming_convention.md), [phase7c1_labeling_guide.md](../phase7c1_collection/phase7c1_labeling_guide.md).
+Details: [phase7c1_naming_convention.md](phase7c1_collection/phase7c1_naming_convention.md), [phase7c1_labeling_guide.md](phase7c1_collection/phase7c1_labeling_guide.md).
 
 ---
 
@@ -60,7 +60,7 @@ Details: [phase7c1_naming_convention.md](../phase7c1_collection/phase7c1_naming_
 | Silence | **0.5–1 s** at start/end |
 | Partial fabricated | Timestamps **mandatory** after editing |
 
-Full protocol: [phase7c1_recording_protocols.md](../phase7c1_collection/phase7c1_recording_protocols.md).
+Full protocol: [phase7c1_recording_protocols.md](phase7c1_collection/phase7c1_recording_protocols.md).
 
 ---
 
@@ -80,7 +80,7 @@ Full protocol: [phase7c1_recording_protocols.md](../phase7c1_collection/phase7c1
 | ai_fabricated_mixed | 15+ |
 | **Total** | **~120** |
 
-CSV: [phase7c1_target_counts.csv](../phase7c1_collection/phase7c1_target_counts.csv)
+CSV: [phase7c1_target_counts.csv](phase7c1_collection/phase7c1_target_counts.csv)
 
 ### Future ideal (product-grade — not Round-1 gate)
 
@@ -111,13 +111,13 @@ Round-1 is **enough to start** the first 7C experiment; future counts are for st
 - **Same `split`** for every variant in the group (70% train / 15% val / 15% test at group level).  
 - **Phase 7A T1–T5** remain **`controlled_holdout`** — never in 7C1 training manifest.
 
-[phase7c1_split_strategy.md](../phase7c1_collection/phase7c1_split_strategy.md)
+[phase7c1_split_strategy.md](phase7c1_collection/phase7c1_split_strategy.md)
 
 ---
 
 ## 8. Manifest columns
 
-Template: [phase7c1_collection_manifest_template.csv](../phase7c1_collection/phase7c1_collection_manifest_template.csv)
+Template: [phase7c1_collection_manifest_template.csv](phase7c1_collection/phase7c1_collection_manifest_template.csv)
 
 Includes: `sample_id`, `audio_path`, `base_id`, `variant_id`, `speaker_id`, `speaker_gender`, `language`, `script_id`, labels, `partial_fabrication_binary`, timestamps, `split_group_id`, `split`, `quality_status`, `review_status`, `notes`, etc.
 
@@ -138,7 +138,7 @@ Example rows for **base_id=001** are pre-filled in the template.
 | AI mixer | `ai_likely` + `channel_processed` + `synthesis` |
 | AI fabricated | `mixed_or_partial_ai` + timestamps; note `mostly_ai_with_human_insert` in `notes` if needed |
 
-Full table: [phase7c1_labeling_guide.md](../phase7c1_collection/phase7c1_labeling_guide.md)
+Full table: [phase7c1_labeling_guide.md](phase7c1_collection/phase7c1_labeling_guide.md)
 
 ---
 
@@ -146,8 +146,8 @@ Full table: [phase7c1_labeling_guide.md](../phase7c1_collection/phase7c1_labelin
 
 ```text
 python code/phase7/validate_phase7c1_collection_manifest.py ^
-  --input reports/phase7c1_collection/phase7c1_collection_manifest.csv ^
-  --output reports/phase7c1_collection/phase7c1_validation_report.md ^
+  --input reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --output reports/phase7/phase7c1_collection/phase7c1_validation_report.md ^
   --allow_warnings
 ```
 
@@ -155,7 +155,24 @@ Checks: required columns, 8 variants per base (warnings), split consistency, par
 
 ---
 
-## 11. Success criteria (Round-1)
+## 11. Baseline evaluation (after collection validated)
+
+**Status:** Implemented — **no training**
+
+Run the current hybrid checkpoint on all **184** manifest rows and save the **pre–fine-tuning** benchmark.
+
+| Step | Script |
+|------|--------|
+| Inference | `code/phase7/run_phase7c1_baseline.py` |
+| Analysis | `code/phase7/analyze_phase7c1_baseline.py` |
+
+Outputs: [phase7c1_baseline/README.md](phase7c1_baseline/README.md)
+
+Uses product-level `baseline_status` (clean human, direct AI, replay, mixer, partial fabrication region metrics). Phase 7C fine-tuning remains blocked until baseline is reviewed.
+
+---
+
+## 12. Success criteria (Round-1)
 
 - [ ] Manifest template copied and collection started  
 - [ ] **~120** files recorded (15+ bases × 8 variants)  
@@ -163,11 +180,11 @@ Checks: required columns, 8 variants per base (warnings), split consistency, par
 - [ ] Quality checklist passed  
 - [ ] Ready for Phase 7C planning (feature extract + fine-tune) — **not** in 7C1  
 
-[phase7c1_quality_checklist.md](../phase7c1_collection/phase7c1_quality_checklist.md)
+[phase7c1_quality_checklist.md](phase7c1_collection/phase7c1_quality_checklist.md)
 
 ---
 
-## 12. What not to do
+## 13. What not to do
 
 - Do **not** fine-tune yet.  
 - Do **not** merge Phase 7A holdout into training.  
@@ -180,6 +197,7 @@ Checks: required columns, 8 variants per base (warnings), split consistency, par
 
 | Doc | Path |
 |-----|------|
-| Operational plan | [PHASE7C1_DATA_COLLECTION_PLAN.md](../phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md) |
+| Operational plan | [PHASE7C1_DATA_COLLECTION_PLAN.md](phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md) |
 | Phase 7B schema | [PHASE7B_FORENSIC_DATASET_PREPARATION.md](PHASE7B_FORENSIC_DATASET_PREPARATION.md) |
 | Phase 7C (blocked) | [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) |
+| Baseline (pre 7C) | [phase7c1_baseline/README.md](phase7c1_baseline/README.md) |

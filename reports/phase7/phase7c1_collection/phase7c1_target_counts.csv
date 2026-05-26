@@ -1,0 +1,10 @@
+category,variant_id,round1_target,round1_actual_design,future_ideal_min,future_ideal_max,notes
+clean_human,human_clean,23+,23 bases × 1,50,100,Round-1 collected set
+human_replay,human_replay_laptop_mobile,23+,23 bases × 1,30,50,Laptop speaker to mobile
+human_mixer_processed,human_mixer_processed,23+,23 bases × 1,30,50,Mixer changed during laptop playback + mobile record
+human_fabricated_partial_ai_insert,human_fabricated,23+,23 bases × 1,20,40,Timestamps required before final approval
+direct_ai,ai_direct,23+,23 bases × 1,50,100,Direct AI/TTS
+ai_replay,ai_replay_laptop_mobile,23+,23 bases × 1,30,50,AI replay chain
+ai_mixer_processed,ai_mixer_processed,23+,23 bases × 1,20,30,AI mixer chain
+ai_fabricated_mixed,ai_fabricated,23+,23 bases × 1,20,40,Timestamps required
+TOTAL_ALL_VARIANTS,all_eight_per_base,184,23×8=184,300,500,First 7C domain-adaptation experiment

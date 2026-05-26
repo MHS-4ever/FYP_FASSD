@@ -1,0 +1,7 @@
+split,data_source,count,mean,min,max
+test,old,200,0.925,0.7,1.0
+test,phase7c1,32,2.671875,2.0,3.75
+train,old,1000,0.925,0.7,1.0
+train,phase7c1,128,2.619140625,2.0,3.25
+val,old,200,0.925,0.7,1.0
+val,phase7c1,24,2.6041666666666665,2.0,3.0

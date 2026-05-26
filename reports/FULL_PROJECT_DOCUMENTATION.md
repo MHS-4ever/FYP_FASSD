@@ -21,7 +21,28 @@ Phase 7 planning is now centralized under **`reports/phase7/`**.
 | [phase7/PHASE7_MASTER_PLAN.md](phase7/PHASE7_MASTER_PLAN.md) | Overall 7A–7F plan |
 | [phase7/PHASE7A_CONTROLLED_TEST_SUITE.md](phase7/PHASE7A_CONTROLLED_TEST_SUITE.md) | Active phase — controlled testing |
 
-Legacy paths (`pipeline_phases/PHASE7*.md`, `FORENSIC_PRODUCT_ROADMAP.md`) remain with a redirect note at the top. Operational 7A templates: [phase7_forensic_tests/](phase7_forensic_tests/).
+Legacy paths (`pipeline_phases/PHASE7*.md`, `FORENSIC_PRODUCT_ROADMAP.md`) remain with a redirect note at the top. Operational 7A templates: [phase7/phase7_forensic_tests/](phase7/phase7_forensic_tests/).
+
+---
+
+## Current Phase 7C conclusion (frozen — May 2026)
+
+Phase 7C fine-tuning and calibration experiments are **complete**. Summary:
+
+| Item | Status |
+|------|--------|
+| Phase 7C3-v1 | **Rejected** — manipulation / holdout behavior collapsed |
+| Phase 7C3-R2 `best_product` / `best_loss` | **Rejected as standalone** — use only as fusion evidence |
+| Phase 7C4-v1 | **Rejected** — clean-human false alarms 18/23 |
+| Phase 7C4-v2 | **Accepted** as **decision-layer prototype only** (8/8 Phase 7C1 v2 criteria) |
+
+**Accepted artifact:** `reports/phase7/phase7c4_calibration_v2/` — not a final product model. Clean-human auto-accept remains **1/23**; **15/23** borderline (requires review).
+
+**Evidence model:** `models_saved/hybrid_resnet_environmental_best.pth` (Phase 6 baseline).
+
+**Next phase:** **7D** — [phase7/PHASE7D_FORENSIC_REPORT_LAYER.md](phase7/PHASE7D_FORENSIC_REPORT_LAYER.md).
+
+Full record: [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md).
 
 ---
 
@@ -43,9 +64,10 @@ The **final product** should generate a **forensic-style report** (origin, manip
 | Point | Detail |
 |-------|--------|
 | **Official scope** | Six areas — [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) |
-| **Baseline unchanged** | `HybridResNetEnvironmental` + Phase 6 remain the current scorer until 7C. |
-| **Next step** | **Phase 7A** — controlled tests including **partial-fabrication** cases (**no training**). |
-| **Phase order** | 7A → 7B → 7C → **7D (mandatory report layer)** → 7E (AASIST, WavLM, wav2vec separate) → 7F (ensemble) |
+| **Baseline checkpoint** | `HybridResNetEnvironmental` + Phase 6 — **evidence source**; not final product alone. |
+| **Accepted prototype** | Phase **7C4-v2** decision layer on Phase 7C1 (`reports/phase7/phase7c4_calibration_v2/`). |
+| **Next step** | **Phase 7D** — forensic report layer (safe wording, report fields). **No training** until after 7D and/or new data. |
+| **Phase order** | 7A → 7B → 7C (frozen) → **7D (active)** → 7E → 7F |
 | **P0 recording** | **20–30 s** default; **≥ 8 s** min; partial-AI cases **30–45 s** or **60–120 s** as specified in 7A |
 
 **Read next:**

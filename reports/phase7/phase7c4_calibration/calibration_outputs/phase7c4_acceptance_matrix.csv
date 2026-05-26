@@ -1,0 +1,9 @@
+criterion,passed,detail
+clean_human_false_alarms_lower_than_baseline,False,17 -> 18
+clean_human_accepted_or_borderline_gte_baseline_accepted,True,"baseline_accept=4 cal_accept+borderline=5 (accept=1, borderline=4)"
+clean_human_accept_reported_separately,True,"accepted=1/23 (borderline=4, false_alarm=18, review_rate=17.39%)"
+direct_ai_suspicious_higher_than_r2_product_alone,True,segment+detect vs R2-only
+human_replay_detection_close_to_baseline,True,23 -> 23
+mixer_detection_close_to_baseline,True,human+ai mixer
+partial_fabrication_close_to_baseline,True,43 -> 44
+product_score_improves_over_r2_product,True,0.6435 -> 0.7304

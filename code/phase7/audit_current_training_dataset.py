@@ -1291,7 +1291,7 @@ def print_terminal_summary(
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit current hybrid training dataset (Phase 7C0)")
     parser.add_argument("--manifest_dir", type=str, default="data/manifests")
-    parser.add_argument("--output_dir", type=str, default="reports/phase7_current_dataset_audit")
+    parser.add_argument("--output_dir", type=str, default="reports/phase7/phase7_current_dataset_audit")
     parser.add_argument("--sample_per_group", type=int, default=20)
     parser.add_argument("--check_audio_exists_sample", type=int, default=5000)
     parser.add_argument("--chunk_size", type=int, default=CHUNK_SIZE)
@@ -1463,12 +1463,12 @@ def main() -> None:
         "```text\n"
         "python code/phase7/audit_current_training_dataset.py ^\n"
         "  --manifest_dir data/manifests ^\n"
-        "  --output_dir reports/phase7_current_dataset_audit ^\n"
+        "  --output_dir reports/phase7/phase7_current_dataset_audit ^\n"
         "  --sample_per_group 20 ^\n"
         "  --check_audio_exists_sample 5000\n\n"
         "python code/phase7/audit_hdf5_features.py ^\n"
         "  --features_dir data/features ^\n"
-        "  --output_dir reports/phase7_current_dataset_audit\n"
+        "  --output_dir reports/phase7/phase7_current_dataset_audit\n"
         "```\n",
         encoding="utf-8",
     )

@@ -180,7 +180,7 @@ Dynamic additions when applicable:
 
 - Only *N* chunks used after VAD.  
 - Decision score near threshold.  
-- `partial_fabrication_detected` with whole-file REAL (e.g. `T5_FAB_001`: 34 s file, insert 14–21 s — use inside/outside chunk metrics; see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).
+- `partial_fabrication_detected` with whole-file REAL (e.g. `T5_FAB_001`: 34 s file, insert 14–21 s — use inside/outside chunk metrics; see [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7/phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).
 
 ---
 

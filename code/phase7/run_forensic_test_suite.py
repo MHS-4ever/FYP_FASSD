@@ -299,7 +299,7 @@ def parse_forensic_args():
     p = argparse.ArgumentParser(description="Phase 7A — run forensic test suite via Phase 6 inference")
     p.add_argument("--manifest", type=str, required=True, help="Filled forensic_test_manifest.csv")
     p.add_argument("--ckpt", type=str, required=True, help="Phase 4/6 hybrid checkpoint (.pth)")
-    p.add_argument("--output_dir", type=str, default="reports/phase7_forensic_tests/results")
+    p.add_argument("--output_dir", type=str, default="reports/phase7/phase7_forensic_tests/results")
     p.add_argument("--repo_root", type=str, default=str(_REPO_ROOT), help="Repo root for relative audio paths")
     p.add_argument("--device", type=str, default="cuda", choices=["cuda", "cpu"])
     p.add_argument(

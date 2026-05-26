@@ -3,7 +3,21 @@
 > **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. See also [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) and [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md).
 
 **Last updated:** May 2026  
-**Status:** Direction document (baseline model exists; forensic product in progress)
+**Status:** Direction document — **Phase 7C frozen**; **Phase 7D** is active product work  
+**7C decisions:** [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md)
+
+---
+
+## Current state (Phase 7C conclusion)
+
+| Point | Detail |
+|-------|--------|
+| **Model alone is not final** | No fine-tuned checkpoint (7C3-v1, R2) is accepted as the product scorer. |
+| **Accepted prototype** | Phase 7C4-v2 **decision-layer fusion** over baseline + R2 evidence (`reports/phase7/phase7c4_calibration_v2/`). |
+| **Baseline role** | `hybrid_resnet_environmental_best.pth` remains a primary **evidence source** for replay/mixer/partial sensitivity. |
+| **Clean human** | v2 reduces false alarms vs baseline but most clean clips are **borderline / requires review**, not auto-accepted. |
+| **Next product work** | **Phase 7D** — forensic report layer (safe wording, `origin_hint`, `manipulation_hint`, `risk_level`, timelines). |
+| **No training now** | Do not fine-tune until after 7D integration and/or new controlled evaluation. |
 
 ---
 
@@ -47,7 +61,7 @@ The system should take an audio file and produce a **forensic-style report** tha
 | **Which chunks** are suspicious? | Segment timeline in report |
 | What should appear in a **forensic-style narrative**? | `final_forensic_interpretation` |
 
-The **current** `HybridResNetEnvironmental` model remains the **baseline detector** for Phase 7A testing. It is **not** the final forensic product by itself.
+The **current** `HybridResNetEnvironmental` checkpoint remains the **baseline evidence model**. It is **not** the final forensic product by itself. The **accepted prototype** for controlled Phase 7C1 evaluation is the **Phase 7C4-v2 decision layer**, which must be wrapped by **Phase 7D** report wording before any external demo.
 
 ---
 
@@ -219,30 +233,27 @@ Combine hybrid + best 7E model(s) + chunk timeline + env inconsistency → final
 
 ## 8. Immediate Rule
 
-> **No new model training, fine-tuning, or architecture replacement until Phase 7A test results are created and reviewed.**
+> **Phase 7C is frozen. No new model training or fine-tuning until Phase 7D report-layer integration and/or a new controlled evaluation protocol.**
 
-Allowed before 7A review:
+> Historical rule (7A): No training until Phase 7A results were reviewed — **satisfied.** Phase 7C experiments are complete; see [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md).
+
+**Active work:** Phase **7D** — forensic report layer. Planning specs: [phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md](phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md). Next code: `build_phase7d_forensic_report.py` (7D1).
+
+Allowed now:
 
 - Documentation and templates
 - Running **existing** Phase 6 inference on new controlled test files
 - Analysis markdown and CSV aggregation (when scripts exist)
 - Threshold **experiments** documented as temporary (not permanent product defaults)
 
-Not allowed before 7A review:
+Not allowed now:
 
-- Fine-tuning `hybrid_resnet_environmental_best.pth`
-- Any Phase **7E** SSL/transformer/AASIST work (even on 12 GB VRAM)
-- Replacing the hybrid with WavLM/AASIST without 7A/7C baseline comparison
-- Permanent threshold changes without analysis
+- Fine-tuning or new checkpoint training without updated evaluation plan
+- Deploying **7C3-v1**, **standalone R2**, or **7C4-v1** as product scorers
+- Claiming final forensic accuracy, court-ready proof, or market-ready automation from 7C4-v2
+- Any Phase **7E** SSL/transformer/AASIST work before **7D** report spec is implemented
+- Starting Phase **7F** (ensemble) before **7E** review
 - Claiming forensic proof from binary score alone
-
-Not allowed before **7C** review:
-
-- Starting Phase **7E** (AASIST / WavLM / wav2vec experiments)
-
-Not allowed before **7E** review:
-
-- Starting Phase **7F** (ensemble / late fusion)
 
 ---
 

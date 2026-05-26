@@ -248,7 +248,7 @@ def print_summary(results: list[dict]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit training HDF5 feature files (Phase 7C0)")
     parser.add_argument("--features_dir", type=str, default="data/features")
-    parser.add_argument("--output_dir", type=str, default="reports/phase7_current_dataset_audit")
+    parser.add_argument("--output_dir", type=str, default="reports/phase7/phase7_current_dataset_audit")
     parser.add_argument("--sample_n", type=int, default=SAMPLE_INDICES)
     args = parser.parse_args()
 

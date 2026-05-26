@@ -1,8 +1,12 @@
-# Phase 7D — Forensic Report Layer
+# Phase 7D — Forensic Report Layer (Legacy Overview)
 
-**Status:** Specified — implement after Phase 7A review  
+> **Canonical Phase 7D planning (May 2026):** [phase7d_report_layer/README.md](phase7d_report_layer/README.md)  
+> Master plan: [phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md](phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md)
+
+**Status:** Planning complete — **7D1** implementation (`build_phase7d_forensic_report.py`) not started  
 **Priority:** **Mandatory** (not optional)  
-**Training:** None (rules and mapping first)
+**Training:** None (rules and mapping first)  
+**Upstream:** Phase 7C4-v2 decision-layer prototype (frozen)
 
 ---
 
@@ -96,7 +100,7 @@ Apply when `partial_region_detected` is true even if whole-file `prediction` is 
 2. Implement mapping: Phase 6 JSON → report object.  
 3. Build **suspicious_timeline** from chunk scores + overlap rules.  
 4. Implement Cases A–K templates.  
-5. Wire partial-fabrication logic ([PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).  
+5. Wire partial-fabrication logic ([PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md)).  
 6. Validate on 7A manifest (expected vs derived labels).  
 7. Plan API/UI field names for Phase 8.  
 

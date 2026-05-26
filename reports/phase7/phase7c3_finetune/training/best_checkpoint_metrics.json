@@ -1,0 +1,13 @@
+{
+  "base_ckpt": "E:\\FYP\\models_saved\\hybrid_resnet_environmental_best.pth",
+  "best_epoch": 12,
+  "best_val_loss": 3.0445205414933816,
+  "val_loss": 3.0445205414933816,
+  "val_origin_accuracy": 0.6379310344827587,
+  "val_attack_accuracy": 0.4343891402714932,
+  "val_human_clean_acceptance": 0.9433962264150944,
+  "val_direct_ai_detection": 0.5242718446601942,
+  "val_replay_detection": 0.35714285714285715,
+  "val_partial_rows_count": 6,
+  "note": "Partial fabrication not trained in Phase 7C3-v1 (no partial head)."
+}

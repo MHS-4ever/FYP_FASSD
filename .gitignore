@@ -33,3 +33,4 @@ data/features/logmel_packed.h5
 data/features/environmental_packed.h5
 data/features/features_manifest_unified.csv
 data/manifests/train_speaker_independent_with_features.csv
+data/phase7c1/raw/

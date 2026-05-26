@@ -1,0 +1,118 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260526191426
+Username: HASNAIN\mhasn
+RunAs User: HASNAIN\mhasn
+Configuration Name: 
+Machine: HASNAIN (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 24092
+PSVersion: 5.1.26100.8457
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8457
+BuildVersion: 10.0.26100.8457
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is reports/project_resources/fassd_system_resources.txt
+===== FASSD SYSTEM RESOURCE REPORT =====
+
+Tuesday, May 26, 2026 7:14:26 PM
+
+===== OS / MACHINE =====
+
+OsName                : Microsoft Windows 11 Home
+OsVersion             : 10.0.26200
+OsArchitecture        : 64-bit
+CsName                : HASNAIN
+CsManufacturer        : LENOVO
+CsModel               : 82XV
+CsTotalPhysicalMemory : 16890519552
+
+
+===== CPU =====
+
+Name                      : 13th Gen Intel(R) Core(TM) i5-13420H
+NumberOfCores             : 8
+NumberOfLogicalProcessors : 12
+MaxClockSpeed             : 2100
+
+
+===== RAM =====
+
+Manufacturer : Samsung
+Capacity     : 8589934592
+Speed        : 5600
+PartNumber   : M425R1GB4BB0-CWMOD
+
+
+Manufacturer : SK Hynix
+Capacity     : 8589934592
+Speed        : 5600
+PartNumber   : HMCG66AGBSA092N
+
+
+===== GPU FROM WINDOWS =====
+
+Name           : NVIDIA GeForce RTX 3050 6GB Laptop GPU
+AdapterRAM     : 4293918720
+DriverVersion  : 32.0.15.9621
+VideoProcessor : NVIDIA GeForce RTX 3050 6GB Laptop GPU
+
+
+Name           : Intel(R) UHD Graphics
+AdapterRAM     : 2147479552
+DriverVersion  : 32.0.101.6733
+VideoProcessor : Intel(R) UHD Graphics Family
+
+
+===== NVIDIA SMI =====
+
+
+===== NVIDIA SMI DETAILS =====
+
+
+===== DISK SPACE =====
+
+Name : C
+Used : 417277042688
+Free : 119593865216
+Root : C:\
+
+
+Name : D
+Used : 236446449664
+Free : 248503169024
+Root : D:\
+
+
+Name : E
+Used : 681304563712
+Free : 318897475584
+Root : E:\
+
+
+===== CONDA INFO =====
+
+
+===== CONDA ENVS =====
+
+
+===== PYTHON LOCATION/VERSION =====
+
+
+
+===== TORCH / CUDA CHECK =====
+
+
+===== IMPORTANT PACKAGE VERSIONS =====
+
+
+===== FULL CONDA LIST =====
+
+**********************
+Windows PowerShell transcript end
+End time: 20260526191447
+**********************

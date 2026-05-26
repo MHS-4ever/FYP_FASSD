@@ -1,7 +1,7 @@
 # Phase 7 Test Case Guide
 
 **Phase:** 7A (controlled forensic testing)  
-**Manifest:** [../phase7_forensic_tests/forensic_test_manifest_template.csv](../phase7_forensic_tests/forensic_test_manifest_template.csv)  
+**Manifest:** [phase7_forensic_tests/forensic_test_manifest_template.csv](phase7_forensic_tests/forensic_test_manifest_template.csv)  
 **Labels:** [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md)
 
 ---
@@ -85,7 +85,7 @@ Only **T1–T5** are required for the **first** 7A cycle. This is enough to meas
 
 1. **Do not** judge pass/fail on whole-file REAL/FAKE alone.  
 2. Compare chunk spoof scores **inside 14–21 s** vs **outside**.  
-3. Record `partial_region_detected` per [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](../phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).  
+3. Record `partial_region_detected` per [PARTIAL_FABRICATION_CHUNK_ANALYSIS.md](phase7_forensic_tests/PARTIAL_FABRICATION_CHUNK_ANALYSIS.md).  
 4. Document chunk timeline in results CSV and analysis report.  
 
 ### Extended partial cases (later P1)

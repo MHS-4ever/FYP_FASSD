@@ -34,8 +34,8 @@ Phase 7 upgrades FASSD from binary detection to a **Forensic Voice Authenticity 
 
 **Outputs:**
 
-- `reports/phase7_forensic_tests/results/forensic_test_results.csv`  
-- `reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md`  
+- `reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv`  
+- `reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md`  
 - Per-file JSON under `results/json_outputs/`
 
 **Spec:** [PHASE7A_FORENSIC_TEST_SUITE.md](PHASE7A_FORENSIC_TEST_SUITE.md)

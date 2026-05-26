@@ -320,7 +320,7 @@ def write_validation_report(
 def parse_args():
     p = argparse.ArgumentParser(description="Phase 7B — validate forensic labels")
     p.add_argument("--input", type=str, required=True)
-    p.add_argument("--output", type=str, default="reports/phase7_dataset/forensic_dataset_validation_report.md")
+    p.add_argument("--output", type=str, default="reports/phase7/phase7_dataset/forensic_dataset_validation_report.md")
     p.add_argument("--repo_root", type=str, default=str(_REPO_ROOT))
     p.add_argument("--allow_warnings", action="store_true")
     return p.parse_args()

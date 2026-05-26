@@ -1375,16 +1375,16 @@ def parse_args():
     p = argparse.ArgumentParser(description="Phase 7A — analyze forensic test results CSV")
     p.add_argument("--results_csv", type=str, required=True)
     p.add_argument("--results_dir", type=str, default=None, help="Dir with json_outputs/ and chunk_timelines/")
-    p.add_argument("--output_md", type=str, default="reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md")
+    p.add_argument("--output_md", type=str, default="reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md")
     p.add_argument(
         "--product_csv",
         type=str,
-        default="reports/phase7_forensic_tests/results/forensic_test_results_product.csv",
+        default="reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv",
     )
     p.add_argument(
         "--product_md",
         type=str,
-        default="reports/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md",
+        default="reports/phase7/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md",
     )
     p.add_argument("--no_rewrite_csv", action="store_true", help="Do not update legacy results CSV")
     p.add_argument("--skip_legacy_md", action="store_true", help="Only generate product-level outputs")

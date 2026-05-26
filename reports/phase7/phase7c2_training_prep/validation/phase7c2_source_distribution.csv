@@ -1,0 +1,7 @@
+split,data_source,source_subset,count
+test,old,old_balanced,200
+test,phase7c1,phase7c1_collection,32
+train,old,old_balanced,1000
+train,phase7c1,phase7c1_collection,128
+val,old,old_balanced,200
+val,phase7c1,phase7c1_collection,24

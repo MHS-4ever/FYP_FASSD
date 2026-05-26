@@ -1,32 +1,157 @@
 # Phase 7 — Forensic Test Suite & Dataset (Code)
 
-**Sign-off status:** Phase **7A**, **7B**, **7C0** signed off.  
-**Next:** Phase **7C1** Round-1 recording (~120 files) → validate manifest → then Phase **7C** fine-tuning.
+**Sign-off status:** Phase **7A**–**7C2** and **7C4-v2** (prototype) signed off.  
+**Active:** Phase **7D** — forensic report layer (planning complete; **7D1** implementation next).  
+**Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md) · **7D specs:** [phase7d_report_layer/](../../reports/phase7/phase7d_report_layer/README.md)
+
+> **Environment:** Use `python` inside the activated **`(fassd)`** conda environment. Do **not** use `py -3` (system Python may lack pandas/torch).
 
 | Phase | Scripts | Status |
 |-------|---------|--------|
 | 7A | `run_forensic_test_suite.py`, `analyze_forensic_test_results.py` | Signed off |
 | 7B | `prepare_forensic_dataset.py`, `validate_forensic_labels.py` | Signed off |
 | 7C0 | `audit_current_training_dataset.py`, `audit_hdf5_features.py` | Signed off |
-| 7C1 | `validate_phase7c1_collection_manifest.py` + [phase7c1_collection/](../../reports/phase7c1_collection/) | **Active** (Round-1: 15+ × 8 ≈ 120 files) |
-| 7C | (existing `train_hybrid_fast.py` in phase4) | Blocked |
+| 7C1 | `build_phase7c1_manifest_from_audio.py`, … `analyze_phase7c1_baseline.py` | Signed off |
+| 7C2 | `build_phase7c2_training_manifests.py`, `validate_phase7c2_training_manifests.py`, `summarize_phase7c2_training_prep.py` | Signed off |
+| 7C3-v1 | `build_phase7c3_feature_cache.py`, `train_phase7c3_hybrid.py`, … | **Rejected** (outputs preserved) |
+| 7C3-R2 | `build_phase7c3_r2_feature_cache.py`, `train_phase7c3_r2_hybrid.py`, … | Checkpoints **rejected standalone**; evidence-only in 7C4-v2 |
+| 7C4-v1 | `apply_phase7c4_decision_layer.py`, … | **Rejected** |
+| 7C4-v2 | `apply_phase7c4_v2_decision_layer.py` | **Accepted** as decision-layer prototype only |
+| 7D | `build_phase7d_forensic_report.py` (planned) | **Active** — spec in [phase7d_report_layer](../../reports/phase7d_report_layer/README.md); script **not implemented** |
+| 7E–7F | Transformers / ensemble | Planned — after 7D |
+
+**Accepted artifact:** `reports/phase7/phase7c4_calibration_v2/` — do not treat as final model.
 
 ---
 
 ## Phase 7C1 — Round-1 collection manifest
 
-**Status:** Active (docs + validation — **no training**)
+**Status:** Active — **no training**
+
+**Collected:** 23 base IDs × 8 variants = **184** audio files in `data/phase7c1/raw/`.
+
+### 1. Build manifest from audio
+
+```text
+python code/phase7/build_phase7c1_manifest_from_audio.py ^
+  --audio_dir data/phase7c1/raw ^
+  --output_manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --timestamp_template reports/phase7/phase7c1_collection/phase7c1_fabricated_timestamps_to_fill.csv
+```
+
+### 2. Validate
 
 ```text
 python code/phase7/validate_phase7c1_collection_manifest.py ^
-  --input reports/phase7c1_collection/phase7c1_collection_manifest.csv ^
-  --output reports/phase7c1_collection/phase7c1_validation_report.md ^
-  --allow_warnings
+  --manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --target_counts reports/phase7/phase7c1_collection/phase7c1_target_counts.csv ^
+  --output_dir reports/phase7/phase7c1_collection/validation ^
+  --allow_missing_audio --allow_warnings
 ```
 
-Copy `reports/phase7c1_collection/phase7c1_collection_manifest_template.csv` → `phase7c1_collection_manifest.csv` when recording.
+### 3. Summary
 
-**Round-1:** 15+ speakers × **8 variants** ≈ **120 files**. See [PHASE7C1_DATA_COLLECTION_PLAN.md](../../reports/phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md).
+```text
+python code/phase7/summarize_phase7c1_collection.py ^
+  --manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --target_counts reports/phase7/phase7c1_collection/phase7c1_target_counts.csv ^
+  --output_md reports/phase7/phase7c1_collection/phase7c1_collection_status.md
+```
+
+Fill `phase7c1_fabricated_timestamps_to_fill.csv` before final `--strict` validation.
+
+See [PHASE7C1_DATA_COLLECTION_PLAN.md](../../reports/phase7/phase7c1_collection/PHASE7C1_DATA_COLLECTION_PLAN.md).
+
+### 4. Baseline evaluation (pre fine-tuning — no training)
+
+After collection manifest is validated:
+
+```text
+python code/phase7/run_phase7c1_baseline.py ^
+  --manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --ckpt models_saved/hybrid_resnet_environmental_best.pth ^
+  --output_dir reports/phase7/phase7c1_baseline/results ^
+  --pooling pct_vote ^
+  --chunk_threshold 0.65 ^
+  --vote_threshold 0.70 ^
+  --vad_mode file_percentile ^
+  --vad_rms_percentile 40 ^
+  --vad_min_speech_ratio 0.40 ^
+  --batch_size 32 ^
+  --save_chunk_timeline
+
+python code/phase7/analyze_phase7c1_baseline.py ^
+  --results_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv ^
+  --output_md reports/phase7/phase7c1_baseline/results/PHASE7C1_BASELINE_ANALYSIS.md ^
+  --category_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_category_summary.csv ^
+  --error_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_error_cases.csv ^
+  --partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv
+```
+
+See [phase7c1_baseline/README.md](../../reports/phase7/phase7c1_baseline/README.md).
+
+---
+
+## Phase 7C2 — Training dataset builder (signed off)
+
+**Status:** Signed off — approved manifests use **250/50/50** old per-attack caps (not 1000/200/200)
+
+```text
+python code/phase7/build_phase7c2_training_manifests.py ^
+  --old_manifest_dir data/manifests ^
+  --phase7c1_manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv ^
+  --phase7c1_baseline reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv ^
+  --phase7a_holdout reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --output_dir reports/phase7/phase7c2_training_prep ^
+  --old_train_per_attack 250 --old_val_per_attack 50 --old_test_per_attack 50 --random_seed 42
+
+python code/phase7/validate_phase7c2_training_manifests.py ^
+  --train reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv ^
+  --val reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv ^
+  --test reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv ^
+  --phase7a_holdout reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --output_dir reports/phase7/phase7c2_training_prep/validation --allow_missing_audio --allow_warnings
+
+python code/phase7/summarize_phase7c2_training_prep.py ^
+  --train reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv ^
+  --val reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv ^
+  --test reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv ^
+  --output_md reports/phase7/phase7c2_training_prep/phase7c2_dataset_balance_report.md ^
+  --output_csv reports/phase7/phase7c2_training_prep/phase7c2_manifest_summary.csv
+```
+
+See [phase7c2_training_prep/README.md](../../reports/phase7/phase7c2_training_prep/README.md).
+
+---
+
+## Phase 7C3-v1 — Hybrid fine-tuning (archived)
+
+**Status:** Rejected after forensic-risk collapse; kept for reference only.
+
+---
+
+## Phase 7C3-R2 — Forensic-risk correction
+
+**Status:** Complete — checkpoints **rejected as standalone**; preserved for evidence / 7C4-v2 fusion only
+
+**Performance defaults (≈12 GB VRAM):**
+
+- `batch_size=16` training; `num_workers=0` (Windows-safe; try `2`/`4` only if stable)
+- Feature cache: single-process extraction; `--force` to overwrite H5
+- Optional `--amp` on CUDA training if stable
+- Partial-fabrication rows: 4s window **centered on suspicious region** (not first 4s)
+
+```text
+python code/phase7/build_phase7c3_r2_feature_cache.py --manifest reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv --output_h5 reports/phase7/phase7c3_finetune_r2/features/phase7c3_r2_train_features.h5 --split train --phase7c1_windows 3 --force
+
+python code/phase7/build_phase7c3_r2_feature_cache.py --manifest reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv --output_h5 reports/phase7/phase7c3_finetune_r2/features/phase7c3_r2_val_features.h5 --split val --phase7c1_windows 3 --force
+
+python code/phase7/build_phase7c3_r2_feature_cache.py --manifest reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv --output_h5 reports/phase7/phase7c3_finetune_r2/features/phase7c3_r2_test_features.h5 --split test --phase7c1_windows 3 --force
+
+python code/phase7/train_phase7c3_r2_hybrid.py --train_h5 reports/phase7/phase7c3_finetune_r2/features/phase7c3_r2_train_features.h5 --val_h5 reports/phase7/phase7c3_finetune_r2/features/phase7c3_r2_val_features.h5 --base_ckpt models_saved/hybrid_resnet_environmental_best.pth --output_dir reports/phase7/phase7c3_finetune_r2/training --epochs 12 --batch_size 16 --num_workers 0 --lr 5e-6 --weight_decay 1e-4 --freeze_backbone_epochs 1 --patience 4 --device cuda
+```
+
+See [phase7c3_finetune_r2/README.md](../../reports/phase7/phase7c3_finetune_r2/README.md).
 
 ---
 
@@ -39,16 +164,16 @@ Audits manifests and HDF5 features used to train **HybridResNetEnvironmental** b
 ```text
 python code/phase7/audit_current_training_dataset.py ^
   --manifest_dir data/manifests ^
-  --output_dir reports/phase7_current_dataset_audit ^
+  --output_dir reports/phase7/phase7_current_dataset_audit ^
   --sample_per_group 20 ^
   --check_audio_exists_sample 5000
 
 python code/phase7/audit_hdf5_features.py ^
   --features_dir data/features ^
-  --output_dir reports/phase7_current_dataset_audit
+  --output_dir reports/phase7/phase7_current_dataset_audit
 ```
 
-**Outputs:** `reports/phase7_current_dataset_audit/` — see [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](../../reports/phase7/PHASE7C_HYBRID_MODEL_FINE_TUNING.md) (7C0 section).
+**Outputs:** `reports/phase7/phase7_current_dataset_audit/` — see [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](../../reports/phase7/PHASE7C_HYBRID_MODEL_FINE_TUNING.md) (7C0 section).
 
 **Review files:** `CURRENT_TRAINING_DATASET_AUDIT.md`, `dataset_risk_assessment.md`, `phase7c_data_collection_recommendations.md`
 
@@ -62,17 +187,17 @@ python code/phase7/audit_hdf5_features.py ^
 
 ```text
 python code/phase7/prepare_forensic_dataset.py ^
-  --manifest reports/phase7_forensic_tests/forensic_test_manifest.csv ^
-  --product_results reports/phase7_forensic_tests/results/forensic_test_results_product.csv ^
-  --output_dir reports/phase7_dataset
+  --manifest reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --product_results reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv ^
+  --output_dir reports/phase7/phase7_dataset
 
 python code/phase7/validate_forensic_labels.py ^
-  --input reports/phase7_dataset/forensic_labeled_master.csv ^
-  --output reports/phase7_dataset/forensic_dataset_validation_report.md ^
+  --input reports/phase7/phase7_dataset/forensic_labeled_master.csv ^
+  --output reports/phase7/phase7_dataset/forensic_dataset_validation_report.md ^
   --allow_warnings
 ```
 
-**Outputs:** `reports/phase7_dataset/` — see [PHASE7B_FORENSIC_DATASET_PREPARATION.md](../../reports/phase7/PHASE7B_FORENSIC_DATASET_PREPARATION.md)
+**Outputs:** `reports/phase7/phase7_dataset/` — see [PHASE7B_FORENSIC_DATASET_PREPARATION.md](../../reports/phase7/PHASE7B_FORENSIC_DATASET_PREPARATION.md)
 
 **Review files:** `forensic_labeled_master.csv`, `forensic_file_level_labels.csv`, `forensic_segment_labels.csv`, `forensic_training_manifest_preview.csv`, `forensic_dataset_gap_analysis.md`, `rejected_or_needs_review.csv`
 
@@ -105,9 +230,9 @@ Phase 6: file-level inference unchanged. With `--save_chunk_timeline`, timelines
 cd /d E:\FYP
 
 python code/phase7/run_forensic_test_suite.py ^
-  --manifest reports/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --manifest reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
   --ckpt models_saved/hybrid_resnet_environmental_best.pth ^
-  --output_dir reports/phase7_forensic_tests/results ^
+  --output_dir reports/phase7/phase7_forensic_tests/results ^
   --pooling pct_vote ^
   --chunk_threshold 0.65 ^
   --vote_threshold 0.70 ^
@@ -124,9 +249,9 @@ python code/phase7/run_forensic_test_suite.py ^
 
 ```text
 python code/phase7/analyze_forensic_test_results.py ^
-  --results_csv reports/phase7_forensic_tests/results/forensic_test_results.csv ^
-  --product_csv reports/phase7_forensic_tests/results/forensic_test_results_product.csv ^
-  --product_md reports/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md
+  --results_csv reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv ^
+  --product_csv reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv ^
+  --product_md reports/phase7/phase7_forensic_tests/results/PHASE7A_PRODUCT_LEVEL_ANALYSIS.md
 ```
 
 Also writes legacy `FORENSIC_TEST_ANALYSIS.md` unless `--skip_legacy_md`.
@@ -162,8 +287,8 @@ Chunk timelines only if debugging a specific case (e.g. T5_FAB_001, T4.3 after t
 
 ```text
 python code/phase7/analyze_forensic_test_results.py ^
-  --results_csv reports/phase7_forensic_tests/results/forensic_test_results.csv ^
-  --output_md reports/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md ^
+  --results_csv reports/phase7/phase7_forensic_tests/results/forensic_test_results.csv ^
+  --output_md reports/phase7/phase7_forensic_tests/results/FORENSIC_TEST_ANALYSIS.md ^
   --skip_legacy_md
 ```
 
@@ -171,6 +296,34 @@ Use `--no_rewrite_csv` to avoid updating the base results CSV.
 
 ---
 
+## Phase 7C4 — Calibration & decision layer (no training)
+
+Compare baseline vs R2 checkpoints; sweep thresholds; apply calibrated forensic rules. **Standalone R2 checkpoints are not accepted** — only a decision-layer prototype if Phase 7C1 + 7A holdout checks pass.
+
+Shared helpers: `phase7c4_common.py`. See [reports/phase7/phase7c4_calibration/README.md](../../reports/phase7/phase7c4_calibration/README.md).
+
+```text
+py -3 code/phase7/compare_phase7c4_checkpoints.py --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv --output_csv reports/phase7/phase7c4_calibration/calibration_outputs/phase7c4_checkpoint_comparison.csv --output_md reports/phase7/phase7c4_calibration/phase7c4_checkpoint_comparison.md
+
+py -3 code/phase7/sweep_phase7c4_thresholds.py --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv --baseline_partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv --r2_product_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --r2_loss_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --output_csv reports/phase7/phase7c4_calibration/calibration_outputs/phase7c4_threshold_sweep.csv --output_md reports/phase7/phase7c4_calibration/phase7c4_threshold_sweep_report.md
+
+py -3 code/phase7/apply_phase7c4_decision_layer.py --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv --baseline_partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv --r2_product_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --r2_loss_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --output_csv reports/phase7/phase7c4_calibration/calibration_outputs/phase7c4_candidate_decisions.csv --error_csv reports/phase7/phase7c4_calibration/calibration_outputs/phase7c4_error_cases.csv   --output_md reports/phase7/phase7c4_calibration/phase7c4_decision_layer_report.md
+
+py -3 code/phase7/check_phase7c4_holdout_impact.py --baseline_csv reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7a_holdout_after_r2/forensic_test_results_product.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7a_holdout_after_r2/forensic_test_results_product.csv --output_csv reports/phase7/phase7c4_calibration/calibration_outputs/phase7c4_phase7a_holdout_impact.csv --output_md reports/phase7/phase7c4_calibration/phase7c4_phase7a_holdout_impact.md
+```
+
+## Phase 7C4-v2 — Corrected decision layer
+
+v1 rejected (clean-human false alarms 18/23). v2 uses R2 product for clean human and baseline for manipulation. Outputs: `reports/phase7/phase7c4_calibration_v2/`.
+
+```text
+py -3 code/phase7/apply_phase7c4_v2_decision_layer.py --baseline_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --r2_product_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_baseline_results.csv --r2_loss_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_baseline_results.csv --baseline_partial_csv reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv --r2_product_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_product/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --r2_loss_partial_csv reports/phase7/phase7c3_finetune_r2/evaluation/best_loss/phase7c1_after_r2/phase7c1_partial_fabrication_analysis.csv --output_csv reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv --error_csv reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_error_cases.csv --output_md reports/phase7/phase7c4_calibration_v2/phase7c4_v2_decision_layer_report.md --final_md reports/phase7/phase7c4_calibration_v2/phase7c4_v2_final_recommendation.md
+```
+
+See [phase7c4_calibration_v2/README.md](../../reports/phase7/phase7c4_calibration_v2/README.md).
+
+---
+
 ## What this phase does **not** do
 
-- Train or fine-tune (7C), transformers (7E), ensemble (7F), or Phase 7B labels
+- Train or fine-tune (7C3 scripts only when explicitly running training), transformers (7E), ensemble (7F), or Phase 7B labels

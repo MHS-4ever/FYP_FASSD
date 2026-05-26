@@ -1,0 +1,4 @@
+split,total_rows,old_rows,phase7c1_rows,avg_sample_weight,partial_fabrication_rows,use_origin_loss_false
+train,1128,1000,128,1.1172429078014185,32,250
+val,224,200,24,1.1049107142857142,6,50
+test,232,200,32,1.165948275862069,8,50

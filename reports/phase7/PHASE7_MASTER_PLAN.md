@@ -126,4 +126,4 @@ Phase 7A runs this stack **unchanged** to document failure patterns.
 - [README.md](README.md) — index  
 - [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md) — T1–T5  
 - [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md) — labels  
-- [../phase7_forensic_tests/](../phase7_forensic_tests/) — manifests and templates  
+- [phase7_forensic_tests/](phase7_forensic_tests/) — manifests and templates  

@@ -1,0 +1,502 @@
+{
+  "sample_id": "human_014_clean",
+  "manifest": {
+    "sample_id": "human_014_clean",
+    "audio_path": "data/phase7c1/raw/human_clean/human_014_clean.wav",
+    "base_id": "base_014",
+    "variant_id": "human_clean",
+    "speaker_id": "speaker_014",
+    "speaker_gender": "unknown",
+    "language": "unknown",
+    "source_origin": "human",
+    "manipulation_type": "clean_direct",
+    "ground_truth_origin": "human",
+    "ground_truth_manipulation": "clean",
+    "origin_label": "human_likely",
+    "manipulation_label": "clean_original",
+    "attack_hint": "bonafide",
+    "risk_level": "low",
+    "partial_fabrication_binary": 0,
+    "suspicious_start_time": NaN,
+    "suspicious_end_time": NaN,
+    "split": "train",
+    "split_group_id": "base_014"
+  },
+  "inference": {
+    "filename": "human_014_clean.wav",
+    "filepath": "E:\\FYP\\data\\phase7c1\\raw\\human_clean\\human_014_clean.wav",
+    "prediction": "REAL",
+    "confidence": 0.3076923076923077,
+    "spoof_prob": 0.6923076923076923,
+    "decision_score": 0.6923076923076923,
+    "pooling": "pct_vote",
+    "spoof_prob_mean": 0.7476603984832764,
+    "spoof_prob_median": 0.8748277425765991,
+    "spoof_prob_trimmed": 0.7863365411758423,
+    "spoof_prob_logit_mean": 0.88818359375,
+    "pct_chunks_above_chunk_threshold": 0.6923076923076923,
+    "threshold": 0.65,
+    "effective_threshold": 0.7,
+    "chunk_threshold": 0.65,
+    "vote_threshold": 0.7,
+    "attack_type": "synthesis",
+    "attack_type_idx": 1,
+    "attack_type_conf": 0.8639479279518127,
+    "attack_probs": [
+      0.133908212184906,
+      0.8639479279518127,
+      0.000594021868892014,
+      0.0015497873537242413
+    ],
+    "n_chunks": 13,
+    "n_chunks_total": 13,
+    "n_chunks_used": 13,
+    "vad_min_speech_ratio": 0.4,
+    "vad_rms_percentile": 40.0,
+    "vad_mode": "file_percentile",
+    "vad_db_threshold": -45.0,
+    "vad_fallback_all": false,
+    "speech_ratio_mean_used": 0.601572990600422,
+    "speech_ratio_median_used": 0.600997506234414,
+    "vad_file_rms_threshold": 0.04580997675657272,
+    "chunk_timeline": [
+      {
+        "chunk_index": 0,
+        "start_time": 0.0,
+        "end_time": 4.0,
+        "vad_kept": true,
+        "speech_ratio": 0.4339152119700748,
+        "evaluated": true,
+        "spoof_probability": 0.8701565861701965,
+        "attack_probs": [
+          0.030598614364862442,
+          0.9687754511833191,
+          0.0006083443877287209,
+          1.7666650819592178e-05
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.21996356546878815,
+          "snr": 25.966365814208984,
+          "background_level": -45.5764045715332,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -0.8799805841435769,
+          "spectral_flatness": 0.03076833300292492,
+          "spectral_rolloff": 2756.0143849206347,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.013497799634933472,
+          "background_consistency": 0.5450029373168945,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 1,
+        "start_time": 3.0,
+        "end_time": 7.0,
+        "vad_kept": true,
+        "speech_ratio": 0.6184538653366584,
+        "evaluated": true,
+        "spoof_probability": 0.9818925857543945,
+        "attack_probs": [
+          0.005630874074995518,
+          0.9943536520004272,
+          1.5510060620727018e-05,
+          6.526081008928486e-09
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.18872059881687164,
+          "snr": 7.3571391105651855,
+          "background_level": -24.82891273498535,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -0.9137252046168185,
+          "spectral_flatness": 0.03117172233760357,
+          "spectral_rolloff": 2961.9915674603176,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.008154460228979588,
+          "background_consistency": 0.9330799579620361,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 2,
+        "start_time": 6.0,
+        "end_time": 10.0,
+        "vad_kept": true,
+        "speech_ratio": 0.600997506234414,
+        "evaluated": true,
+        "spoof_probability": 0.4981689751148224,
+        "attack_probs": [
+          0.17098116874694824,
+          0.8269343376159668,
+          0.0016993150347843766,
+          0.00038513948675245047
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.19537077844142914,
+          "snr": 8.892610549926758,
+          "background_level": -26.85802459716797,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.0264183411915313,
+          "spectral_flatness": 0.020077263936400414,
+          "spectral_rolloff": 2709.2633928571427,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.004404900129884481,
+          "background_consistency": 0.6635937690734863,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 3,
+        "start_time": 9.0,
+        "end_time": 13.0,
+        "vad_kept": true,
+        "speech_ratio": 0.7206982543640897,
+        "evaluated": true,
+        "spoof_probability": 0.0723084807395935,
+        "attack_probs": [
+          0.730008602142334,
+          0.2575114369392395,
+          0.00031784179736860096,
+          0.012162163853645325
+        ],
+        "attack_type": "bonafide",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.2228945940732956,
+          "snr": 5.975461006164551,
+          "background_level": -22.77813720703125,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.0935426800451542,
+          "spectral_flatness": 0.016807032749056816,
+          "spectral_rolloff": 2469.184027777778,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.004022253677248955,
+          "background_consistency": 0.9366939663887024,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 4,
+        "start_time": 12.0,
+        "end_time": 16.0,
+        "vad_kept": true,
+        "speech_ratio": 0.6907730673316709,
+        "evaluated": true,
+        "spoof_probability": 0.9369227886199951,
+        "attack_probs": [
+          0.01789679564535618,
+          0.981914758682251,
+          0.00018786739383358508,
+          5.423087259259773e-07
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.20356713235378265,
+          "snr": 6.068517684936523,
+          "background_level": -22.797582626342773,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.116475967503516,
+          "spectral_flatness": 0.015201037749648094,
+          "spectral_rolloff": 2489.5833333333335,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0039059389382600784,
+          "background_consistency": 0.7855481505393982,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 5,
+        "start_time": 15.0,
+        "end_time": 19.0,
+        "vad_kept": true,
+        "speech_ratio": 0.47880299251870323,
+        "evaluated": true,
+        "spoof_probability": 0.9975751042366028,
+        "attack_probs": [
+          0.0008492455235682428,
+          0.9991505146026611,
+          1.9810997287095233e-07,
+          3.7279831999192936e-11
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.19743694365024567,
+          "snr": 12.989068984985352,
+          "background_level": -34.59280776977539,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.220328988986235,
+          "spectral_flatness": 0.022269781678915024,
+          "spectral_rolloff": 2646.8874007936506,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0019494115840643644,
+          "background_consistency": 0.6223258376121521,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 6,
+        "start_time": 18.0,
+        "end_time": 22.0,
+        "vad_kept": true,
+        "speech_ratio": 0.5187032418952618,
+        "evaluated": true,
+        "spoof_probability": 0.8518295884132385,
+        "attack_probs": [
+          0.036138866096735,
+          0.9634996056556702,
+          0.0003570717526599765,
+          4.459890988073312e-06
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.27270635962486267,
+          "snr": 14.164649963378906,
+          "background_level": -35.11124801635742,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.1153268562900298,
+          "spectral_flatness": 0.02026536874473095,
+          "spectral_rolloff": 2728.6086309523807,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0026394163724035025,
+          "background_consistency": 0.6228139996528625,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 7,
+        "start_time": 21.0,
+        "end_time": 25.0,
+        "vad_kept": true,
+        "speech_ratio": 0.5760598503740648,
+        "evaluated": true,
+        "spoof_probability": 0.9798612594604492,
+        "attack_probs": [
+          0.005780497565865517,
+          0.9942122101783752,
+          7.275486950675258e-06,
+          4.85381956849551e-09
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.24975499510765076,
+          "snr": 11.652009963989258,
+          "background_level": -27.932069778442383,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -0.9895108199202141,
+          "spectral_flatness": 0.011309567838907242,
+          "spectral_rolloff": 2671.440972222222,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.004599147010594606,
+          "background_consistency": 0.5998257994651794,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 8,
+        "start_time": 24.0,
+        "end_time": 28.0,
+        "vad_kept": true,
+        "speech_ratio": 0.7531172069825436,
+        "evaluated": true,
+        "spoof_probability": 0.5723941326141357,
+        "attack_probs": [
+          0.1376475989818573,
+          0.8598242402076721,
+          0.0023915995843708515,
+          0.00013651525659952313
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.20638856291770935,
+          "snr": 5.053379535675049,
+          "background_level": -21.3234806060791,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.2514548664031033,
+          "spectral_flatness": 0.009359253570437431,
+          "spectral_rolloff": 2189.0500992063494,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0015011181822046638,
+          "background_consistency": 0.8707183003425598,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 9,
+        "start_time": 27.0,
+        "end_time": 31.0,
+        "vad_kept": true,
+        "speech_ratio": 0.5561097256857855,
+        "evaluated": true,
+        "spoof_probability": 0.8748277425765991,
+        "attack_probs": [
+          0.03281589224934578,
+          0.9665426015853882,
+          0.0006360700936056674,
+          5.4177676247491036e-06
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.23930294811725616,
+          "snr": 11.565025329589844,
+          "background_level": -29.500167846679688,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -0.8950282964474577,
+          "spectral_flatness": 0.03097706101834774,
+          "spectral_rolloff": 3108.7549603174602,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.015244260430335999,
+          "background_consistency": 0.7760730981826782,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 10,
+        "start_time": 30.0,
+        "end_time": 34.0,
+        "vad_kept": true,
+        "speech_ratio": 0.5411471321695761,
+        "evaluated": true,
+        "spoof_probability": 0.13828714191913605,
+        "attack_probs": [
+          0.5556801557540894,
+          0.4355199337005615,
+          0.0013646739535033703,
+          0.00743521936237812
+        ],
+        "attack_type": "bonafide",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.2286241054534912,
+          "snr": 11.152521133422852,
+          "background_level": -29.315893173217773,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -0.9239067533663562,
+          "spectral_flatness": 0.029967505484819412,
+          "spectral_rolloff": 2935.5158730158732,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.011736513115465641,
+          "background_consistency": 0.8950915336608887,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 11,
+        "start_time": 33.0,
+        "end_time": 37.0,
+        "vad_kept": true,
+        "speech_ratio": 0.6957605985037406,
+        "evaluated": true,
+        "spoof_probability": 0.9973989725112915,
+        "attack_probs": [
+          0.0010566833661869168,
+          0.9989427924156189,
+          4.960035653311934e-07,
+          1.6185421058967364e-12
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.22019928693771362,
+          "snr": 5.838704586029053,
+          "background_level": -21.95916175842285,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.1430436069537029,
+          "spectral_flatness": 0.016148187220096588,
+          "spectral_rolloff": 2443.0803571428573,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0028608767315745354,
+          "background_consistency": 0.9857037663459778,
+          "env_stability": 0.5
+        }
+      },
+      {
+        "chunk_index": 12,
+        "start_time": 36.0,
+        "end_time": 40.0,
+        "vad_kept": true,
+        "speech_ratio": 0.6359102244389028,
+        "evaluated": true,
+        "spoof_probability": 0.9479621648788452,
+        "attack_probs": [
+          0.015721850097179413,
+          0.984142005443573,
+          0.00013602065155282617,
+          1.0083956425432916e-07
+        ],
+        "attack_type": "synthesis",
+        "env_features": {
+          "rt60": 0.0,
+          "drr": 0.20858925580978394,
+          "snr": 9.656420707702637,
+          "background_level": -25.69586753845215,
+          "silence_ratio": 0.10317460317460317,
+          "spectral_tilt": -1.1336132441662352,
+          "spectral_flatness": 0.018187792971730232,
+          "spectral_rolloff": 2419.1468253968255,
+          "cleanliness_score": 0.0,
+          "high_freq_content": 0.0029558108653873205,
+          "background_consistency": 0.5627692937850952,
+          "env_stability": 0.5
+        }
+      }
+    ],
+    "chunk_timeline_includes_all_chunks": true,
+    "chunk_timeline_note": "All file chunks listed; model scores only on vad_kept/evaluated chunks.",
+    "env_features": {
+      "rt60": 0.0,
+      "drr": 0.21996356546878815,
+      "snr": 9.656420707702637,
+      "background_level": -26.85802459716797,
+      "silence_ratio": 0.1031746044754982,
+      "spectral_tilt": -1.0935426950454712,
+      "spectral_flatness": 0.020077263936400414,
+      "spectral_rolloff": 2671.44091796875,
+      "cleanliness_score": 0.0,
+      "high_freq_content": 0.004022253677248955,
+      "background_consistency": 0.7760730981826782,
+      "env_stability": 0.5
+    },
+    "env_reasons": [
+      "RT60 \u2248 0.0s \u2192 little/no measurable reverberation (can indicate synthetic or heavily processed audio)."
+    ],
+    "spec_reasons": [
+      "Chunk consistency: spoof prob range [0.072, 0.998] across 13 chunks.",
+      "Chunk scores vary a lot \u2192 the model is uncertain or the audio contains mixed-quality segments.",
+      "Pooling=pct_vote: mean=0.748, median=0.875, trimmed=0.786, logit_mean=0.888, pct_over_chunk_threshold=0.692",
+      "VAD(file_percentile) kept 13/13 chunks (min speech ratio=0.40).",
+      "pct_vote thresholds: chunk_threshold=0.650, vote_threshold=0.700."
+    ],
+    "overall_explanation": "Model predicts REAL (bonafide) with confidence=0.308 (pooling=pct_vote, threshold=0.700)."
+  },
+  "partial_fabrication_analysis": {
+    "n_chunks_inside": 0,
+    "n_chunks_outside": 0,
+    "inside_region_avg_spoof": "",
+    "outside_region_avg_spoof": "",
+    "inside_region_max_spoof": "",
+    "outside_region_max_spoof": "",
+    "inside_region_dominant_attack": "",
+    "outside_region_dominant_attack": "",
+    "partial_region_detected": false,
+    "partial_eval_status": "partial_not_evaluated_missing_timestamp"
+  },
+  "chunk_metrics": {
+    "suspicious_chunk_count": 9,
+    "suspicious_chunk_ratio": 0.6923076923076923,
+    "max_chunk_spoof": 0.9975751042366028,
+    "mean_chunk_spoof": 0.7476604248468692,
+    "median_chunk_spoof": 0.8748277425765991,
+    "dominant_chunk_attack": "synthesis"
+  }
+}

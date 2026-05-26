@@ -1,0 +1,13 @@
+{
+  "base_ckpt": "E:\\FYP\\models_saved\\hybrid_resnet_environmental_best.pth",
+  "epochs_run": 12,
+  "best_loss": 4.283969714361079,
+  "best_loss_epoch": 12,
+  "best_product_score": 0.7637493234683262,
+  "best_product_epoch": 11,
+  "checkpoint_paths": {
+    "best_loss": "reports\\phase7\\phase7c3_finetune_r2\\training\\checkpoints\\hybrid_resnet_environmental_phase7c3_r2_best_loss.pth",
+    "best_product": "reports\\phase7\\phase7c3_finetune_r2\\training\\checkpoints\\hybrid_resnet_environmental_phase7c3_r2_best_product.pth",
+    "last": "reports\\phase7\\phase7c3_finetune_r2\\training\\checkpoints\\hybrid_resnet_environmental_phase7c3_r2_last.pth"
+  }
+}

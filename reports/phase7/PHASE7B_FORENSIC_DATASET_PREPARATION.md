@@ -19,9 +19,9 @@ Convert Phase 7A controlled tests into a **structured forensic label dataset** f
 |-----------|----------|
 | Preparation script | `code/phase7/prepare_forensic_dataset.py` |
 | Validation script | `code/phase7/validate_forensic_labels.py` |
-| Dataset outputs | `reports/phase7_dataset/` |
-| Label rules doc | `reports/phase7_dataset/label_mapping_rules.md` |
-| Gap analysis | `reports/phase7_dataset/forensic_dataset_gap_analysis.md` |
+| Dataset outputs | `reports/phase7/phase7_dataset/` |
+| Label rules doc | `reports/phase7/phase7_dataset/label_mapping_rules.md` |
+| Gap analysis | `reports/phase7/phase7_dataset/forensic_dataset_gap_analysis.md` |
 
 ---
 
@@ -29,13 +29,13 @@ Convert Phase 7A controlled tests into a **structured forensic label dataset** f
 
 | File | Role |
 |------|------|
-| `reports/phase7_forensic_tests/forensic_test_manifest.csv` | Ground truth + metadata |
-| `reports/phase7_forensic_tests/results/forensic_test_results_product.csv` | Phase 7A product metrics |
+| `reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv` | Ground truth + metadata |
+| `reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv` | Phase 7A product metrics |
 | `reports/phase7/PHASE7_LABEL_SCHEMA.md` | Allowed label enums |
 
 ---
 
-## 4. Outputs (`reports/phase7_dataset/`)
+## 4. Outputs (`reports/phase7/phase7_dataset/`)
 
 | File | Description |
 |------|-------------|
@@ -57,15 +57,15 @@ From repo root `E:\FYP`:
 
 ```text
 python code/phase7/prepare_forensic_dataset.py ^
-  --manifest reports/phase7_forensic_tests/forensic_test_manifest.csv ^
-  --product_results reports/phase7_forensic_tests/results/forensic_test_results_product.csv ^
-  --output_dir reports/phase7_dataset
+  --manifest reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv ^
+  --product_results reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv ^
+  --output_dir reports/phase7/phase7_dataset
 ```
 
 ```text
 python code/phase7/validate_forensic_labels.py ^
-  --input reports/phase7_dataset/forensic_labeled_master.csv ^
-  --output reports/phase7_dataset/forensic_dataset_validation_report.md ^
+  --input reports/phase7/phase7_dataset/forensic_labeled_master.csv ^
+  --output reports/phase7/phase7_dataset/forensic_dataset_validation_report.md ^
   --allow_warnings
 ```
 
