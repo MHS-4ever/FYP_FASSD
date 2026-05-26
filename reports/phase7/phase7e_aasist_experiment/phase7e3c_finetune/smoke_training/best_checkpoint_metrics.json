@@ -1,0 +1,14 @@
+{
+  "best_loss": {
+    "epoch": 1,
+    "val_loss": 4.712587535381317,
+    "val_product_score": 0.35,
+    "checkpoint_path": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\phase7e3c_finetune\\smoke_training\\checkpoints\\aasist_l_phase7e3c_best_loss.pth"
+  },
+  "best_product": {
+    "epoch": 1,
+    "val_loss": 4.712587535381317,
+    "val_product_score": 0.35,
+    "checkpoint_path": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\phase7e3c_finetune\\smoke_training\\checkpoints\\aasist_l_phase7e3c_best_product.pth"
+  }
+}

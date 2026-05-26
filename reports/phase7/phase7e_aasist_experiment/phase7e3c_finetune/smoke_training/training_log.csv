@@ -1,0 +1,2 @@
+epoch,train_loss,val_loss,val_accuracy,val_product_score,val_clean_human_false_alarm_count,val_clean_human_false_alarm_rate,val_clean_human_accept_count,val_direct_ai_detect_count,val_ai_replay_detect_count,val_human_replay_detect_count,val_human_mixer_detect_count,val_ai_mixer_detect_count,val_partial_detect_count,learning_rate
+1,11.259498596191406,4.712587535381317,0.484375,0.35,0,0.0,0,0,0,0,0,0,0,2e-06

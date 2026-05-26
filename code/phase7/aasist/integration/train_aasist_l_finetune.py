@@ -43,6 +43,24 @@ from aasist_eval_common import (
 
 from _common import add_aasist_src_to_path
 
+try:
+    from tqdm import tqdm
+except ImportError:  # pragma: no cover
+    tqdm = None  # type: ignore[misc, assignment]
+
+
+def _progress_iter(
+    loader,
+    *,
+    desc: str,
+    disable: bool,
+    unit: str = "batch",
+):
+    """Wrap DataLoader with tqdm when available; otherwise return loader unchanged."""
+    if disable or tqdm is None:
+        return loader
+    return tqdm(loader, desc=desc, unit=unit)
+
 
 @dataclass(frozen=True)
 class TrainConfig:
@@ -68,6 +86,27 @@ class TrainConfig:
     limit_val: int | None
     random_seed: int
     grad_clip: float
+    disable_progress: bool
+
+
+def _print_epoch_summary(epoch: int, epochs: int, row: dict[str, Any], role_metrics: dict[str, Any]) -> None:
+    print(f"\n[Epoch {epoch}/{epochs}]")
+    print(f"  train_loss={row.get('train_loss', float('nan')):.6f}")
+    print(f"  val_loss={row.get('val_loss', float('nan')):.6f}")
+    print(f"  val_accuracy={row.get('val_accuracy', 0.0):.4f}")
+    print(f"  product_score={role_metrics.get('val_product_score', float('nan')):.4f}")
+    print(
+        f"  clean_human_false_alarm={role_metrics.get('val_clean_human_false_alarm_count', 0)} "
+        f"(rate={role_metrics.get('val_clean_human_false_alarm_rate', 0.0):.3f})"
+    )
+    print(f"  clean_human_accept={role_metrics.get('val_clean_human_accept_count', 0)}")
+    print(f"  direct_ai_detect={role_metrics.get('val_direct_ai_detect_count', 0)}")
+    print(f"  ai_replay_detect={role_metrics.get('val_ai_replay_detect_count', 0)}")
+    print(f"  human_replay_detect={role_metrics.get('val_human_replay_detect_count', 0)}")
+    print(f"  human_mixer_detect={role_metrics.get('val_human_mixer_detect_count', 0)}")
+    print(f"  ai_mixer_detect={role_metrics.get('val_ai_mixer_detect_count', 0)}")
+    print(f"  partial_detect={role_metrics.get('val_partial_detect_count', 0)}")
+    print(f"  learning_rate={row.get('learning_rate', float('nan')):.2e}")
 
 
 def _set_seeds(seed: int) -> None:
@@ -368,6 +407,7 @@ def main() -> int:
     parser.add_argument("--limit_val", default=None, type=int)
     parser.add_argument("--random_seed", default=42, type=int)
     parser.add_argument("--grad_clip", default=1.0, type=float)
+    parser.add_argument("--disable_progress", action="store_true", help="Disable tqdm progress bars")
     args = parser.parse_args()
 
     cfg = TrainConfig(
@@ -393,6 +433,7 @@ def main() -> int:
         limit_val=args.limit_val,
         random_seed=int(args.random_seed),
         grad_clip=float(args.grad_clip),
+        disable_progress=bool(args.disable_progress),
     )
 
     _set_seeds(cfg.random_seed)
@@ -545,7 +586,13 @@ def main() -> int:
                 p.requires_grad_(True)
 
         train_losses: list[float] = []
-        for batch in train_loader:
+        lr_now = float(opt.param_groups[0]["lr"])
+        train_iter = _progress_iter(
+            train_loader,
+            desc=f"Epoch {epoch}/{cfg.epochs} train",
+            disable=cfg.disable_progress,
+        )
+        for batch in train_iter:
             x = batch["x"].to(dev)
             y = batch["y"].to(dev)
             sw = batch["sample_weight"].to(dev)
@@ -576,7 +623,11 @@ def main() -> int:
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
                 opt.step()
-            train_losses.append(float(loss.detach().cpu().item()))
+            loss_f = float(loss.detach().cpu().item())
+            train_losses.append(loss_f)
+            if hasattr(train_iter, "set_postfix"):
+                avg_loss = float(np.mean(train_losses)) if train_losses else loss_f
+                train_iter.set_postfix(loss=f"{loss_f:.4f}", avg_loss=f"{avg_loss:.4f}", lr=f"{lr_now:.2e}")
 
         train_loss = float(np.mean(train_losses)) if train_losses else float("nan")
 
@@ -590,7 +641,12 @@ def main() -> int:
         all_y: list[int] = []
 
         softmax = nn.Softmax(dim=1)
-        for batch in val_loader:
+        val_iter = _progress_iter(
+            val_loader,
+            desc=f"Epoch {epoch}/{cfg.epochs} val",
+            disable=cfg.disable_progress,
+        )
+        for batch in val_iter:
             x = batch["x"].to(dev)
             y = batch["y"].to(dev)
             sw = batch["sample_weight"].to(dev)
@@ -603,7 +659,8 @@ def main() -> int:
                     per = per * class_weights_t.gather(0, y)
                 if cfg.use_sample_weight:
                     per = per * sw
-                val_losses.append(float(per.mean().detach().cpu().item()))
+                batch_val_loss = float(per.mean().detach().cpu().item())
+                val_losses.append(batch_val_loss)
 
                 probs = softmax(logits)
                 # spoof_score = softmax(class spoof_index=0)
@@ -615,6 +672,10 @@ def main() -> int:
             all_roles.extend([str(r) for r in roles])
             all_scores.extend([float(s) for s in spoof_score.tolist()])
             all_y.extend([int(v) for v in y.detach().cpu().tolist()])
+
+            if hasattr(val_iter, "set_postfix"):
+                running_val_loss = float(np.mean(val_losses)) if val_losses else batch_val_loss
+                val_iter.set_postfix(val_loss=f"{running_val_loss:.4f}")
 
         val_loss = float(np.mean(val_losses)) if val_losses else float("nan")
         val_acc = float(correct / total) if total > 0 else 0.0
@@ -632,6 +693,8 @@ def main() -> int:
         }
         with log_path.open("a", newline="", encoding="utf-8") as f:
             csv.DictWriter(f, fieldnames=log_fields).writerow(row)
+
+        _print_epoch_summary(epoch, cfg.epochs, row, role_metrics)
 
         # Always save epoch checkpoint
         epoch_ckpt = ckpt_dir / f"aasist_l_phase7e3c_epoch_{epoch:02d}.pth"
