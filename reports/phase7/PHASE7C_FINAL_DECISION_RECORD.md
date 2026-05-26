@@ -16,7 +16,8 @@ Going forward:
 - **Use** R2 checkpoints only as **optional evidence sources** inside the decision layer — not as final product models.
 - **Use** Phase 7C4-v2 calibrated outputs as the **current prototype decision layer** for Phase 7D report development.
 - **Do not** deploy 7C3-v1, standalone R2, or 7C4-v1 for product claims.
-- **Next phase:** Phase 7D — Forensic Report Layer (safe wording and report fields).
+- **Next active work (May 2026):** Phase **7E** — AASIST candidate evidence branch (7E0 planning → 7E1+).
+- **Postponed:** Phase **7D** report-layer **implementation** (specs preserved; resume after evidence improves).
 
 This record does **not** modify any experiment CSVs or checkpoints. It documents what was tested, what failed, what was accepted, and what must not be claimed.
 
@@ -217,6 +218,18 @@ Phase 7D should turn Phase 7C4-v2 (and underlying evidence) into report-ready fi
 
 ---
 
+## 12. After Phase 7C — next work (appendix, May 2026)
+
+| Track | Status |
+|-------|--------|
+| Phase **7E** AASIST evidence branch | **Active** — 7E0 planning + locked benchmark; see [phase7e_aasist_experiment/README.md](phase7e_aasist_experiment/README.md) |
+| Phase **7D** forensic report implementation | **Postponed** — planning/spec in [phase7d_report_layer/README.md](phase7d_report_layer/README.md); do not prioritize report generator or external demo over 7E |
+| Phase **7C4-v2** | Remains **accepted decision-layer prototype** until 7E5 fusion v3 is evaluated |
+
+Do **not** train AASIST until Phase **7E1** (smoke test) and **7E2** (dataset adapter) are reviewed.
+
+---
+
 ## Related documents
 
 | Document | Role |
@@ -224,5 +237,7 @@ Phase 7D should turn Phase 7C4-v2 (and underlying evidence) into report-ready fi
 | [PHASE7C_STATUS_FREEZE.md](PHASE7C_STATUS_FREEZE.md) | One-page freeze summary |
 | [PHASE7C_HYBRID_MODEL_FINE_TUNING.md](PHASE7C_HYBRID_MODEL_FINE_TUNING.md) | Fine-tuning plan + final decision appendix |
 | [phase7c4_calibration_v2/README.md](phase7c4_calibration_v2/README.md) | v2 outputs and commands |
-| [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | Next phase spec |
+| [PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md](PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md) | **Active** next evidence phase |
+| [phase7e_aasist_experiment/README.md](phase7e_aasist_experiment/README.md) | 7E0 hub |
+| [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | Report spec (implementation postponed) |
 | [../NEXT_ACTIONS.md](../NEXT_ACTIONS.md) | Project checklist |

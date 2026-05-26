@@ -18,8 +18,10 @@ All Phase 7 **reports, calibration outputs, evaluation artifacts, and planning d
 | [PHASE7C_STATUS_FREEZE.md](PHASE7C_STATUS_FREEZE.md) | One-page 7C status freeze |
 | [PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md](PHASE7C1_NEW_FORENSIC_DATA_COLLECTION_PLAN.md) | Round-1 collection |
 | [PHASE7D_FORENSIC_REPORT_LAYER.md](PHASE7D_FORENSIC_REPORT_LAYER.md) | Report layer (legacy overview) |
-| [phase7d_report_layer/](phase7d_report_layer/README.md) | **Phase 7D** — report layer planning (schema, mapping, examples) |
-| [PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md](PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md) | Transformers (planned) |
+| [phase7d_report_layer/](phase7d_report_layer/README.md) | **Phase 7D** — report layer planning (implementation **postponed**) |
+| [PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md](PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md) | **Phase 7E** — AASIST summary |
+| [phase7e_aasist_experiment/](phase7e_aasist_experiment/README.md) | **Phase 7E0** — AASIST planning + locked benchmark (**active**) |
+| [PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md](PHASE7E_TRANSFORMER_MODEL_EXPERIMENTS.md) | Transformers (WavLM / wav2vec2 — after AASIST) |
 | [PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md](PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md) | Ensemble (planned) |
 | [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md) | T1–T5 recording rules |
 | [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md) | Label definitions |
@@ -42,7 +44,10 @@ Project-wide context: [NEXT_ACTIONS.md](../NEXT_ACTIONS.md), [UPDATED_PROJECT_SC
 | [phase7c3_finetune_r2/](phase7c3_finetune_r2/) | **7C3-R2** | R2 fine-tune, checkpoints, eval |
 | [phase7c4_calibration/](phase7c4_calibration/) | **7C4** | v1 calibration (rejected) |
 | [phase7c4_calibration_v2/](phase7c4_calibration_v2/) | **7C4-v2** | Corrected decision layer |
-| [phase7d_report_layer/](phase7d_report_layer/) | **7D** | Forensic report layer (planning) |
+| [phase7d_report_layer/](phase7d_report_layer/) | **7D** | Forensic report layer (planning; implementation postponed) |
+| [phase7e_aasist_experiment/](phase7e_aasist_experiment/) | **7E0** | AASIST experiment planning + locked benchmark |
+
+> All Phase 7 documentation stays under **`reports/phase7/`** (not directly under `reports/` root).
 
 ---
 
@@ -66,13 +71,17 @@ reports/phase7/phase7c3_finetune_r2/evaluation/best_product/...
 | 7C3-R2 checkpoints | **Rejected** standalone (evidence-only in fusion) |
 | 7C4-v1 | **Rejected** |
 | 7C4-v2 | **Accepted** — decision-layer prototype only (8/8 Phase 7C1 v2 criteria) |
-| 7D | **Active** — planning complete; 7D1 report builder next |
-| 7E–7F | Planned |
+| 7D | Planning complete; **implementation postponed** until evidence improves |
+| 7E0 | **Active** — AASIST planning + locked benchmark (no training) |
+| 7E1–7E5 | Planned (smoke test → adapter → train → eval → fusion) |
+| 7F | Planned (broader ensemble after 7E) |
 
 **Phase 7C frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](PHASE7C_FINAL_DECISION_RECORD.md) · [PHASE7C_STATUS_FREEZE.md](PHASE7C_STATUS_FREEZE.md)
 
 Accepted outputs: [phase7c4_calibration_v2/](phase7c4_calibration_v2/) — not a final product model.
 
-Phase 7D specs: [phase7d_report_layer/README.md](phase7d_report_layer/README.md).
+Phase 7D specs (postponed): [phase7d_report_layer/README.md](phase7d_report_layer/README.md).
+
+Phase 7E0 hub: [phase7e_aasist_experiment/README.md](phase7e_aasist_experiment/README.md).
 
 Next actions: [../NEXT_ACTIONS.md](../NEXT_ACTIONS.md).

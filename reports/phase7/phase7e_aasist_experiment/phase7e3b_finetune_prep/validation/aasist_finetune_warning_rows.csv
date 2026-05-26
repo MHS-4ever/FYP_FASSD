@@ -1,0 +1,4 @@
+check,split,detail
+weighted_balance,train,weighted risk_target=1:0 ratio=3.07 > 3.0
+weighted_balance,val,weighted risk_target=1:0 ratio=3.07 > 3.0
+weighted_balance,test,weighted risk_target=1:0 ratio=3.08 > 3.0

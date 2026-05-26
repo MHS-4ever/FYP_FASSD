@@ -1,7 +1,8 @@
 # Phase 7E — Transformer Model Experiments
 
-**Status:** Planned (after 7A review, 7C hybrid fine-tune, 7D spec)  
-**Training:** Yes — **experiments only**; compare, do not replace blindly
+**Status:** AASIST track active at **7E0** — see [phase7e_aasist_experiment/](phase7e_aasist_experiment/README.md) and [PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md](PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md)  
+**Training:** Yes — **after 7E1/7E2 review**; compare, do not replace blindly  
+**Note:** 7D implementation postponed until evidence improves; AASIST is first in the 7E order.
 
 ---
 
@@ -15,7 +16,7 @@ Evaluate **additional** spoof-detection / SSL models **separately** against the 
 
 Transformers may improve specific conditions (synthesis, conversion, noisy phone) but add cost and complexity. **Separate evaluation** avoids early fusion that hides which model helps which condition.
 
-Process discipline: **7A metrics → 7C hybrid → 7D report → 7E compare → 7F fuse if justified**.
+Process discipline: **7A metrics → 7C hybrid (frozen) → 7E AASIST evaluate → 7E5 fuse if justified → 7D report implementation → 7F**.
 
 ---
 

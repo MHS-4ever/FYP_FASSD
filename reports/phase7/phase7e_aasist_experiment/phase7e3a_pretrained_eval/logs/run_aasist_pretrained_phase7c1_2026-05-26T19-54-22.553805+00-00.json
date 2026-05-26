@@ -1,0 +1,25 @@
+{
+  "timestamp_utc": "2026-05-26T19:54:22.553805+00:00",
+  "eval_manifest": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\phase7e2_dataset_adapter\\phase7c1_aasist_eval_manifest.csv",
+  "aasist_src": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST",
+  "model_variant": "AASIST-L",
+  "config_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\config\\AASIST-L.conf",
+  "checkpoint_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\models\\weights\\AASIST-L.pth",
+  "device": "cuda",
+  "batch_size": 16,
+  "window_mode": "chunks",
+  "threshold": 0.5,
+  "vram_before": {
+    "allocated_gb": 0.0,
+    "reserved_gb": 0.0
+  },
+  "class_convention": {
+    "class_0_name": "spoof",
+    "class_1_name": "bonafide",
+    "official_eval_score_index": 1,
+    "official_eval_score_meaning": "bonafide logit/score (higher = more bonafide)",
+    "spoof_score_used": "softmax(class_0) = P(spoof)",
+    "risk_binary_rule": "predicted_risk_binary = 1 if spoof_score >= threshold",
+    "source_reference": "vendor/AASIST/main.py produce_evaluation_file uses batch_out[:, 1]"
+  }
+}

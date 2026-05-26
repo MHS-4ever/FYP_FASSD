@@ -1,0 +1,103 @@
+{
+  "verdict": "PASS_WITH_WARNINGS",
+  "generated_utc": "2026-05-26T19:16:11.805648+00:00",
+  "repo_root": "E:\\FYP",
+  "paths": {
+    "phase7c2_train_manifest": {
+      "selected_path": "reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c2_training_prep\\phase7c2_train_manifest.csv",
+      "status": "found_canonical",
+      "category": "phase7c2_training"
+    },
+    "phase7c2_val_manifest": {
+      "selected_path": "reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c2_training_prep\\phase7c2_val_manifest.csv",
+      "status": "found_canonical",
+      "category": "phase7c2_training"
+    },
+    "phase7c2_test_manifest": {
+      "selected_path": "reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c2_training_prep\\phase7c2_test_manifest.csv",
+      "status": "found_canonical",
+      "category": "phase7c2_training"
+    },
+    "phase7c1_collection_manifest": {
+      "selected_path": "reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c1_collection\\phase7c1_collection_manifest.csv",
+      "status": "found_canonical",
+      "category": "phase7c1_collection"
+    },
+    "phase7c1_baseline_results": {
+      "selected_path": "reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c1_baseline\\results\\phase7c1_baseline_results.csv",
+      "status": "found_canonical",
+      "category": "phase7c1_baseline"
+    },
+    "phase7c1_partial_fabrication_analysis": {
+      "selected_path": "reports/phase7/phase7c1_baseline/results/phase7c1_partial_fabrication_analysis.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c1_baseline\\results\\phase7c1_partial_fabrication_analysis.csv",
+      "status": "found_canonical",
+      "category": "phase7c1_baseline"
+    },
+    "phase7a_forensic_test_manifest": {
+      "selected_path": "reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7_forensic_tests\\forensic_test_manifest.csv",
+      "status": "found_canonical",
+      "category": "phase7a_holdout"
+    },
+    "phase7a_forensic_test_results_product": {
+      "selected_path": "reports/phase7/phase7_forensic_tests/results/forensic_test_results_product.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7_forensic_tests\\results\\forensic_test_results_product.csv",
+      "status": "found_canonical",
+      "category": "phase7a_holdout"
+    },
+    "phase7c4_v2_candidate_decisions": {
+      "selected_path": "reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c4_calibration_v2\\calibration_outputs\\phase7c4_v2_candidate_decisions.csv",
+      "status": "found_canonical",
+      "category": "phase7c4_v2"
+    },
+    "phase7c4_v2_error_cases": {
+      "selected_path": "reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_error_cases.csv",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c4_calibration_v2\\calibration_outputs\\phase7c4_v2_error_cases.csv",
+      "status": "found_canonical",
+      "category": "phase7c4_v2"
+    },
+    "phase7c4_v2_final_recommendation": {
+      "selected_path": "reports/phase7/phase7c4_calibration_v2/phase7c4_v2_final_recommendation.md",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c4_calibration_v2\\phase7c4_v2_final_recommendation.md",
+      "status": "found_canonical",
+      "category": "phase7c4_v2"
+    },
+    "phase7c3_r2_best_product_ckpt": {
+      "selected_path": "reports/phase7/phase7c3_finetune_r2/training/checkpoints/hybrid_resnet_environmental_phase7c3_r2_best_product.pth",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c3_finetune_r2\\training\\checkpoints\\hybrid_resnet_environmental_phase7c3_r2_best_product.pth",
+      "status": "found_canonical",
+      "category": "phase7c3_r2_checkpoints"
+    },
+    "phase7c3_r2_best_loss_ckpt": {
+      "selected_path": "reports/phase7/phase7c3_finetune_r2/training/checkpoints/hybrid_resnet_environmental_phase7c3_r2_best_loss.pth",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7c3_finetune_r2\\training\\checkpoints\\hybrid_resnet_environmental_phase7c3_r2_best_loss.pth",
+      "status": "found_canonical",
+      "category": "phase7c3_r2_checkpoints"
+    },
+    "hybrid_resnet_environmental_best": {
+      "selected_path": "models_saved/hybrid_resnet_environmental_best.pth",
+      "selected_path_absolute": "E:\\FYP\\models_saved\\hybrid_resnet_environmental_best.pth",
+      "status": "found_canonical",
+      "category": "base_checkpoint"
+    },
+    "phase7e_experiment_root": {
+      "selected_path": "reports/phase7/phase7e_aasist_experiment",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment",
+      "status": "found_canonical",
+      "category": "aasist_workspace"
+    },
+    "phase7e_audit_dir": {
+      "selected_path": "reports/phase7/phase7e_aasist_experiment/audit",
+      "selected_path_absolute": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\audit",
+      "status": "found_canonical",
+      "category": "aasist_workspace"
+    }
+  }
+}

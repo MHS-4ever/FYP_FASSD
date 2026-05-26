@@ -1,0 +1,112 @@
+{
+  "timestamp_utc": "2026-05-26T19:43:18.975929+00:00",
+  "python_executable": "C:\\Users\\mhasn\\miniconda3\\envs\\fassd\\python.exe",
+  "repo_root": "E:\\FYP",
+  "aasist_src": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST",
+  "model_variant": "AASIST-L",
+  "config_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\config\\AASIST-L.conf",
+  "checkpoint_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\models\\weights\\AASIST-L.pth",
+  "nb_samp": 64600,
+  "model_module": "models.AASIST",
+  "model_class": "Model",
+  "checkpoint_load_status": "loaded_ok",
+  "missing_keys_count": 0,
+  "unexpected_keys_count": 0,
+  "dummy_input_shape": [
+    1,
+    64600
+  ],
+  "output_shape": [
+    1,
+    2
+  ],
+  "forward_success": true,
+  "device_requested": "cuda",
+  "dummy_only": true,
+  "gpu": {
+    "cuda_available": true,
+    "torch_version": "2.5.1+cu121",
+    "cuda_version": "12.1",
+    "device_count": 1,
+    "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "gpu_total_memory_gb": 6.0,
+    "gpu_free_memory_gb": 5.04
+  },
+  "vram_before": {
+    "allocated_gb": 0.0,
+    "reserved_gb": 0.0
+  },
+  "vram_after": {
+    "allocated_gb": 0.0086,
+    "reserved_gb": 0.2461
+  },
+  "errors": [],
+  "verdict": "PASS",
+  "next_action": "Proceed to Phase 7E2 dataset adapter; optional 7E3A pretrained eval with same config/checkpoint.",
+  "mode_b_installed": {
+    "attempts": [
+      {
+        "module": "aasist",
+        "spec_found": false
+      },
+      {
+        "module": "AASIST",
+        "spec_found": false
+      },
+      {
+        "module": "anti_spoofing",
+        "spec_found": false
+      }
+    ],
+    "found": false
+  },
+  "config_load": {
+    "config_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\config\\AASIST-L.conf",
+    "model_config_keys": [
+      "architecture",
+      "nb_samp",
+      "first_conv",
+      "filts",
+      "gat_dims",
+      "pool_ratios",
+      "temperatures"
+    ],
+    "architecture": "AASIST"
+  },
+  "instantiation": {
+    "model_module": "models.AASIST",
+    "model_class": "Model",
+    "sys_path_notes": [
+      "sys.path.insert(0, 'E:\\\\FYP\\\\code\\\\phase7\\\\aasist\\\\vendor\\\\AASIST')"
+    ],
+    "instantiation": "Model(model_config)",
+    "device": "cuda"
+  },
+  "checkpoint_load": {
+    "checkpoint_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\models\\weights\\AASIST-L.pth",
+    "checkpoint_load_status": "loaded_ok",
+    "missing_keys_count": 0,
+    "unexpected_keys_count": 0,
+    "missing_keys_sample": [],
+    "unexpected_keys_sample": [],
+    "state_dict_key": "root"
+  },
+  "forward": {
+    "mode": "dummy",
+    "dummy_input_shape": [
+      1,
+      64600
+    ],
+    "output_tuple": true,
+    "last_hidden_shape": [
+      1,
+      160
+    ],
+    "output_shape": [
+      1,
+      2
+    ],
+    "forward_success": true,
+    "output_is_batch_x_2": true
+  }
+}

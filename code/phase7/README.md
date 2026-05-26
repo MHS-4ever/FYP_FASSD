@@ -1,10 +1,11 @@
 # Phase 7 — Forensic Test Suite & Dataset (Code)
 
-**Sign-off status:** Phase **7A**–**7C2** and **7C4-v2** (prototype) signed off.  
-**Active:** Phase **7D1** — forensic report generator (JSON + Markdown).  
-**Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md) · **7D specs:** [phase7d_report_layer/](../../reports/phase7/phase7d_report_layer/README.md)
+**Sign-off status:** Phase **7A**–**7C2** and **7C4-v2** (prototype) signed off; **7E1** + **7E3A** complete.  
+**Active:** Phase **7E3C** — AASIST-L fine-tune scripts + eval harness (**implementation only; do not run training inside Cursor**).  
+**Postponed:** Phase **7D** report generator implementation until evidence layer improves.  
+**Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md) · **7E hub:** [phase7e_aasist_experiment/](../../reports/phase7/phase7e_aasist_experiment/README.md)
 
-> **Environment:** Use `python` inside the activated **`(fassd)`** conda environment. Do **not** use `py -3` (system Python may lack pandas/torch).
+> **Environment:** Use **`python`** inside the activated **`(fassd)`** conda environment. Do **not** use `py -3` (system Python may lack pandas/torch).
 
 | Phase | Scripts | Status |
 |-------|---------|--------|
@@ -12,13 +13,19 @@
 | 7B | `prepare_forensic_dataset.py`, `validate_forensic_labels.py` | Signed off |
 | 7C0 | `audit_current_training_dataset.py`, `audit_hdf5_features.py` | Signed off |
 | 7C1 | `build_phase7c1_manifest_from_audio.py`, … `analyze_phase7c1_baseline.py` | Signed off |
-| 7C2 | `build_phase7c2_training_manifests.py`, `validate_phase7c2_training_manifests.py`, `summarize_phase7c2_training_prep.py` | Signed off |
-| 7C3-v1 | `build_phase7c3_feature_cache.py`, `train_phase7c3_hybrid.py`, … | **Rejected** (outputs preserved) |
-| 7C3-R2 | `build_phase7c3_r2_feature_cache.py`, `train_phase7c3_r2_hybrid.py`, … | Checkpoints **rejected standalone**; evidence-only in 7C4-v2 |
+| 7C2 | `build_phase7c2_training_manifests.py`, … | Signed off |
+| 7C3-v1 | `train_phase7c3_hybrid.py`, … | **Rejected** |
+| 7C3-R2 | `train_phase7c3_r2_hybrid.py`, … | **Rejected** as standalone checkpoints |
 | 7C4-v1 | `apply_phase7c4_decision_layer.py`, … | **Rejected** |
 | 7C4-v2 | `apply_phase7c4_v2_decision_layer.py` | **Accepted** as decision-layer prototype only |
-| 7D | `build_phase7d_forensic_report.py`, `validate_phase7d_reports.py`, `phase7d_common.py` | **Active** — 7D1 implemented |
-| 7E–7F | Transformers / ensemble | Planned — after 7D |
+| 7D | `build_phase7d_forensic_report.py`, … | Planned / **postponed** |
+| 7E0 | (planning docs under `phase7e_aasist_experiment/`) | Planning complete |
+| 7E0.5 | `audit_phase7e0_paths.py` | Path audit passed with warnings |
+| 7E1 | `aasist/integration/smoke_test_aasist_import.py`, … | Smoke test **passed** |
+| 7E2/7E3A | `build_aasist_eval_manifest.py`, `run_aasist_pretrained_eval.py`, … | Complete (pretrained eval) |
+| 7E3B | `build_aasist_finetune_manifest.py`, `validate_aasist_finetune_manifest.py` | Complete — PASS_WITH_WARNINGS (weighted ratio ~3.07) |
+| 7E3C | `train_aasist_l_finetune.py`, `evaluate_aasist_l_finetuned.py`, `compare_aasist_finetune_results.py` | **Active** — scripts in review (no training in Cursor) |
+| 7F | Ensemble | Planned — after 7E |
 
 **Accepted artifact:** `reports/phase7/phase7c4_calibration_v2/` — do not treat as final model.
 
@@ -26,7 +33,7 @@
 
 ## Phase 7C1 — Round-1 collection manifest
 
-**Status:** Active — **no training**
+**Status:** Signed off — historical commands below
 
 **Collected:** 23 base IDs × 8 variants = **184** audio files in `data/phase7c1/raw/`.
 
@@ -324,7 +331,80 @@ See [phase7c4_calibration_v2/README.md](../../reports/phase7/phase7c4_calibratio
 
 ---
 
-## Phase 7D1 — Forensic report generator (no training)
+## Phase 7E0.5 — Path / artifact / environment audit
+
+```text
+python code/phase7/audit_phase7e0_paths.py --output_dir reports/phase7/phase7e_aasist_experiment/audit
+```
+
+---
+
+## Phase 7E2 + 7E3A — AASIST adapter + pretrained eval
+
+**Status:** Active preparation — **no training, no fine-tuning**
+
+See [phase7e_aasist_experiment/README.md](../../reports/phase7/phase7e_aasist_experiment/README.md). Analysis reports include **status traceability** (file-level vs segment-suspicious; `risk_target=1` ≠ AI-generated).
+
+### 1. Build eval manifests
+
+```text
+python code/phase7/aasist/integration/build_aasist_eval_manifest.py --input_manifest reports/phase7/phase7c1_collection/phase7c1_collection_manifest.csv --dataset_name phase7c1 --output_csv reports/phase7/phase7e_aasist_experiment/phase7e2_dataset_adapter/phase7c1_aasist_eval_manifest.csv
+
+python code/phase7/aasist/integration/build_aasist_eval_manifest.py --input_manifest reports/phase7/phase7_forensic_tests/forensic_test_manifest.csv --dataset_name phase7a --output_csv reports/phase7/phase7e_aasist_experiment/phase7e2_dataset_adapter/phase7a_aasist_eval_manifest.csv
+```
+
+### 2. Run pretrained AASIST-L (readiness check first)
+
+```text
+python code/phase7/aasist/integration/run_aasist_pretrained_eval.py --eval_manifest reports/phase7/phase7e_aasist_experiment/phase7e2_dataset_adapter/phase7c1_aasist_eval_manifest.csv --aasist_src code/phase7/aasist/vendor/AASIST --config_path code/phase7/aasist/vendor/AASIST/config/AASIST-L.conf --checkpoint_path code/phase7/aasist/vendor/AASIST/models/weights/AASIST-L.pth --output_dir reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7c1 --device cuda --batch_size 16 --window_mode chunks --save_chunk_timeline --spoof_class_index 0
+
+python code/phase7/aasist/integration/run_aasist_pretrained_eval.py --eval_manifest reports/phase7/phase7e_aasist_experiment/phase7e2_dataset_adapter/phase7a_aasist_eval_manifest.csv --aasist_src code/phase7/aasist/vendor/AASIST --config_path code/phase7/aasist/vendor/AASIST/config/AASIST-L.conf --checkpoint_path code/phase7/aasist/vendor/AASIST/models/weights/AASIST-L.pth --output_dir reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7a --device cuda --batch_size 16 --window_mode chunks --save_chunk_timeline --spoof_class_index 0
+```
+
+### 3. Analyze
+
+```text
+python code/phase7/aasist/integration/analyze_aasist_pretrained_eval.py --predictions_csv reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7c1/aasist_l_predictions.csv --output_md reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7c1/aasist_l_phase7c1_analysis.md --output_summary_csv reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7c1/aasist_l_phase7c1_summary.csv
+
+python code/phase7/aasist/integration/analyze_aasist_pretrained_eval.py --predictions_csv reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7a/aasist_l_predictions.csv --output_md reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7a/aasist_l_phase7a_analysis.md --output_summary_csv reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7a/aasist_l_phase7a_summary.csv
+```
+
+### 4. Compare with HybridResNet + 7C4-v2
+
+```text
+python code/phase7/aasist/integration/compare_aasist_with_hybrid.py --aasist_csv reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/phase7c1/aasist_l_predictions.csv --hybrid_csv reports/phase7/phase7c1_baseline/results/phase7c1_baseline_results.csv --decision_csv reports/phase7/phase7c4_calibration_v2/calibration_outputs/phase7c4_v2_candidate_decisions.csv --output_dir reports/phase7/phase7e_aasist_experiment/phase7e3a_pretrained_eval/comparison
+```
+
+| Script | Role |
+|--------|------|
+| `aasist_eval_common.py` | Model load, class convention, windows, `evaluate_aasist_status` |
+| `build_aasist_eval_manifest.py` | Normalize 7C1/7A CSVs → AASIST eval manifest |
+| `run_aasist_pretrained_eval.py` | Pretrained AASIST-L inference + chunk timelines |
+| `analyze_aasist_pretrained_eval.py` | 7C1 gates + 7A holdout summary |
+| `compare_aasist_with_hybrid.py` | AASIST vs HybridResNet + 7C4-v2 |
+
+---
+
+## Phase 7E3B — AASIST-L fine-tune prep (hardened; no training)
+
+Use **`build_aasist_finetune_manifest.py`** (not `build_aasist_eval_manifest.py`).
+
+```text
+python code/phase7/aasist/integration/build_aasist_finetune_manifest.py --train_manifest reports/phase7/phase7c2_training_prep/phase7c2_train_manifest.csv --val_manifest reports/phase7/phase7c2_training_prep/phase7c2_val_manifest.csv --test_manifest reports/phase7/phase7c2_training_prep/phase7c2_test_manifest.csv --output_dir reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep --phase7c1_windows 3 --partial_window_mode suspicious_region --random_seed 42
+
+python code/phase7/aasist/integration/validate_aasist_finetune_manifest.py --train reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_train_manifest.csv --val reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_val_manifest.csv --test reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_test_manifest.csv --output_dir reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/validation --rejected_csv reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_finetune_rejected_rows.csv --allow_warnings
+```
+
+| Script | Role |
+|--------|------|
+| `build_aasist_finetune_manifest.py` | **Fine-tune** manifest builder (7C2 → train/val/test windows) |
+| `validate_aasist_finetune_manifest.py` | Hardened checks: label mapping, weighted balance, clean-human, leakage |
+
+Plan: [AASIST_L_FINETUNE_TRAINING_PLAN.md](../../reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/AASIST_L_FINETUNE_TRAINING_PLAN.md)
+
+---
+
+## Phase 7D1 — Forensic report generator (no training; postponed for product priority)
 
 Reads Phase 7C4-v2 decisions and evidence; writes JSON + Markdown reports. Shared mapping/lint: `phase7d_common.py`.
 

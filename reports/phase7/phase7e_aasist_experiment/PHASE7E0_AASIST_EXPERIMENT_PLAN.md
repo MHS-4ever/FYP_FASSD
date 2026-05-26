@@ -36,6 +36,17 @@ Website / product UI  (postponed)
 
 **Critical:** HybridResNet remains useful for replay, mixer, partial fabrication, and chunk-level suspicious evidence. AASIST does **not** replace that role by assumption.
 
+### Evidence branch roles
+
+| Branch | Best expected role |
+|--------|-------------------|
+| **HybridResNet baseline** | Replay / mixer / partial fabrication evidence |
+| **AASIST** | Direct AI / synthetic spoof evidence candidate |
+| **Phase 7C4-v2** | Current decision-layer prototype |
+| **Future 7E5 fusion** | Combines AASIST + HybridResNet evidence |
+
+AASIST does **not** need to replace HybridResNet to be useful. It only needs to improve a **weak evidence axis** (especially **direct AI**) within the numeric gates in [PHASE7E0_ACCEPTANCE_CRITERIA.md](PHASE7E0_ACCEPTANCE_CRITERIA.md), without unacceptable clean-human false alarms. Acceptance is for a **role**, not a final product model.
+
 ---
 
 ## 3. Current model stack (context)
@@ -102,7 +113,7 @@ Evaluate AASIST in **four roles** (same checkpoint, different interpretation in 
 
 | Dataset | Purpose | Training? |
 |---------|---------|-----------|
-| Old balanced / ASVspoof-derived | General spoof knowledge; bonafide / synthesis / conversion / replay | Yes (7E3+, via 7C2-style manifests) |
+| Old balanced / ASVspoof-derived | General spoof knowledge; bonafide / synthesis / conversion / replay | Yes (7E3B+, via 7C2-style manifests; after 7E3A pretrained eval) |
 | Phase 7C1 local forensic dataset | Human/AI/replay/mixer/partial; paired variants; Urdu/English/mixed; phone/laptop/mixer | Yes (weighted in manifests) |
 | Phase 7A controlled holdout | Final generalization check | **Never** — holdout only |
 | Phase 7C4-v2 decision outputs | Compare fusion baseline | **No** — not labels |
@@ -144,12 +155,16 @@ Policy: conservative first runs, small batch, careful audio/feature streaming �
 
 | Phase | Deliverable |
 |-------|-------------|
-| **7E0** | This plan + locked benchmark (current) |
+| **7E0** | Hardened plan + locked benchmark + numeric acceptance gates |
+| **7E0.5** | Path/artifact audit → [phase7e0_path_artifact_audit.md](phase7e0_path_artifact_audit.md) (**before** 7E1) |
 | **7E1** | `code/phase7/aasist/` smoke test — imports, forward pass, VRAM |
 | **7E2** | Manifest adapter — 7C1/7C2 → AASIST lists; holdout guard |
-| **7E3** | Train/fine-tune on balanced data; separate checkpoints |
-| **7E4** | 7C1 + 7A eval vs baselines |
-| **7E5** | Fusion decision layer v3 (HybridResNet + AASIST) |
+| **7E3A** | **Pretrained** AASIST eval on 7C1 + 7A — **no fine-tuning** |
+| **7E3B** | Fine-tune only after 7E3A or documented no pretrained checkpoint |
+| **7E4** | Full eval vs baselines; apply numeric acceptance gates |
+| **7E5** | Fusion decision layer v3 (HybridResNet + AASIST by role) |
+
+**Why 7E3A before 7E3B:** Determine whether a pretrained anti-spoof checkpoint already improves **direct AI** before spending training time.
 
 Detail: [PHASE7E0_IMPLEMENTATION_ROADMAP.md](PHASE7E0_IMPLEMENTATION_ROADMAP.md).
 

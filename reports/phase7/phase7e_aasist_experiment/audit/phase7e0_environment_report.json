@@ -1,0 +1,43 @@
+{
+  "timestamp_utc": "2026-05-26T19:16:11.805648+00:00",
+  "sys_executable": "C:\\Users\\mhasn\\miniconda3\\envs\\fassd\\python.exe",
+  "python_version": "3.10.19 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 16:41:31) [MSC v.1929 64 bit (AMD64)]",
+  "cwd": "E:\\FYP",
+  "repo_root": "E:\\FYP",
+  "conda_env": "fassd",
+  "packages": {
+    "pandas": {
+      "installed": true,
+      "version": "2.3.3"
+    },
+    "numpy": {
+      "installed": true,
+      "version": "2.2.6"
+    },
+    "librosa": {
+      "installed": true,
+      "version": "0.11.0"
+    },
+    "soundfile": {
+      "installed": true,
+      "version": "0.13.1"
+    },
+    "h5py": {
+      "installed": true,
+      "version": "3.15.1"
+    },
+    "torch": {
+      "installed": true
+    }
+  },
+  "torch": {
+    "version": "2.5.1+cu121",
+    "cuda_available": true,
+    "cuda_version": "12.1",
+    "device_count": 1,
+    "gpu_name": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "gpu_total_memory_gb": 6.0,
+    "gpu_free_memory_gb": 5.04,
+    "gpu_total_memory_reported_gb": 6.0
+  }
+}

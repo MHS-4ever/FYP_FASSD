@@ -1,0 +1,35 @@
+{
+  "phase": "7E3C",
+  "model": "AASIST-L",
+  "do_not_train_in_cursor": true,
+  "paths": {
+    "train_manifest": "reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_train_manifest.csv",
+    "val_manifest": "reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_val_manifest.csv",
+    "test_manifest": "reports/phase7/phase7e_aasist_experiment/phase7e3b_finetune_prep/aasist_test_manifest.csv",
+    "aasist_src": "code/phase7/aasist/vendor/AASIST",
+    "config_path": "code/phase7/aasist/vendor/AASIST/config/AASIST-L.conf",
+    "base_checkpoint": "code/phase7/aasist/vendor/AASIST/models/weights/AASIST-L.pth",
+    "output_root": "reports/phase7/phase7e_aasist_experiment/phase7e3c_finetune"
+  },
+  "defaults": {
+    "device": "cuda",
+    "batch_size": 8,
+    "epochs": 10,
+    "lr": 2e-6,
+    "weight_decay": 1e-4,
+    "num_workers": 0,
+    "balanced_sampler": true,
+    "use_sample_weight": true,
+    "class_balanced_loss": false,
+    "amp": false,
+    "freeze_frontend_epochs": 0,
+    "patience": 4,
+    "random_seed": 42
+  },
+  "notes": [
+    "Do not enable class_balanced_loss by default; start with balanced_sampler + sample_weight only.",
+    "Training objective is primarily to reduce clean-human false alarms without collapsing direct-AI / replay / mixer / partial sensitivity.",
+    "Never overwrite official pretrained checkpoint or Phase 7E3A outputs."
+  ]
+}
+

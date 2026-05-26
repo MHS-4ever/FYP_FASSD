@@ -3,8 +3,9 @@
 > **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. See also [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) and [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md).
 
 **Last updated:** May 2026  
-**Status:** Direction document — **Phase 7C frozen**; **Phase 7D** is active product work  
-**7C decisions:** [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md)
+**Status:** Direction document — **Phase 7C frozen**; **Phase 7E0** AASIST evidence planning active; **7D / web UI postponed**  
+**7C decisions:** [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md)  
+**7E planning:** [phase7/phase7e_aasist_experiment/README.md](phase7/phase7e_aasist_experiment/README.md)
 
 ---
 
@@ -16,8 +17,11 @@
 | **Accepted prototype** | Phase 7C4-v2 **decision-layer fusion** over baseline + R2 evidence (`reports/phase7/phase7c4_calibration_v2/`). |
 | **Baseline role** | `hybrid_resnet_environmental_best.pth` remains a primary **evidence source** for replay/mixer/partial sensitivity. |
 | **Clean human** | v2 reduces false alarms vs baseline but most clean clips are **borderline / requires review**, not auto-accepted. |
-| **Next product work** | **Phase 7D** — forensic report layer (safe wording, `origin_hint`, `manipulation_hint`, `risk_level`, timelines). |
-| **No training now** | Do not fine-tune until after 7D integration and/or new controlled evaluation. |
+| **Production-ready model** | **No** — current stack is not deployment-ready as a final forensic scorer. |
+| **Accepted prototype** | Phase 7C4-v2 decision-layer fusion only (not final product model). |
+| **Next evidence work** | **Phase 7E** — AASIST as candidate evidence branch ([PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md](phase7/PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md)). |
+| **Report / web UI** | **Postponed** until model/evidence layer improves (7D specs exist; implementation deferred). |
+| **No training now (7E0)** | Do not train AASIST until 7E1/7E2 review; 7C remains frozen. |
 
 ---
 
@@ -203,18 +207,18 @@ One or more paragraphs in plain language for the reviewer, following rules in Se
 | **7A** | Controlled forensic test suite | **No** | Baseline failures; **partial-fabrication** segment probe |
 | **7B** | Forensic dataset + labels | Prepare only | origin, manipulation, partial_fabrication, timeline fields |
 | **7C** | Fine-tune `HybridResNetEnvironmental` | **Yes** (after 7A) | Urdu, phone, replay, mixer, WhatsApp, partial AI |
-| **7D** | Forensic report layer | **Mandatory** (rules/schema) | Wording, timeline, JSON — [PHASE7D](pipeline_phases/PHASE7D_FORENSIC_REPORT_LAYER.md) |
-| **7E** | Transformer experiments | **Yes** (after 7C, 7D clear) | **1. AASIST → 2. WavLM → 3. wav2vec2** (separate, then compare) |
-| **7F** | Ensemble + final decision logic | After 7E | Late fusion only if standalone models help |
-| **8** | Product / API / report system | Deploy | PDF/HTML, full workflow |
+| **7D** | Forensic report layer | Rules/schema done; **implementation postponed** | Wording, timeline, JSON — [phase7d_report_layer/](phase7/phase7d_report_layer/README.md) |
+| **7E** | AASIST evidence experiment | **Yes** (after 7E0–7E2 review) | **AASIST first** → WavLM/wav2vec2 later if needed |
+| **7F** | Ensemble + final decision logic | After 7E | Late fusion (7E5 v3: HybridResNet + AASIST) |
+| **8** | Product / API / report system | Deploy | PDF/HTML, full workflow — **after** stronger evidence |
 
-**Order:** 7A → 7B → 7C → **7D** → 7E → 7F. Do not skip 7D. Do not early-fuse all models.
+**Order (updated May 2026):** 7A → 7B → 7C → **7E (evidence)** → 7D implementation → 7F → 8. Do not early-fuse all models. Do not treat 7C4-v2 as final production model.
 
 ### Phase 7E — transformers (separate evaluation first)
 
 - **Not** blocked only by GPU — **12 GB VRAM** available.  
-- **Blocked by process:** need 7A metrics, 7C hybrid, and **7D report spec** before adding models.  
-- Evaluate **AASIST, then WavLM-base, then wav2vec2-base** each alone vs hybrid on 7A manifest.  
+- **Blocked by process:** 7E0 planning must be reviewed; then 7E1 smoke + 7E2 adapter before training.  
+- Evaluate **AASIST first**, then WavLM-base, then wav2vec2-base if AASIST is insufficient — each standalone vs hybrid on 7C1 + 7A.  
 - **No early fusion** into one big model at first.  
 
 ### Phase 7F — ensemble
@@ -233,11 +237,13 @@ Combine hybrid + best 7E model(s) + chunk timeline + env inconsistency → final
 
 ## 8. Immediate Rule
 
-> **Phase 7C is frozen. No new model training or fine-tuning until Phase 7D report-layer integration and/or a new controlled evaluation protocol.**
+> **Phase 7C is frozen.** HybridResNet fine-tune experiments are complete; see [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md).
 
-> Historical rule (7A): No training until Phase 7A results were reviewed — **satisfied.** Phase 7C experiments are complete; see [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md).
+> **Phase 7E0:** AASIST planning and locked benchmark — **no training** until 7E1/7E2 review.
 
-**Active work:** Phase **7D** — forensic report layer. Planning specs: [phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md](phase7/phase7d_report_layer/PHASE7D_FORENSIC_REPORT_LAYER_PLAN.md). Next code: `build_phase7d_forensic_report.py` (7D1).
+**Active work:** Phase **7E0** — AASIST evidence branch planning. Hub: [phase7/phase7e_aasist_experiment/](phase7/phase7e_aasist_experiment/README.md).
+
+**Postponed:** Phase **7D** report generator productization and **Phase 8** web UI until evidence layer improves.
 
 Allowed now:
 
@@ -251,7 +257,8 @@ Not allowed now:
 - Fine-tuning or new checkpoint training without updated evaluation plan
 - Deploying **7C3-v1**, **standalone R2**, or **7C4-v1** as product scorers
 - Claiming final forensic accuracy, court-ready proof, or market-ready automation from 7C4-v2
-- Any Phase **7E** SSL/transformer/AASIST work before **7D** report spec is implemented
+- Mass **7D** report/demo push before **7E** evidence evaluation improves scores
+- AASIST **training** before **7E1** / **7E2** review
 - Starting Phase **7F** (ensemble) before **7E** review
 - Claiming forensic proof from binary score alone
 

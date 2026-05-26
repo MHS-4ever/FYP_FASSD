@@ -1,0 +1,185 @@
+sample_id,audio_path,dataset_name,source_origin,manipulation_type,ground_truth_origin,ground_truth_manipulation,partial_fabrication_binary,suspicious_start_time,suspicious_end_time,expected_role,expected_risk_binary,expected_notes
+ai_001_direct,data/phase7c1/raw/ai_direct/ai_001_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_001_fabricated,data/phase7c1/raw/ai_fabricated/ai_001_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,18.024,27.818,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_001_mixer_processed,data/phase7c1/raw/ai_mixer/ai_001_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_001_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_001_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_001_clean,data/phase7c1/raw/human_clean/human_001_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_001_fabricated,data/phase7c1/raw/human_fabricated/human_001_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,16.049,24.293,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_001_mixer_processed,data/phase7c1/raw/human_mixer/human_001_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_001_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_001_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_002_direct,data/phase7c1/raw/ai_direct/ai_002_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_002_fabricated,data/phase7c1/raw/ai_fabricated/ai_002_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,35.741,42.331,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_002_mixer_processed,data/phase7c1/raw/ai_mixer/ai_002_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_002_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_002_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_002_clean,data/phase7c1/raw/human_clean/human_002_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_002_fabricated,data/phase7c1/raw/human_fabricated/human_002_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,5.697,11.771,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_002_mixer_processed,data/phase7c1/raw/human_mixer/human_002_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_002_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_002_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_003_direct,data/phase7c1/raw/ai_direct/ai_003_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_003_fabricated,data/phase7c1/raw/ai_fabricated/ai_003_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,1.952,8.531,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_003_mixer_processed,data/phase7c1/raw/ai_mixer/ai_003_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_003_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_003_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_003_clean,data/phase7c1/raw/human_clean/human_003_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_003_fabricated,data/phase7c1/raw/human_fabricated/human_003_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,6.14,13.891,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_003_mixer_processed,data/phase7c1/raw/human_mixer/human_003_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_003_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_003_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_004_direct,data/phase7c1/raw/ai_direct/ai_004_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_004_fabricated,data/phase7c1/raw/ai_fabricated/ai_004_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,39.453,46.277,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_004_mixer_processed,data/phase7c1/raw/ai_mixer/ai_004_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_004_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_004_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_004_clean,data/phase7c1/raw/human_clean/human_004_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_004_fabricated,data/phase7c1/raw/human_fabricated/human_004_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,1.739,8.153,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_004_mixer_processed,data/phase7c1/raw/human_mixer/human_004_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_004_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_004_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_005_direct,data/phase7c1/raw/ai_direct/ai_005_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_005_fabricated,data/phase7c1/raw/ai_fabricated/ai_005_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,42.59,49.433,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_005_mixer_processed,data/phase7c1/raw/ai_mixer/ai_005_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_005_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_005_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_005_clean,data/phase7c1/raw/human_clean/human_005_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_005_fabricated,data/phase7c1/raw/human_fabricated/human_005_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,27.493,35.762,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_005_mixer_processed,data/phase7c1/raw/human_mixer/human_005_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_005_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_005_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_006_direct,data/phase7c1/raw/ai_direct/ai_006_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_006_fabricated,data/phase7c1/raw/ai_fabricated/ai_006_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,29.439,38.986,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_006_mixer_processed,data/phase7c1/raw/ai_mixer/ai_006_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_006_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_006_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_006_clean,data/phase7c1/raw/human_clean/human_006_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_006_fabricated,data/phase7c1/raw/human_fabricated/human_006_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,0.425,6.74,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_006_mixer_processed,data/phase7c1/raw/human_mixer/human_006_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_006_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_006_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_007_direct,data/phase7c1/raw/ai_direct/ai_007_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_007_fabricated,data/phase7c1/raw/ai_fabricated/ai_007_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,45.753,54.448,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_007_mixer_processed,data/phase7c1/raw/ai_mixer/ai_007_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_007_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_007_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_007_clean,data/phase7c1/raw/human_clean/human_007_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_007_fabricated,data/phase7c1/raw/human_fabricated/human_007_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,11.149,18.612,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_007_mixer_processed,data/phase7c1/raw/human_mixer/human_007_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_007_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_007_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_008_direct,data/phase7c1/raw/ai_direct/ai_008_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_008_fabricated,data/phase7c1/raw/ai_fabricated/ai_008_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,14.11,21.003,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_008_mixer_processed,data/phase7c1/raw/ai_mixer/ai_008_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_008_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_008_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_008_clean,data/phase7c1/raw/human_clean/human_008_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_008_fabricated,data/phase7c1/raw/human_fabricated/human_008_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,3.349,8.052,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_008_mixer_processed,data/phase7c1/raw/human_mixer/human_008_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_008_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_008_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_009_direct,data/phase7c1/raw/ai_direct/ai_009_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_009_fabricated,data/phase7c1/raw/ai_fabricated/ai_009_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,6.078,15.785,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_009_mixer_processed,data/phase7c1/raw/ai_mixer/ai_009_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_009_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_009_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_009_clean,data/phase7c1/raw/human_clean/human_009_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_009_fabricated,data/phase7c1/raw/human_fabricated/human_009_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,22.541,29.261,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_009_mixer_processed,data/phase7c1/raw/human_mixer/human_009_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_009_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_009_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_010_direct,data/phase7c1/raw/ai_direct/ai_010_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_010_fabricated,data/phase7c1/raw/ai_fabricated/ai_010_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,39.565,46.965,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_010_mixer_processed,data/phase7c1/raw/ai_mixer/ai_010_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_010_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_010_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_010_clean,data/phase7c1/raw/human_clean/human_010_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_010_fabricated,data/phase7c1/raw/human_fabricated/human_010_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,30.108,37.657,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_010_mixer_processed,data/phase7c1/raw/human_mixer/human_010_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_010_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_010_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_011_direct,data/phase7c1/raw/ai_direct/ai_011_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_011_fabricated,data/phase7c1/raw/ai_fabricated/ai_011_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,30.108,36.664,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_011_mixer_processed,data/phase7c1/raw/ai_mixer/ai_011_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_011_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_011_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_011_clean,data/phase7c1/raw/human_clean/human_011_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_011_fabricated,data/phase7c1/raw/human_fabricated/human_011_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,36.178,43.987,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_011_mixer_processed,data/phase7c1/raw/human_mixer/human_011_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_011_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_011_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_012_direct,data/phase7c1/raw/ai_direct/ai_012_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_012_fabricated,data/phase7c1/raw/ai_fabricated/ai_012_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,36.178,44.19,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_012_mixer_processed,data/phase7c1/raw/ai_mixer/ai_012_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_012_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_012_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_012_clean,data/phase7c1/raw/human_clean/human_012_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_012_fabricated,data/phase7c1/raw/human_fabricated/human_012_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,41.943,48.54,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_012_mixer_processed,data/phase7c1/raw/human_mixer/human_012_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_012_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_012_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_013_direct,data/phase7c1/raw/ai_direct/ai_013_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_013_fabricated,data/phase7c1/raw/ai_fabricated/ai_013_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,23.7,31.661,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_013_mixer_processed,data/phase7c1/raw/ai_mixer/ai_013_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_013_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_013_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_013_clean,data/phase7c1/raw/human_clean/human_013_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_013_fabricated,data/phase7c1/raw/human_fabricated/human_013_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,21.252,29.382,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_013_mixer_processed,data/phase7c1/raw/human_mixer/human_013_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_013_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_013_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_014_direct,data/phase7c1/raw/ai_direct/ai_014_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_014_fabricated,data/phase7c1/raw/ai_fabricated/ai_014_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,3.003,11.423,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_014_mixer_processed,data/phase7c1/raw/ai_mixer/ai_014_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_014_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_014_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_014_clean,data/phase7c1/raw/human_clean/human_014_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_014_fabricated,data/phase7c1/raw/human_fabricated/human_014_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,23.7,30.463,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_014_mixer_processed,data/phase7c1/raw/human_mixer/human_014_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_014_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_014_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_015_direct,data/phase7c1/raw/ai_direct/ai_015_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_015_fabricated,data/phase7c1/raw/ai_fabricated/ai_015_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,15.256,24.972,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_015_mixer_processed,data/phase7c1/raw/ai_mixer/ai_015_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_015_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_015_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_015_clean,data/phase7c1/raw/human_clean/human_015_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_015_fabricated,data/phase7c1/raw/human_fabricated/human_015_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,3.003,10.86,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_015_mixer_processed,data/phase7c1/raw/human_mixer/human_015_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_015_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_015_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_016_direct,data/phase7c1/raw/ai_direct/ai_016_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_016_fabricated,data/phase7c1/raw/ai_fabricated/ai_016_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,29.714,40.282,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_016_mixer_processed,data/phase7c1/raw/ai_mixer/ai_016_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_016_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_016_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_016_clean,data/phase7c1/raw/human_clean/human_016_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_016_fabricated,data/phase7c1/raw/human_fabricated/human_016_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,15.256,24.535,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_016_mixer_processed,data/phase7c1/raw/human_mixer/human_016_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_016_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_016_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_017_direct,data/phase7c1/raw/ai_direct/ai_017_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_017_fabricated,data/phase7c1/raw/ai_fabricated/ai_017_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,24.26,33.894,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_017_mixer_processed,data/phase7c1/raw/ai_mixer/ai_017_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_017_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_017_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_017_clean,data/phase7c1/raw/human_clean/human_017_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_017_fabricated,data/phase7c1/raw/human_fabricated/human_017_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,2.103,11.913,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_017_mixer_processed,data/phase7c1/raw/human_mixer/human_017_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_017_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_017_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_018_direct,data/phase7c1/raw/ai_direct/ai_018_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_018_fabricated,data/phase7c1/raw/ai_fabricated/ai_018_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,45.994,54.836,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_018_mixer_processed,data/phase7c1/raw/ai_mixer/ai_018_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_018_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_018_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_018_clean,data/phase7c1/raw/human_clean/human_018_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_018_fabricated,data/phase7c1/raw/human_fabricated/human_018_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,29.714,38.679,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_018_mixer_processed,data/phase7c1/raw/human_mixer/human_018_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_018_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_018_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_019_direct,data/phase7c1/raw/ai_direct/ai_019_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_019_fabricated,data/phase7c1/raw/ai_fabricated/ai_019_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,39.92,51.003,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_019_mixer_processed,data/phase7c1/raw/ai_mixer/ai_019_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_019_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_019_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_019_clean,data/phase7c1/raw/human_clean/human_019_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_019_fabricated,data/phase7c1/raw/human_fabricated/human_019_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,4.337,13.506,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_019_mixer_processed,data/phase7c1/raw/human_mixer/human_019_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_019_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_019_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_020_direct,data/phase7c1/raw/ai_direct/ai_020_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_020_fabricated,data/phase7c1/raw/ai_fabricated/ai_020_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,10.708,20.214,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_020_mixer_processed,data/phase7c1/raw/ai_mixer/ai_020_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_020_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_020_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_020_clean,data/phase7c1/raw/human_clean/human_020_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_020_fabricated,data/phase7c1/raw/human_fabricated/human_020_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,20.622,27.612,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_020_mixer_processed,data/phase7c1/raw/human_mixer/human_020_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_020_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_020_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_021_direct,data/phase7c1/raw/ai_direct/ai_021_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_021_fabricated,data/phase7c1/raw/ai_fabricated/ai_021_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,14.392,22.878,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_021_mixer_processed,data/phase7c1/raw/ai_mixer/ai_021_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_021_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_021_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_021_clean,data/phase7c1/raw/human_clean/human_021_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_021_fabricated,data/phase7c1/raw/human_fabricated/human_021_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,24.26,32.978,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_021_mixer_processed,data/phase7c1/raw/human_mixer/human_021_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_021_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_021_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_022_direct,data/phase7c1/raw/ai_direct/ai_022_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_022_fabricated,data/phase7c1/raw/ai_fabricated/ai_022_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,53.857,63.793,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_022_mixer_processed,data/phase7c1/raw/ai_mixer/ai_022_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_022_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_022_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_022_clean,data/phase7c1/raw/human_clean/human_022_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_022_fabricated,data/phase7c1/raw/human_fabricated/human_022_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,4.679,11.408,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_022_mixer_processed,data/phase7c1/raw/human_mixer/human_022_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_022_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_022_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk
+ai_023_direct,data/phase7c1/raw/ai_direct/ai_023_direct.wav,phase7c1,ai,clean_direct,ai,clean,0,,,direct_ai,1,direct synthetic/spoof evidence
+ai_023_fabricated,data/phase7c1/raw/ai_fabricated/ai_023_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,17.546,24.021,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+ai_023_mixer_processed,data/phase7c1/raw/ai_mixer/ai_023_mixer_processed.wav,phase7c1,ai,mixer_processed,ai,processed,0,,,ai_mixer,1,channel/mixer processing risk
+ai_023_replay_laptop_mobile,data/phase7c1/raw/ai_repeat/ai_023_replay_laptop_mobile.wav,phase7c1,ai,ai_replay,ai,replayed,0,,,ai_replay,1,AI-origin with replay chain risk
+human_023_clean,data/phase7c1/raw/human_clean/human_023_clean.wav,phase7c1,human,clean_direct,human,clean,0,,,clean_human,0,low-risk clean human speech
+human_023_fabricated,data/phase7c1/raw/human_fabricated/human_023_fabricated.wav,phase7c1,mixed,partial_ai_insert,mixed,mixed,1,16.043,24.428,partial_fabrication,1,forensic-risk positive; partial/splice — not pure origin label
+human_023_mixer_processed,data/phase7c1/raw/human_mixer/human_023_mixer_processed.wav,phase7c1,human,mixer_processed,human,processed,0,,,human_mixer,1,channel/mixer processing risk
+human_023_replay_laptop_mobile,data/phase7c1/raw/human_replay/human_023_replay_laptop_mobile.wav,phase7c1,human,human_replay,human,replayed,0,,,human_replay,1,human-origin replay/rerecording risk

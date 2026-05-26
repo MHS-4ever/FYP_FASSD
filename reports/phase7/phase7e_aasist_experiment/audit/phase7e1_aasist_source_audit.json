@@ -1,0 +1,166 @@
+{
+  "timestamp_utc": "2026-05-26T19:35:13.205509+00:00",
+  "aasist_src": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST",
+  "aasist_src_exists": true,
+  "verdict": "PASS",
+  "mode_b_installed": {
+    "attempts": [
+      {
+        "module": "aasist",
+        "spec_found": false
+      },
+      {
+        "module": "AASIST",
+        "spec_found": false
+      },
+      {
+        "module": "anti_spoofing",
+        "spec_found": false
+      }
+    ],
+    "found": false
+  },
+  "python_files": [
+    "data_utils.py",
+    "download_dataset.py",
+    "evaluation.py",
+    "main.py",
+    "models/AASIST.py",
+    "models/RawNet2Spoof.py",
+    "models/RawNetGatSpoofST.py",
+    "utils.py"
+  ],
+  "config_files": [
+    "config/AASIST-L.conf",
+    "config/AASIST.conf",
+    "config/RawGATST_baseline.conf",
+    "config/RawNet2_baseline.conf"
+  ],
+  "checkpoint_files": [
+    "models/weights/AASIST-L.pth",
+    "models/weights/AASIST.pth"
+  ],
+  "model_candidates": [
+    {
+      "file": "download_dataset.py",
+      "module": "download_dataset",
+      "classes": [],
+      "matched_classes": [],
+      "symbol_hits": [
+        "AASIST"
+      ]
+    },
+    {
+      "file": "main.py",
+      "module": "main",
+      "classes": [],
+      "matched_classes": [],
+      "symbol_hits": [
+        "AASIST",
+        "Model"
+      ]
+    },
+    {
+      "file": "models/AASIST.py",
+      "module": "models.AASIST",
+      "classes": [
+        "GraphAttentionLayer",
+        "HtrgGraphAttentionLayer",
+        "GraphPool",
+        "CONV",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "AASIST",
+        "Model",
+        "forward",
+        "inference"
+      ]
+    },
+    {
+      "file": "models/RawNet2Spoof.py",
+      "module": "models.RawNet2Spoof",
+      "classes": [
+        "SincConv",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "Model",
+        "forward"
+      ]
+    },
+    {
+      "file": "models/RawNetGatSpoofST.py",
+      "module": "models.RawNetGatSpoofST",
+      "classes": [
+        "GraphAttentionLayer",
+        "GraphPool",
+        "CONV",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "Model",
+        "forward"
+      ]
+    }
+  ],
+  "symbol_scan": [
+    {
+      "file": "download_dataset.py",
+      "symbols": [
+        "AASIST"
+      ]
+    },
+    {
+      "file": "main.py",
+      "symbols": [
+        "AASIST",
+        "Model"
+      ]
+    },
+    {
+      "file": "models/AASIST.py",
+      "symbols": [
+        "AASIST",
+        "Model",
+        "forward",
+        "inference"
+      ]
+    },
+    {
+      "file": "models/RawNet2Spoof.py",
+      "symbols": [
+        "Model",
+        "forward"
+      ]
+    },
+    {
+      "file": "models/RawNetGatSpoofST.py",
+      "symbols": [
+        "Model",
+        "forward"
+      ]
+    }
+  ],
+  "readme_files": [
+    "README.md",
+    "readme.md"
+  ],
+  "license_files": [
+    "LICENSE"
+  ],
+  "user_actions": [],
+  "python_file_count": 8
+}

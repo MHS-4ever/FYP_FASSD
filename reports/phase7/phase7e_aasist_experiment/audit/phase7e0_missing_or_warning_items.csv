@@ -1,0 +1,3 @@
+artifact_id,severity,issue,detail
+aasist_code_workspace,optional,missing,code/phase7/aasist
+phase7e_outputs_dir,optional,missing,reports/phase7/phase7e_aasist_experiment/outputs

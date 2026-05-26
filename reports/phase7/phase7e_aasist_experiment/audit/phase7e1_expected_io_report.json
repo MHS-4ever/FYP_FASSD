@@ -1,0 +1,176 @@
+{
+  "timestamp_utc": "2026-05-26T19:35:38.345343+00:00",
+  "aasist_src": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST",
+  "verdict": "PASS",
+  "config_inspections": [
+    {
+      "file": "config/AASIST-L.conf",
+      "hints": {
+        "sample_rate": [],
+        "input_length": [],
+        "n_fft": [],
+        "labels": [
+          "spoof",
+          "spoof"
+        ],
+        "checkpoint_keys": []
+      }
+    },
+    {
+      "file": "config/AASIST.conf",
+      "hints": {
+        "sample_rate": [],
+        "input_length": [],
+        "n_fft": [],
+        "labels": [
+          "spoof",
+          "spoof"
+        ],
+        "checkpoint_keys": []
+      }
+    },
+    {
+      "file": "config/RawGATST_baseline.conf",
+      "hints": {
+        "sample_rate": [],
+        "input_length": [],
+        "n_fft": [],
+        "labels": [
+          "spoof",
+          "spoof",
+          "Spoof",
+          "Spoof",
+          "Spoof"
+        ],
+        "checkpoint_keys": []
+      }
+    },
+    {
+      "file": "config/RawNet2_baseline.conf",
+      "hints": {
+        "sample_rate": [],
+        "input_length": [],
+        "n_fft": [],
+        "labels": [
+          "spoof",
+          "spoof",
+          "Spoof",
+          "Spoof",
+          "Spoof"
+        ],
+        "checkpoint_keys": []
+      }
+    }
+  ],
+  "dataset_file_inspections": [
+    {
+      "file": "download_dataset.py",
+      "hints": {
+        "sample_rate": [],
+        "input_length": [],
+        "n_fft": [],
+        "labels": [],
+        "checkpoint_keys": []
+      }
+    }
+  ],
+  "aggregated_hints": {
+    "sample_rate": [],
+    "input_length": [],
+    "n_fft": [],
+    "labels": [
+      "spoof",
+      "Spoof"
+    ],
+    "checkpoint_keys": []
+  },
+  "unknowns": [
+    "Exact tensor layout (waveform vs spectrogram) without running upstream code",
+    "Official checkpoint key names without loading a real checkpoint",
+    "Training label CSV format for FASSD until Phase 7E2 adapter",
+    "sample_rate not found in configs \u2014 confirm from upstream README (often 16 kHz)"
+  ],
+  "phase7e2_notes": [
+    "Build adapter to emit audio paths + binary risk_target per PHASE7E0_AASIST_LABEL_STRATEGY.md",
+    "Map FASSD manifests using phase7e0_selected_paths.json canonical paths",
+    "Align sample rate / clip length with values found in config (if any)",
+    "Support partial-fabrication suspicious windows from 7C1 manifest",
+    "Never include Phase 7A holdout in train/val"
+  ],
+  "model_candidates": [
+    {
+      "file": "download_dataset.py",
+      "module": "download_dataset",
+      "classes": [],
+      "matched_classes": [],
+      "symbol_hits": [
+        "AASIST"
+      ]
+    },
+    {
+      "file": "main.py",
+      "module": "main",
+      "classes": [],
+      "matched_classes": [],
+      "symbol_hits": [
+        "AASIST",
+        "Model"
+      ]
+    },
+    {
+      "file": "models/AASIST.py",
+      "module": "models.AASIST",
+      "classes": [
+        "GraphAttentionLayer",
+        "HtrgGraphAttentionLayer",
+        "GraphPool",
+        "CONV",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "AASIST",
+        "Model",
+        "forward",
+        "inference"
+      ]
+    },
+    {
+      "file": "models/RawNet2Spoof.py",
+      "module": "models.RawNet2Spoof",
+      "classes": [
+        "SincConv",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "Model",
+        "forward"
+      ]
+    },
+    {
+      "file": "models/RawNetGatSpoofST.py",
+      "module": "models.RawNetGatSpoofST",
+      "classes": [
+        "GraphAttentionLayer",
+        "GraphPool",
+        "CONV",
+        "Residual_block",
+        "Model"
+      ],
+      "matched_classes": [
+        "Model"
+      ],
+      "symbol_hits": [
+        "Model",
+        "forward"
+      ]
+    }
+  ]
+}

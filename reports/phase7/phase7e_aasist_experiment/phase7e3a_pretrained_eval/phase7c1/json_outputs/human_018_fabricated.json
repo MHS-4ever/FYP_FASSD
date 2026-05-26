@@ -1,0 +1,312 @@
+{
+  "sample_id": "human_018_fabricated",
+  "audio_path": "data/phase7c1/raw/human_fabricated/human_018_fabricated.wav",
+  "class_convention": {
+    "spoof_class_index_used": 0,
+    "bonafide_class_index_used": 1,
+    "class_0_name": "spoof",
+    "class_1_name": "bonafide",
+    "class_convention_source": "official_aasist_label_mapping",
+    "class_convention_warning": "",
+    "class_convention_audit_notes": "data_utils.py: training label 1=bonafide, 0=spoof; main.py produce_evaluation_file: evaluation score = logits[:, 1] (bonafide)",
+    "official_eval_bonafide_index": 1,
+    "spoof_score_definition": "softmax(class_0)",
+    "bonafide_score_definition": "softmax(class_1)"
+  },
+  "scores": {
+    "prob_class_0": 0.906479162701334,
+    "prob_class_1": 0.09352084318547546,
+    "spoof_score": 0.906479162701334,
+    "bonafide_score": 0.09352084318547546,
+    "mean_spoof_score": 0.906479162701334,
+    "max_spoof_score": 0.999679446220398,
+    "median_spoof_score": 0.9934782981872559
+  },
+  "partial_region": {
+    "n_windows_inside_region": 9,
+    "n_windows_outside_region": 17,
+    "inside_region_avg_spoof": 0.7835248941555619,
+    "outside_region_avg_spoof": 0.971572598990272,
+    "inside_region_max_spoof": 0.999679446220398,
+    "outside_region_max_spoof": 0.9992561936378479,
+    "region_delta": -0.18804770483471012,
+    "partial_region_detected": true
+  },
+  "windowing": {
+    "suspicious_region_window_included": true,
+    "suspicious_extra_starts_added": [
+      {
+        "start_sample": 514844,
+        "anchor": "center"
+      },
+      {
+        "start_sample": 475424,
+        "anchor": "region_start"
+      }
+    ]
+  },
+  "windows": [
+    {
+      "window_index": 0,
+      "start_time": 0.0,
+      "end_time": 4.0375,
+      "prob_class_0": 0.9878329038619995,
+      "prob_class_1": 0.012167063541710377,
+      "spoof_score": 0.9878329038619995,
+      "bonafide_score": 0.012167063541710377,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 1,
+      "start_time": 2.0187,
+      "end_time": 6.0563,
+      "prob_class_0": 0.9992561936378479,
+      "prob_class_1": 0.0007437702151946723,
+      "spoof_score": 0.9992561936378479,
+      "bonafide_score": 0.0007437702151946723,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 2,
+      "start_time": 4.0375,
+      "end_time": 8.075,
+      "prob_class_0": 0.9983181953430176,
+      "prob_class_1": 0.001681876601651311,
+      "spoof_score": 0.9983181953430176,
+      "bonafide_score": 0.001681876601651311,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 3,
+      "start_time": 6.0563,
+      "end_time": 10.0938,
+      "prob_class_0": 0.9924680590629578,
+      "prob_class_1": 0.007531951647251844,
+      "spoof_score": 0.9924680590629578,
+      "bonafide_score": 0.007531951647251844,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 4,
+      "start_time": 8.075,
+      "end_time": 12.1125,
+      "prob_class_0": 0.9963905215263367,
+      "prob_class_1": 0.0036094547249376774,
+      "spoof_score": 0.9963905215263367,
+      "bonafide_score": 0.0036094547249376774,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 5,
+      "start_time": 10.0938,
+      "end_time": 14.1312,
+      "prob_class_0": 0.9908738136291504,
+      "prob_class_1": 0.009126167744398117,
+      "spoof_score": 0.9908738136291504,
+      "bonafide_score": 0.009126167744398117,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 6,
+      "start_time": 12.1125,
+      "end_time": 16.15,
+      "prob_class_0": 0.9936639070510864,
+      "prob_class_1": 0.006336138118058443,
+      "spoof_score": 0.9936639070510864,
+      "bonafide_score": 0.006336138118058443,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 7,
+      "start_time": 14.1312,
+      "end_time": 18.1687,
+      "prob_class_0": 0.9966517090797424,
+      "prob_class_1": 0.003348285797983408,
+      "spoof_score": 0.9966517090797424,
+      "bonafide_score": 0.003348285797983408,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 8,
+      "start_time": 16.15,
+      "end_time": 20.1875,
+      "prob_class_0": 0.9965980648994446,
+      "prob_class_1": 0.0034019448794424534,
+      "spoof_score": 0.9965980648994446,
+      "bonafide_score": 0.0034019448794424534,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 9,
+      "start_time": 18.1687,
+      "end_time": 22.2063,
+      "prob_class_0": 0.9932926893234253,
+      "prob_class_1": 0.006707321852445602,
+      "spoof_score": 0.9932926893234253,
+      "bonafide_score": 0.006707321852445602,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 10,
+      "start_time": 20.1875,
+      "end_time": 24.225,
+      "prob_class_0": 0.9483036994934082,
+      "prob_class_1": 0.05169636011123657,
+      "spoof_score": 0.9483036994934082,
+      "bonafide_score": 0.05169636011123657,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 11,
+      "start_time": 22.2063,
+      "end_time": 26.2437,
+      "prob_class_0": 0.9713425040245056,
+      "prob_class_1": 0.02865746058523655,
+      "spoof_score": 0.9713425040245056,
+      "bonafide_score": 0.02865746058523655,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 12,
+      "start_time": 24.225,
+      "end_time": 28.2625,
+      "prob_class_0": 0.9930897355079651,
+      "prob_class_1": 0.006910248193889856,
+      "spoof_score": 0.9930897355079651,
+      "bonafide_score": 0.006910248193889856,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 13,
+      "start_time": 26.2437,
+      "end_time": 30.2812,
+      "prob_class_0": 0.9949230551719666,
+      "prob_class_1": 0.005076933652162552,
+      "spoof_score": 0.9949230551719666,
+      "bonafide_score": 0.005076933652162552,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 14,
+      "start_time": 28.2625,
+      "end_time": 32.3,
+      "prob_class_0": 0.9982637763023376,
+      "prob_class_1": 0.0017362316139042377,
+      "spoof_score": 0.9982637763023376,
+      "bonafide_score": 0.0017362316139042377,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 15,
+      "start_time": 29.714,
+      "end_time": 33.7515,
+      "prob_class_0": 0.999679446220398,
+      "prob_class_1": 0.00032062610262073576,
+      "spoof_score": 0.999679446220398,
+      "bonafide_score": 0.00032062610262073576,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 16,
+      "start_time": 30.2812,
+      "end_time": 34.3188,
+      "prob_class_0": 0.9980465173721313,
+      "prob_class_1": 0.0019535275641828775,
+      "spoof_score": 0.9980465173721313,
+      "bonafide_score": 0.0019535275641828775,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 17,
+      "start_time": 32.1778,
+      "end_time": 36.2152,
+      "prob_class_0": 0.9874334931373596,
+      "prob_class_1": 0.01256652269512415,
+      "spoof_score": 0.9874334931373596,
+      "bonafide_score": 0.01256652269512415,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 18,
+      "start_time": 32.3,
+      "end_time": 36.3375,
+      "prob_class_0": 0.9970746040344238,
+      "prob_class_1": 0.0029253684915602207,
+      "spoof_score": 0.9970746040344238,
+      "bonafide_score": 0.0029253684915602207,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 19,
+      "start_time": 34.3188,
+      "end_time": 38.3563,
+      "prob_class_0": 0.009896078146994114,
+      "prob_class_1": 0.9901039004325867,
+      "spoof_score": 0.009896078146994114,
+      "bonafide_score": 0.9901039004325867,
+      "predicted_window_risk": 0
+    },
+    {
+      "window_index": 20,
+      "start_time": 36.3375,
+      "end_time": 40.375,
+      "prob_class_0": 0.07840078324079514,
+      "prob_class_1": 0.9215992093086243,
+      "spoof_score": 0.07840078324079514,
+      "bonafide_score": 0.9215992093086243,
+      "predicted_window_risk": 0
+    },
+    {
+      "window_index": 21,
+      "start_time": 38.3563,
+      "end_time": 42.3937,
+      "prob_class_0": 0.9880062937736511,
+      "prob_class_1": 0.011993697844445705,
+      "spoof_score": 0.9880062937736511,
+      "bonafide_score": 0.011993697844445705,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 22,
+      "start_time": 40.375,
+      "end_time": 44.4125,
+      "prob_class_0": 0.9975500702857971,
+      "prob_class_1": 0.002449955325573683,
+      "spoof_score": 0.9975500702857971,
+      "bonafide_score": 0.002449955325573683,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 23,
+      "start_time": 42.3937,
+      "end_time": 46.4312,
+      "prob_class_0": 0.9946022629737854,
+      "prob_class_1": 0.0053976657800376415,
+      "spoof_score": 0.9946022629737854,
+      "bonafide_score": 0.0053976657800376415,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 24,
+      "start_time": 44.4125,
+      "end_time": 48.45,
+      "prob_class_0": 0.7249297499656677,
+      "prob_class_1": 0.27507027983665466,
+      "spoof_score": 0.7249297499656677,
+      "bonafide_score": 0.27507027983665466,
+      "predicted_window_risk": 1
+    },
+    {
+      "window_index": 25,
+      "start_time": 45.9086,
+      "end_time": 49.9461,
+      "prob_class_0": 0.9415701031684875,
+      "prob_class_1": 0.058429960161447525,
+      "spoof_score": 0.9415701031684875,
+      "bonafide_score": 0.058429960161447525,
+      "predicted_window_risk": 1
+    }
+  ],
+  "config_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\config\\AASIST-L.conf",
+  "checkpoint_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\models\\weights\\AASIST-L.pth"
+}
