@@ -1,6 +1,6 @@
 # FASSD Updated Project Scope — Forensic Voice Authenticity Analyzer
 
-> **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility.
+> **Note:** The **canonical complete project scope** is [`FASSD - Scope.md`](../FASSD%20-%20Scope.md) at the repo root. This file retains the six expanded scope areas for backward compatibility. Phase 7 documentation lives in `reports/phase7/`.
 
 **Effective:** May 2026  
 **Supersedes:** “Simple AI-vs-human deepfake detector” as the sole product definition  

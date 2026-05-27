@@ -75,7 +75,8 @@ The **final product** should generate a **forensic-style report** (origin, manip
 
 | Point | Detail |
 |-------|--------|
-| **Official scope** | Six areas — [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) |
+| **Canonical scope** | [FASSD — Project Scope](../FASSD%20-%20Scope.md) (complete FYP scope) |
+| **Expanded scope detail** | Six areas — [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) |
 | **Baseline checkpoint** | `HybridResNetEnvironmental` + Phase 6 — **evidence source**; not final product alone. |
 | **Accepted prototype** | Phase **7C4-v2** decision layer (frozen artifact). |
 | **Next step** | **Phase 8A** — multi-axis architecture freeze. **No training** until reviewed. |
@@ -84,7 +85,8 @@ The **final product** should generate a **forensic-style report** (origin, manip
 
 **Read next:**
 
-- [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) — full scope (Scopes 1–6)  
+- [FASSD — Project Scope](../FASSD%20-%20Scope.md) — **canonical** complete project scope  
+- [UPDATED_PROJECT_SCOPE.md](UPDATED_PROJECT_SCOPE.md) — expanded scope detail (Scopes 1–6)  
 - [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) — master product plan  
 - [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md) — thesis rationale for Phase 7  
 - [phase7/README.md](phase7/README.md) — Phase 7 index  

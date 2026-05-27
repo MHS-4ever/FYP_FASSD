@@ -1,6 +1,7 @@
 # FASSD Next Actions
 
-**Product:** [Forensic Voice Authenticity Analyzer](UPDATED_PROJECT_SCOPE.md)  
+**Canonical scope:** [FASSD — Project Scope](../FASSD%20-%20Scope.md)  
+**Product (expanded scopes 1–6):** [Forensic Voice Authenticity Analyzer](UPDATED_PROJECT_SCOPE.md)  
 **Phase 7:** [Closed](phase7/PHASE7_FINAL_STATUS_FREEZE.md) · **Phase 8:** [Start here](phase8/PHASE8_START_HERE.md)
 
 ---

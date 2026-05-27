@@ -1,6 +1,22 @@
 # Phase 8 Failure Mode and Loophole Analysis
 
-**Purpose:** Document known failure modes from Phase 7 and mitigations in Phase 8.
+> **Historical draft** — failure modes remain valid; **label names updated** to Phase 8A frozen vocabulary below.  
+> **Mitigations in implementation:** use [fusion/phase8a_fusion_and_abstention_rules.md](fusion/phase8a_fusion_and_abstention_rules.md) and [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md).
+
+**Phase 8B:** NOT STARTED
+
+---
+
+## Label vocabulary used in mitigations (frozen)
+
+| Old reference in sections below | Frozen term |
+|---------------------------------|-------------|
+| `origin_human` evidence | `evidence_origin_human_score` / `human` |
+| `origin_ai` | `evidence_origin_ai_score` / `ai_synthetic` |
+| `manipulation_replay` | `replay_rerecorded` |
+| `manipulation_mixer_channel` | `mixer_channel_processed` |
+| `manipulation_direct_synthetic` | **Not manipulation** — `ai_synthetic` origin only |
+| Single origin/spoof score | **Forbidden** — four origin scores |
 
 ---
 
@@ -8,9 +24,9 @@
 
 | | |
 |---|---|
-| **Failure** | Single label mixes origin + manipulation (e.g. human replay labeled as “fake”). |
+| **Failure** | Single label or single `evidence_origin_score` mixes origin + manipulation. |
 | **Example** | Human replay flagged → report implies AI generation. |
-| **Mitigation** | Separate origin and manipulation axes; fusion rules forbid origin inference from manipulation alone. |
+| **Mitigation** | Four-tuple origin scores + separate manipulation scores; fusion forbids origin inference from manipulation alone. |
 
 ---
 
@@ -19,7 +35,6 @@
 | | |
 |---|---|
 | **Failure** | AI/human gate sends clip to wrong downstream model. |
-| **Example** | Human mixer routed to “bonafide” path → missed processing evidence. |
 | **Mitigation** | Parallel axis inference; no mandatory first-stage origin gate. |
 
 ---
@@ -29,8 +44,7 @@
 | | |
 |---|---|
 | **Failure** | Clean local speech scored as spoof/risk (Hybrid 17/23, AASIST 22/23). |
-| **Example** | Real witness recording marked suspicious. |
-| **Mitigation** | Explicit `manipulation_clean` + origin_human evidence; high penalty in fusion; abstain to manual review. |
+| **Mitigation** | `clean` manipulation + `evidence_origin_human_score` Moderate+; fusion clean-human protection; abstain with `manual_review_reason`. |
 
 ---
 
@@ -39,8 +53,7 @@
 | | |
 |---|---|
 | **Failure** | Short synthetic region diluted by long bonafide context. |
-| **Example** | Partial insert missed at file mean; visible only in one window. |
-| **Mitigation** | Segment axis + `region_delta`; require suspicious window in partial role. |
+| **Mitigation** | `segment_origin_*` + `partial_fabrication_score`; `region_delta`; segment_reason `origin_ai_local`. |
 
 ---
 
@@ -48,9 +61,9 @@
 
 | | |
 |---|---|
-| **Failure** | Replay attack described as “deepfake” without evidence. |
+| **Failure** | Replay described as “deepfake” without origin evidence. |
 | **Example** | Human mic replay → “AI-generated audio.” |
-| **Mitigation** | `manipulation_replay` separate from `manipulation_direct_synthetic`; report templates. |
+| **Mitigation** | `replay_rerecorded` separate from `ai_synthetic`; never use `manipulation_direct_synthetic`. |
 
 ---
 
@@ -59,8 +72,7 @@
 | | |
 |---|---|
 | **Failure** | Broadcast/mixer artifacts trigger anti-spoof scores. |
-| **Example** | Human mixer variant → high spoof score. |
-| **Mitigation** | Channel feature bucket + `manipulation_mixer_channel`; do not map to `origin_ai` automatically. |
+| **Mitigation** | `mixer_channel_processed` + `evidence_mixer_channel_score`; do not set `evidence_origin_ai_score` from mixer alone. |
 
 ---
 
@@ -68,9 +80,7 @@
 
 | | |
 |---|---|
-| **Failure** | Same speaker/clip variants across train and eval. |
-| **Example** | Inflated replay detection via memorization. |
-| **Mitigation** | `split_group_id` discipline (7C2); Phase 8 validation asserts no group leakage. |
+| **Mitigation** | `split_group_id` discipline (7C2); evidence table `split` column. |
 
 ---
 
@@ -78,9 +88,7 @@
 
 | | |
 |---|---|
-| **Failure** | Thresholds tuned on holdout then reported as general performance. |
-| **Example** | 7A holdout used to claim “production ready.” |
-| **Mitigation** | Locked 7C1 for development; 7A for final sanity only; document all threshold sources. |
+| **Mitigation** | Locked 7C1 for development; 7A sanity only. |
 
 ---
 
@@ -88,23 +96,28 @@
 
 | | |
 |---|---|
-| **Failure** | UI/report states certainty beyond evidence. |
-| **Example** | “Proven fake” from score > 0.5. |
-| **Mitigation** | Phase 8G forensic-safe templates; `manual_review_required`; decision-support language. |
+| **Mitigation** | `manual_review_required`, `forensic_summary`, decision-support language; `fusion_trace` for audit. |
 
 ---
 
-## 10. Domain mismatch across language/device/channel
+## 10. Domain mismatch
 
 | | |
 |---|---|
-| **Failure** | Model trained on one domain fails on Urdu/local device recordings. |
-| **Example** | AASIST pretrained on ASVspoof → 22/23 clean-human FA locally. |
-| **Mitigation** | Local evidence table; domain tags; abstention; no single global threshold claim. |
+| **Mitigation** | `manual_review_reason` = `unknown_domain`; abstention. |
+
+---
+
+## 11. Single origin score loophole (8A-C1 addition)
+
+| | |
+|---|---|
+| **Failure** | Implementer adds `evidence_origin_score` ≈ “fake probability.” |
+| **Mitigation** | Schema validation rejects single origin column; require four-tuple per [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md). |
 
 ---
 
 ## Cross-reference
 
 - Phase 7: [../phase7/PHASE7_MODEL_FAILURE_ANALYSIS.md](../phase7/PHASE7_MODEL_FAILURE_ANALYSIS.md)  
-- Acceptance: [PHASE8_ACCEPTANCE_CRITERIA.md](PHASE8_ACCEPTANCE_CRITERIA.md)
+- Acceptance: [validation/phase8a_success_and_rejection_criteria.md](validation/phase8a_success_and_rejection_criteria.md)

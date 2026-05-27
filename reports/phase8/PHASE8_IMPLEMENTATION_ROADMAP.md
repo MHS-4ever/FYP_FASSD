@@ -1,6 +1,9 @@
 # Phase 8 Implementation Roadmap
 
-**Rule:** No implementation before **Phase 8A** architecture freeze is reviewed and approved.
+> **Historical draft — superseded** for schema and gates by Phase 8A docs in `architecture/`, `evidence_table/`, `fusion/`, `roadmap/`.  
+> **Authoritative 8B gate:** [roadmap/phase8a_to_phase8b_readiness_review.md](roadmap/phase8a_to_phase8b_readiness_review.md)
+
+**Rule:** No Phase 8B code until Phase 8A human sign-off. **Phase 8B: NOT STARTED**
 
 ---
 
@@ -8,94 +11,59 @@
 
 | Sub-phase | Name | Training? |
 |-----------|------|-----------|
-| **8A** | Research-backed architecture freeze | No |
-| **8B** | Multi-axis evidence table builder | No (aggregation) |
-| **8C** | Acoustic / channel feature extraction | No heavy ML |
-| **8D** | Frozen SSL embedding extraction | Inference only |
+| **8A** | Architecture freeze (+ 8A-C1 schema hardening) | No |
+| **8B** | Evidence table builder | No (aggregation only) |
+| **8C** | Acoustic / channel features | No heavy ML |
+| **8D** | Frozen SSL embedding extraction | Inference only (later) |
 | **8E** | Multi-axis lightweight classifiers | Light training |
-| **8F** | Fusion + abstention / manual review | Calibration |
-| **8G** | Report layer + website integration | No |
-| **8H** | Final evaluation + defense package | Eval only |
+| **8F** | Fusion + abstention | Calibration |
+| **8G** | Report layer + website | No |
+| **8H** | Final evaluation | Eval only |
 
 ---
 
-## Phase 8A — Architecture freeze
+## Phase 8A — Architecture freeze (complete pending sign-off)
 
-**Deliverables:**
+**Authoritative deliverables:**
 
-- Approved [PHASE8_MULTI_AXIS_LABEL_SCHEMA.md](PHASE8_MULTI_AXIS_LABEL_SCHEMA.md)  
-- Evidence table column spec  
-- Fusion rules sketch  
-- Sign-off in `reports/phase8/architecture/`  
+- [architecture/phase8a_architecture_freeze.md](architecture/phase8a_architecture_freeze.md)  
+- [label_schema/phase8a_multi_axis_label_schema.md](label_schema/phase8a_multi_axis_label_schema.md)  
+- [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md) — `phase8a_v1_1`  
+- [fusion/phase8a_fusion_and_abstention_rules.md](fusion/phase8a_fusion_and_abstention_rules.md)  
 
-**Exit gate:** No code in `code/phase8/models/` until signed.
+**Exit gate:** Human sign-off on readiness review; no deprecated origin columns in 8B.
 
 ---
 
-## Phase 8B — Evidence table builder
+## Phase 8B — Evidence table builder (NOT STARTED)
 
 **Deliverables:**
 
-- Script: aggregate Hybrid CSVs, 7C4-v2 decisions, optional AASIST archives  
-- One row per `sample_id` (+ segment rows if needed)  
-- Output: `reports/phase8/evidence_table/`  
+- Populate `evidence_files.csv` / `evidence_segments.csv` per [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md)  
+- **Required:** four file-level + four segment-level origin score columns  
+- **Forbidden:** `evidence_origin_score`, `origin_score`, `manipulation_direct_synthetic`  
+- Populate `evidence_source_paths`, `schema_version`, trace fields (fusion may be stub)  
 
 **No new model training.**
 
 ---
 
-## Phase 8C — Acoustic / channel features
+## Phases 8C–8H
 
-- Hand-crafted features for mixer/compression/editing cues  
-- Partial-region statistics from timelines  
-
----
-
-## Phase 8D — Frozen SSL embeddings
-
-- WavLM / wav2vec2 **inference-only** features added to evidence table  
-- Deferred if deadline tight — table-first strategy  
-
----
-
-## Phase 8E — Lightweight axis classifiers
-
-- Small heads per axis (not one softmax fake/real)  
-- Train only on 7C2 manifests with multi-axis labels  
-
----
-
-## Phase 8F — Fusion v3
-
-- Extends 7C4-v2 concepts with abstention  
-- `manual_review_required` when axes conflict  
-
----
-
-## Phase 8G — Report layer + UI
-
-- Implement postponed 7D concepts on Phase 8 evidence  
-- Website shows evidence summary, not raw “FAKE”  
-
----
-
-## Phase 8H — Final evaluation
-
-- Phase 7C1 + 7A holdout per [PHASE8_ACCEPTANCE_CRITERIA.md](PHASE8_ACCEPTANCE_CRITERIA.md)  
-- Thesis / defense evidence package  
+Unchanged intent — see historical sections in prior revisions. Always use frozen label vocabulary from `label_schema/phase8a_multi_axis_label_schema.md`.
 
 ---
 
 ## Dependencies
 
 ```text
-8A → 8B → (8C, 8D parallel) → 8E → 8F → 8G → 8H
+8A (+ 8A-C1) → [human sign-off] → 8B → (8C, 8D) → 8E → 8F → 8G → 8H
 ```
 
 ---
 
-## What not to do in Phase 8 opening weeks
+## What not to do
 
-- Train WavLM end-to-end  
-- Run more Phase 7 AASIST/Hybrid fine-tunes  
-- Overwrite Phase 7 artifacts  
+- Train WavLM end-to-end before evidence table exists  
+- Map Hybrid spoof score → single origin column  
+- Use root [PHASE8_MULTI_AXIS_LABEL_SCHEMA.md](PHASE8_MULTI_AXIS_LABEL_SCHEMA.md) for column names  

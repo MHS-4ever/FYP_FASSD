@@ -1,22 +1,35 @@
 # Phase 8 — Start Here
 
 **Title:** Multi-Axis Forensic Audio Intelligence Architecture  
-**Status:** Planning initialized — **no code, no training**
+**Status:** Phase 8A-C1 hardened — **no code, no training** · Phase 8B **NOT STARTED**  
+**Schema version:** `phase8a_v1_1`
+
+---
+
+## Read order (authoritative — Phase 8A freeze)
+
+1. [architecture/phase8a_architecture_freeze.md](architecture/phase8a_architecture_freeze.md)  
+2. [label_schema/phase8a_multi_axis_label_schema.md](label_schema/phase8a_multi_axis_label_schema.md)  
+3. [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md)  
+4. [fusion/phase8a_fusion_and_abstention_rules.md](fusion/phase8a_fusion_and_abstention_rules.md)  
+5. [validation/phase8a_success_and_rejection_criteria.md](validation/phase8a_success_and_rejection_criteria.md)  
+6. [roadmap/phase8a_to_phase8b_readiness_review.md](roadmap/phase8a_to_phase8b_readiness_review.md)  
+
+Phase 7 handoff: [../phase7/PHASE7_TO_PHASE8_TRANSITION.md](../phase7/PHASE7_TO_PHASE8_TRANSITION.md)
+
+**Historical drafts** (superseded — do not implement from these):  
+[PHASE8_RESEARCH_AND_ARCHITECTURE_PLAN.md](PHASE8_RESEARCH_AND_ARCHITECTURE_PLAN.md), [PHASE8_MULTI_AXIS_LABEL_SCHEMA.md](PHASE8_MULTI_AXIS_LABEL_SCHEMA.md)
 
 ---
 
 ## Why Phase 8 starts now
 
-Phase 7 closed as **Controlled Forensic Evaluation, Fine-Tuning Attempts, and Architecture Findings**.
+Phase 7 proved:
 
-It proved:
-
-- HybridResNet is valuable **evidence** for replay, mixer, and partial fabrication.
-- Single binary spoof/fake or origin-first models **fail** the forensic product goal (clean-human false alarms, wrong semantics).
-- AASIST anti-spoof models are **not sufficient** as the current solution in this local setup.
-- **7C4-v2** remains an accepted **decision-layer prototype only** — not a final model.
-
-Phase 8 exists because **architecture must change**, not because Phase 7 “failed.”
+- HybridResNet is valuable **manipulation evidence** (replay, mixer, partial) — not final origin truth.
+- Single binary spoof/fake models **fail** the forensic product goal.
+- AASIST is **not sufficient** as the current standalone solution.
+- **7C4-v2** is a **decision-layer prototype only**.
 
 ---
 
@@ -24,46 +37,26 @@ Phase 8 exists because **architecture must change**, not because Phase 7 “fail
 
 Build a **multi-axis forensic audio intelligence system** that produces:
 
-- Parallel **origin** evidence (human / AI / mixed / unknown)
-- Parallel **manipulation** evidence (clean, replay, mixer, partial, edit, compression, …)
-- **Segment** evidence (windows, timestamps, region deltas)
-- **Fusion** into forensic status, risk level, manual-review flags, and report-ready summaries
+- Parallel **origin** evidence: four scores → `human` / `ai_synthetic` / `mixed` / `unknown`
+- Parallel **manipulation** evidence (multi-label)
+- **Segment** evidence with explicit `segment_origin_*` scores
+- **Fusion** → `final_forensic_status`, `forensic_risk_level`, `manual_review_required`, `fusion_trace`
+
+**Forbidden:** one `evidence_origin_score` column or fake/real collapse.
 
 ---
 
 ## What Phase 8 is NOT
 
-- ❌ One fake/real classifier marketed as final truth  
-- ❌ Hard AI/human routing gate before analysis  
-- ❌ Another binary spoof model without multi-axis approval  
-- ❌ Immediate WavLM / large-transformer training  
-
----
-
-## What Phase 8 IS
-
-- ✅ Evidence table per file/segment  
-- ✅ Reuse Hybrid chunk timelines and 7C4-v2 outputs as features  
-- ✅ Lightweight axis models after schema freeze  
-- ✅ Calibrated fusion with abstention  
-- ✅ Forensic-safe report wording (decision-support prototype)  
-
----
-
-## Read order
-
-1. [PHASE8_RESEARCH_AND_ARCHITECTURE_PLAN.md](PHASE8_RESEARCH_AND_ARCHITECTURE_PLAN.md)  
-2. [PHASE8_MULTI_AXIS_LABEL_SCHEMA.md](PHASE8_MULTI_AXIS_LABEL_SCHEMA.md)  
-3. [PHASE8_FAILURE_MODE_AND_LOOPHOLE_ANALYSIS.md](PHASE8_FAILURE_MODE_AND_LOOPHOLE_ANALYSIS.md)  
-4. [PHASE8_IMPLEMENTATION_ROADMAP.md](PHASE8_IMPLEMENTATION_ROADMAP.md)  
-5. [PHASE8_ACCEPTANCE_CRITERIA.md](PHASE8_ACCEPTANCE_CRITERIA.md)  
-
-Phase 7 handoff: [../phase7/PHASE7_TO_PHASE8_TRANSITION.md](../phase7/PHASE7_TO_PHASE8_TRANSITION.md)
+- ❌ One fake/real classifier as final truth  
+- ❌ Hard AI/human routing gate  
+- ❌ `manipulation_direct_synthetic` as a manipulation label  
+- ❌ Treating `clean` manipulation as “human-safe”  
 
 ---
 
 ## Current next action
 
-**Phase 8A — Research-backed architecture freeze** (documentation review only).
+**Human review** of Phase 8A documents (8A-C1 cleanup complete).
 
-Do **not** train models until 8A is signed off.
+Do **not** start Phase 8B evidence table builder until sign-off on [roadmap/phase8a_to_phase8b_readiness_review.md](roadmap/phase8a_to_phase8b_readiness_review.md).

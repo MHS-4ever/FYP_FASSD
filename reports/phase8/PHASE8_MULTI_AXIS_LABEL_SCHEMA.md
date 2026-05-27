@@ -1,94 +1,49 @@
 # Phase 8 Multi-Axis Label Schema
 
-**Status:** Draft for Phase 8A freeze  
-**Rule:** `risk_positive` ≠ AI-generated
+> **Historical draft — superseded** by [label_schema/phase8a_multi_axis_label_schema.md](label_schema/phase8a_multi_axis_label_schema.md).  
+> **Implement Phase 8B only from the Phase 8A file above.**
+
+**Status:** Superseded · `phase8a_v1_1`  
+**Rule:** `risk_positive` ≠ AI-generated · `clean` manipulation ≠ human-safe
 
 ---
 
-## Design principle
+## Deprecated field names in this draft
 
-Forensic labels are **evidence axes**, not a single court verdict. Reports must separate:
+This root copy used pre-freeze names. **Do not use in code or CSV headers.**
 
-- What we infer about **origin**  
-- What we infer about **manipulation / processing**  
-- Where in time suspicion concentrates  
-
----
-
-## Origin axis
-
-| Field | Values | Meaning |
-|-------|--------|---------|
-| `origin_human` | 0/1 or score | Evidence supports human-produced speech |
-| `origin_ai` | 0/1 or score | Evidence supports AI/synthetic generation |
-| `origin_mixed` | 0/1 or score | Mixed-origin over file or segments |
-| `origin_unknown` | 0/1 or score | Insufficient evidence — abstain |
-
-**Note:** Human-origin replay is `origin_human` + manipulation replay — not `origin_ai`.
-
----
-
-## Manipulation axes
-
-| Field | Description |
-|-------|-------------|
-| `manipulation_clean` | No meaningful manipulation detected |
-| `manipulation_direct_synthetic` | Full-file or dominant synthetic speech |
-| `manipulation_replay` | Rerecording / replay attack pattern |
-| `manipulation_mixer_channel` | Mixer, channel, or broadcast-style processing |
-| `manipulation_partial_fabrication` | Localized inserted/synthetic region |
-| `manipulation_edited_spliced` | Cuts/splices/edits |
-| `manipulation_compressed_low_quality` | Heavy compression or quality loss |
-
-Multiple axes may be active (e.g. AI mixer = `origin_ai` + `manipulation_mixer_channel`).
+| Deprecated (this file) | Frozen Phase 8A |
+|------------------------|-----------------|
+| `origin_human` (0/1 field) | `human` label + `evidence_origin_human_score` |
+| `origin_ai` | `ai_synthetic` + `evidence_origin_ai_score` |
+| `origin_mixed` | `mixed` + `evidence_origin_mixed_score` |
+| `origin_unknown` | `unknown` + `evidence_origin_unknown_score` |
+| `manipulation_direct_synthetic` | **Invalid manipulation label** — use `ai_synthetic` origin |
+| `manipulation_replay` | `replay_rerecorded` |
+| `manipulation_mixer_channel` | `mixer_channel_processed` |
+| `manipulation_partial_fabrication` | `partial_fabrication` |
+| `manipulation_edited_spliced` | `edited_spliced` |
+| `manipulation_compressed_low_quality` | `compressed_low_quality` |
+| `final_status` | `final_forensic_status` |
+| `risk_level` | `forensic_risk_level` |
+| `evidence_summary` | `forensic_summary` |
 
 ---
 
-## Segment axis
+## Design principle (still valid)
 
-| Field | Description |
-|-------|-------------|
-| `suspicious_segment_present` | Any window above segment threshold |
-| `suspicious_start_time` | Start (seconds) of highest-suspicion region |
-| `suspicious_end_time` | End (seconds) |
-| `inside_region_score` | Mean/max score inside annotated partial region |
-| `outside_region_score` | Score outside region |
-| `region_delta` | inside − outside (partial fabrication signal) |
+Forensic labels are **evidence axes**, not a single court verdict. Reports separate origin, manipulation, and segment/time evidence.
+
+**Human-origin replay:** `human` + `replay_rerecorded` — not `ai_synthetic`.
+
+**Direct AI with no replay/mixer:** `ai_synthetic` + `clean` manipulation is **valid**.
 
 ---
 
-## Decision / fusion fields
+## Where to read the full frozen schema
 
-| Field | Description |
-|-------|-------------|
-| `final_status` | Controlled vocabulary (e.g. accept, review, suspicious_manipulation, …) |
-| `risk_level` | low / medium / high |
-| `manual_review_required` | bool |
-| `evidence_summary` | Short forensic-safe text for report layer |
+- Origin, manipulation, decision labels: [label_schema/phase8a_multi_axis_label_schema.md](label_schema/phase8a_multi_axis_label_schema.md)  
+- CSV columns: [evidence_table/phase8a_evidence_table_schema.md](evidence_table/phase8a_evidence_table_schema.md)  
+- Fusion: [fusion/phase8a_fusion_and_abstention_rules.md](fusion/phase8a_fusion_and_abstention_rules.md)
 
----
-
-## Compatibility with Phase 7
-
-| Phase 7 field | Phase 8 mapping |
-|---------------|-----------------|
-| `risk_target` | Forensic-risk positive (training) — **not** origin alone |
-| `expected_risk_binary` | Legacy — do not equate to AI-generated |
-| `aasist_status` | Archived role status — input feature only |
-| `baseline_status` | Hybrid role status — input feature |
-
----
-
-## Clarifications (mandatory wording)
-
-1. **risk_positive** means elevated forensic concern, not “fake.”  
-2. **AI-generated** requires `origin_ai` evidence, not manipulation alone.  
-3. **Replay** can be human-origin.  
-4. **Partial fabrication** requires segment axis, not file mean only.  
-
----
-
-## Schema location (planned)
-
-- `reports/phase8/label_schema/` — extended tables and examples  
-- `reports/phase8/evidence_table/` — column spec for 8B builder  
+**Phase 8B:** NOT STARTED
