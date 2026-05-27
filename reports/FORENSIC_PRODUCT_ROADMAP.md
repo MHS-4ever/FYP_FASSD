@@ -3,25 +3,24 @@
 > **Note:** Phase 7 planning has been reorganized. The canonical Phase 7 documentation now lives in `reports/phase7/`. This file is retained for reference/backward compatibility. See also [FORENSIC_PRODUCT_MASTER_PLAN.md](FORENSIC_PRODUCT_MASTER_PLAN.md) and [PHASE7_THESIS_RATIONALE.md](PHASE7_THESIS_RATIONALE.md).
 
 **Last updated:** May 2026  
-**Status:** Direction document — **Phase 7C frozen**; **Phase 7E0** AASIST evidence planning active; **7D / web UI postponed**  
-**7C decisions:** [phase7/PHASE7C_FINAL_DECISION_RECORD.md](phase7/PHASE7C_FINAL_DECISION_RECORD.md)  
-**7E planning:** [phase7/phase7e_aasist_experiment/README.md](phase7/phase7e_aasist_experiment/README.md)
+**Status:** **Phase 7 closed** · **Phase 8 initialized** (multi-axis architecture — planning only)  
+**Phase 7 closure:** [phase7/PHASE7_FINAL_CLOSURE_REPORT.md](phase7/PHASE7_FINAL_CLOSURE_REPORT.md)  
+**Phase 8 start:** [phase8/PHASE8_START_HERE.md](phase8/PHASE8_START_HERE.md)
 
 ---
 
-## Current state (Phase 7C conclusion)
+## Current state (Phase 7 closed → Phase 8)
 
 | Point | Detail |
 |-------|--------|
-| **Model alone is not final** | No fine-tuned checkpoint (7C3-v1, R2) is accepted as the product scorer. |
-| **Accepted prototype** | Phase 7C4-v2 **decision-layer fusion** over baseline + R2 evidence (`reports/phase7/phase7c4_calibration_v2/`). |
-| **Baseline role** | `hybrid_resnet_environmental_best.pth` remains a primary **evidence source** for replay/mixer/partial sensitivity. |
-| **Clean human** | v2 reduces false alarms vs baseline but most clean clips are **borderline / requires review**, not auto-accepted. |
-| **Production-ready model** | **No** — current stack is not deployment-ready as a final forensic scorer. |
-| **Accepted prototype** | Phase 7C4-v2 decision-layer fusion only (not final product model). |
-| **Next evidence work** | **Phase 7E** — AASIST as candidate evidence branch ([PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md](phase7/PHASE7E_AASIST_MODEL_EXPERIMENT_PLAN.md)). |
-| **Report / web UI** | **Postponed** until model/evidence layer improves (7D specs exist; implementation deferred). |
-| **No training now (7E0)** | Do not train AASIST until 7E1/7E2 review; 7C remains frozen. |
+| **Phase 7** | **Closed** — Controlled Forensic Evaluation, Fine-Tuning Attempts, and Architecture Findings. |
+| **Accepted prototype (frozen)** | Phase 7C4-v2 **decision-layer fusion** only — not a final product model. |
+| **Baseline evidence** | HybridResNet remains useful for replay/mixer/partial — not sufficient alone. |
+| **AASIST (7E)** | **Rejected** as current standalone/branch solution — [PHASE7_AASIST_NEGATIVE_FINDING.md](phase7/PHASE7_AASIST_NEGATIVE_FINDING.md). |
+| **Architecture finding** | Single binary spoof/fake models are **insufficient** for the forensic product goal. |
+| **Phase 8** | **Multi-Axis Forensic Audio Intelligence** — evidence table first; no training until 8A freeze. |
+| **Report / web UI** | Phase 7D postponed → planned as **Phase 8G**. |
+| **Do not** | Reopen Phase 7 training; train WavLM or new binary models without 8A approval. |
 
 ---
 

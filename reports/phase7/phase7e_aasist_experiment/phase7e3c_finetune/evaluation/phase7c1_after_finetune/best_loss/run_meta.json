@@ -1,0 +1,29 @@
+{
+  "config_path": "E:\\FYP\\code\\phase7\\aasist\\vendor\\AASIST\\config\\AASIST-L.conf",
+  "checkpoint_path": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\phase7e3c_finetune\\training\\checkpoints\\aasist_l_phase7e3c_best_loss.pth",
+  "class_convention": {
+    "spoof_class_index_used": 0,
+    "bonafide_class_index_used": 1,
+    "class_0_name": "spoof",
+    "class_1_name": "bonafide",
+    "class_convention_source": "official_aasist_label_mapping",
+    "class_convention_warning": "",
+    "class_convention_audit_notes": "data_utils.py: training label 1=bonafide, 0=spoof; main.py produce_evaluation_file: evaluation score = logits[:, 1] (bonafide)",
+    "official_eval_bonafide_index": 1,
+    "spoof_score_definition": "softmax(class_0)",
+    "bonafide_score_definition": "softmax(class_1)"
+  },
+  "sys_path_notes": [
+    "sys.path.insert(0, 'E:\\\\FYP\\\\code\\\\phase7\\\\aasist\\\\vendor\\\\AASIST')"
+  ],
+  "device": "cuda",
+  "nb_samp": 64600,
+  "checkpoint_state_key": "model_state_dict",
+  "checkpoint_load": {
+    "status": "loaded",
+    "missing_keys_count": 0,
+    "unexpected_keys_count": 0
+  },
+  "eval_manifest": "E:\\FYP\\reports\\phase7\\phase7e_aasist_experiment\\phase7e2_dataset_adapter\\phase7c1_aasist_eval_manifest.csv",
+  "window_mode": "chunks"
+}

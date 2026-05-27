@@ -1,9 +1,9 @@
 # Phase 7 — Forensic Test Suite & Dataset (Code)
 
-**Sign-off status:** Phase **7A**–**7C2** and **7C4-v2** (prototype) signed off; **7E1** + **7E3A** complete.  
-**Active:** Phase **7E3C** — AASIST-L fine-tune scripts + eval harness (**implementation only; do not run training inside Cursor**).  
-**Postponed:** Phase **7D** report generator implementation until evidence layer improves.  
-**Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md) · **7E hub:** [phase7e_aasist_experiment/](../../reports/phase7/phase7e_aasist_experiment/README.md)
+**Sign-off status:** Phase **7** **closed** — see [PHASE7_FINAL_STATUS_FREEZE.md](../../reports/phase7/PHASE7_FINAL_STATUS_FREEZE.md).  
+**Active:** **Phase 8** — [code/phase8/README.md](../phase8/README.md) · [reports/phase8/PHASE8_START_HERE.md](../../reports/phase8/PHASE8_START_HERE.md)  
+**This folder:** Phase 7 code archive (read-only — do not add new 7E experiments).  
+**Frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](../../reports/phase7/PHASE7C_FINAL_DECISION_RECORD.md)
 
 > **Environment:** Use **`python`** inside the activated **`(fassd)`** conda environment. Do **not** use `py -3` (system Python may lack pandas/torch).
 
@@ -23,9 +23,9 @@
 | 7E0.5 | `audit_phase7e0_paths.py` | Path audit passed with warnings |
 | 7E1 | `aasist/integration/smoke_test_aasist_import.py`, … | Smoke test **passed** |
 | 7E2/7E3A | `build_aasist_eval_manifest.py`, `run_aasist_pretrained_eval.py`, … | Complete (pretrained eval) |
-| 7E3B | `build_aasist_finetune_manifest.py`, `validate_aasist_finetune_manifest.py` | Complete — PASS_WITH_WARNINGS (weighted ratio ~3.07) |
-| 7E3C | `train_aasist_l_finetune.py`, `evaluate_aasist_l_finetuned.py`, `compare_aasist_finetune_results.py` | **Active** — scripts in review (no training in Cursor) |
-| 7F | Ensemble | Planned — after 7E |
+| 7E3B–7E3C | AASIST fine-tune prep + scripts | Complete — AASIST **rejected** as current solution |
+| 7F | Ensemble | Superseded by Phase 8 multi-axis architecture |
+| **8** | See `code/phase8/` | **Active** — planning only |
 
 **Accepted artifact:** `reports/phase7/phase7c4_calibration_v2/` — do not treat as final model.
 

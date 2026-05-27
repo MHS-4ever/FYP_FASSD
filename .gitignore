@@ -16,6 +16,7 @@ data/features_augmented/logmel
 data/features_merged/features_manifest_combined.csv
 *.h5
 *.pth
+*.pkl
 testing_audios/
 data/realworld/manual/
 data/realworld/synthetic/

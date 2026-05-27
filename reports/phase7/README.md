@@ -1,6 +1,9 @@
 # Phase 7 — Reports & Documentation Hub
 
-All Phase 7 **reports, calibration outputs, evaluation artifacts, and planning docs** live under this folder.
+**Status: CLOSED** — see [PHASE7_FINAL_STATUS_FREEZE.md](PHASE7_FINAL_STATUS_FREEZE.md)  
+**Next phase:** [Phase 8 — Multi-Axis Forensic Audio Intelligence](../phase8/PHASE8_START_HERE.md)
+
+All Phase 7 **reports, calibration outputs, evaluation artifacts, and planning docs** live under this folder (read-only archive).
 
 **Code** remains in [`code/phase7/`](../../code/phase7/README.md).
 
@@ -25,6 +28,9 @@ All Phase 7 **reports, calibration outputs, evaluation artifacts, and planning d
 | [PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md](PHASE7F_ENSEMBLE_AND_FINAL_DECISION.md) | Ensemble (planned) |
 | [PHASE7_TEST_CASE_GUIDE.md](PHASE7_TEST_CASE_GUIDE.md) | T1–T5 recording rules |
 | [PHASE7_LABEL_SCHEMA.md](PHASE7_LABEL_SCHEMA.md) | Label definitions |
+| [PHASE7_FINAL_CLOSURE_REPORT.md](PHASE7_FINAL_CLOSURE_REPORT.md) | **Phase 7 closure** |
+| [PHASE7_TO_PHASE8_TRANSITION.md](PHASE7_TO_PHASE8_TRANSITION.md) | Handoff to Phase 8 |
+| [PHASE7_FINAL_STATUS_FREEZE.md](PHASE7_FINAL_STATUS_FREEZE.md) | Status freeze |
 
 Project-wide context: [NEXT_ACTIONS.md](../NEXT_ACTIONS.md), [UPDATED_PROJECT_SCOPE.md](../UPDATED_PROJECT_SCOPE.md).
 
@@ -62,21 +68,22 @@ reports/phase7/phase7c3_finetune_r2/evaluation/best_product/...
 
 ---
 
-## Current status (summary)
+## Current status (summary) — CLOSED
 
 | Item | Status |
 |------|--------|
 | 7A–7C2 | Signed off |
 | 7C3-v1 | **Rejected** |
-| 7C3-R2 checkpoints | **Rejected** standalone (evidence-only in fusion) |
+| 7C3-R2 checkpoints | **Rejected** standalone |
 | 7C4-v1 | **Rejected** |
-| 7C4-v2 | **Accepted** — decision-layer prototype only (8/8 Phase 7C1 v2 criteria) |
-| 7D | Planning complete; **implementation postponed** until evidence improves |
-| 7E0 | **Active** — AASIST planning + locked benchmark (no training) |
-| 7E1–7E5 | Planned (smoke test → adapter → train → eval → fusion) |
-| 7F | Planned (broader ensemble after 7E) |
+| 7C4-v2 | **Accepted** — decision-layer prototype only |
+| 7D | **Postponed** → Phase 8G |
+| 7E AASIST | **Rejected** as current solution — [PHASE7_AASIST_NEGATIVE_FINDING.md](PHASE7_AASIST_NEGATIVE_FINDING.md) |
+| Phase 7 overall | **Closed** — [PHASE7_FINAL_CLOSURE_REPORT.md](PHASE7_FINAL_CLOSURE_REPORT.md) |
 
-**Phase 7C frozen:** [PHASE7C_FINAL_DECISION_RECORD.md](PHASE7C_FINAL_DECISION_RECORD.md) · [PHASE7C_STATUS_FREEZE.md](PHASE7C_STATUS_FREEZE.md)
+**Do not reopen** Phase 7 experiments without a new controlled plan.
+
+**Phase 8:** [../phase8/PHASE8_START_HERE.md](../phase8/PHASE8_START_HERE.md)
 
 Accepted outputs: [phase7c4_calibration_v2/](phase7c4_calibration_v2/) — not a final product model.
 

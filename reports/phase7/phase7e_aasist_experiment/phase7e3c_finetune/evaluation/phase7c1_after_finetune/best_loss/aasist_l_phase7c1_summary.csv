@@ -1,0 +1,28 @@
+metric,value,threshold,passed
+clean_human_false_alarm,22,,
+clean_human_accepted,0,,
+clean_human_borderline,1,,
+direct_ai_detected,17,,
+direct_ai_missed,0,,
+direct_ai_detected_or_segment_suspicious,23,,
+human_replay_detected,23,,
+ai_replay_detected,23,,
+ai_replay_detected_or_segment_suspicious,23,,
+human_mixer_detected,23,,
+ai_mixer_detected,23,,
+ai_mixer_detected_or_segment_suspicious,23,,
+partial_fabrication_detected,46,,
+partial_fabrication_missed,0,,
+partial_fabrication_not_evaluable,0,,
+errors,0,,
+total_files,184,,
+gate_clean_human_false_alarm,22,<= 7/23,False
+gate_direct_ai_detected_or_segment_suspicious,23,>= 15/23,True
+gate_ai_replay_detected_or_segment_suspicious,23,>= 15/23,True
+gate_human_replay_detected,23,>= 20/23,True
+gate_human_mixer_detected,23,>= 20/23,True
+gate_ai_mixer_detected,23,>= 20/23,True
+gate_partial_fabrication_detected,46,>= 40/46,True
+role_recommendation,reject,,
+branch_gate_direct_ai_detected_or_segment_suspicious,23,>= 15/23,True
+branch_gate_clean_human_false_alarm,22,<= 10/23,False
