@@ -1,0 +1,16 @@
+item_type,phase,file_path,exists,role,freeze_status,notes
+output_csv,8B,reports/phase8/evidence_table/phase8b_build_report.md,true,phase8b evidence table build report,accepted,
+output_csv,8C,reports/phase8/features/phase8c_feature_extraction_report.md,true,phase8c feature extraction report,accepted,
+output_csv,8C-A1,reports/phase8/features/audit/phase8c_a1_acoustic_feature_audit_report.md,true,phase8c audit report,accepted,
+output_csv,8D,reports/phase8/embeddings/phase8d_ssl_embedding_extraction_report.md,true,phase8d embeddings extraction report,accepted,
+output_csv,8D-A1,reports/phase8/embeddings/audit/phase8d_a1_ssl_embedding_audit_report.md,true,phase8d audit report,accepted,
+output_csv,8E-0,reports/phase8/models/phase8e0/phase8e0_assembly_report.md,true,phase8e0 dataset assembly report,accepted,
+output_csv,8E-1,reports/phase8/models/phase8e1/phase8e1_metrics_summary.csv,true,phase8e1 file-level metrics summary,accepted,core_freeze_input
+output_csv,8E-1A,reports/phase8/models/phase8e1a/phase8e1a_threshold_recommendations.csv,true,phase8e1a threshold recommendations,accepted,core_freeze_input
+output_csv,8E-2,reports/phase8/models/phase8e2/phase8e2_partial_localization_report.md,true,phase8e2 partial localization report,accepted,
+output_csv,8E-3,reports/phase8/models/phase8e3/phase8e3_partial_segment_metrics_summary.csv,true,phase8e3 segment metrics summary,accepted_with_limitations,core_freeze_input
+output_csv,8F,reports/phase8/fusion/phase8f/phase8f_file_fusion_records.csv,true,phase8f file fusion records,accepted_with_limitations,core_freeze_input
+output_csv,8F,reports/phase8/fusion/phase8f/phase8f_fusion_summary.csv,true,phase8f fusion summary,accepted_with_limitations,core_freeze_input
+output_md,8F,reports/phase8/fusion/phase8f/phase8f_fusion_report.md,true,phase8f fusion report,accepted_with_limitations,core_freeze_input
+validation,8F,reports/phase8/validation/phase8f_fusion_validation_report.md,true,phase8f validation report,accepted,core_freeze_input
+validation,8E-3,reports/phase8/validation/phase8e3_results_validation_report.md,true,phase8e3 validation report,accepted,core_freeze_input
