@@ -1,0 +1,10 @@
+task_name,feature_set,metric_summary,error_count,false_positive_count,false_negative_count,clean_false_positive_rate,calibration_quality,recommended_for_phase8f,reason
+mixer_file_model,acoustic,cross-validated experimental outputs reviewed,1,1,0,0.021739130434782608,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold
+mixer_file_model,combined,cross-validated experimental outputs reviewed,1,1,0,0.021739130434782608,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold
+mixer_file_model,ssl,cross-validated experimental outputs reviewed,3,3,0,0.06521739130434782,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold
+origin_file_model,acoustic,cross-validated experimental outputs reviewed,3,3,0,0.13043478260869565,caution,caution_candidate,usable with caution and stronger validation
+origin_file_model,combined,cross-validated experimental outputs reviewed,0,0,0,0.0,good_candidate,caution_candidate,perfect result on small dataset requires caution
+origin_file_model,ssl,cross-validated experimental outputs reviewed,0,0,0,0.0,good_candidate,caution_candidate,perfect result on small dataset requires caution
+replay_file_model,acoustic,cross-validated experimental outputs reviewed,3,2,1,0.043478260869565216,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold
+replay_file_model,combined,cross-validated experimental outputs reviewed,3,2,1,0.043478260869565216,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold
+replay_file_model,ssl,cross-validated experimental outputs reviewed,2,1,1,0.021739130434782608,good_candidate,yes_candidate,clean false-positive behavior acceptable at default candidate threshold

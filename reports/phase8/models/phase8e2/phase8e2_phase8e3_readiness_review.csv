@@ -1,0 +1,12 @@
+criterion,status,evidence,recommendation
+timestamp_annotations_loaded,yes,annotation_rows_loaded=46,provide timestamp annotation files for partial-fabrication intervals
+timestamp_annotations_matched_to_files,yes,matched_annotation_rows=46,improve file-path/file-id matching coverage if low
+timestamp_labels_available,yes,files_with_true_timestamp_labels=46,collect reliable timestamp annotations for each partial file
+true_segment_labels_available,yes,files_usable_for_supervised_segment_training=46,require per-segment or start/end labels before supervised training
+inherited_labels_only,no,current partial dataset uses inherited file-level labels for localization prep,keep phase8e2 outputs as manual/fusion candidates only
+minimum_positive_segment_count,yes,positive_fabricated_segment_count=224,collect more timestamp-labeled positive segments
+minimum_negative_segment_count,yes,negative_outside_segment_count=983,collect timestamp-labeled outside/clean segments
+source_group_leakage_control_possible,yes,source_group_id exists in segment-level tables,use group-aware splits for any future supervised stage
+inside_outside_feature_columns_created,yes,inside/outside baseline distance columns created in phase8e2_inside_outside_delta_features.csv,verify baseline distances before supervised stage
+top_candidate_table_created,yes,phase8e2_top_suspicious_segment_candidates rows=322,prioritize top candidates for manual review
+ready_for_supervised_partial_segment_training,yes,"requires loaded+matched annotations, sufficient positive/negative counts, and leakage control",remain in localization-prep mode unless all criteria are satisfied

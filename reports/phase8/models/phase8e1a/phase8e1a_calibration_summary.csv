@@ -1,0 +1,10 @@
+task_name,feature_set,brier_score,roc_auc,average_precision,expected_calibration_error_ece,calibration_bins,mean_predicted_probability,observed_positive_rate,high_confidence_error_count,low_confidence_correct_count,interpretation_note
+mixer_file_model,acoustic,0.012103981518996814,1.0,0.9999999999999999,0.043126481308734844,10,0.5185631985304183,0.5,0,41,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+mixer_file_model,combined,0.01650723851666992,0.9900756143667296,0.9873142581409621,0.02498740674095845,10,0.5190489628693804,0.5,1,42,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+mixer_file_model,ssl,0.031023869828260105,0.9754253308128544,0.9484734215326429,0.021988975886581552,10,0.5147470136470126,0.5,2,42,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+origin_file_model,acoustic,0.05821711523008585,0.9697542533081285,0.9621889628670486,0.06149153749000515,10,0.5500395629970325,0.5,3,20,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+origin_file_model,combined,0.001572325928701638,1.0,0.9999999999999998,0.014638752317802093,10,0.5047967446022008,0.5,0,22,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+origin_file_model,ssl,0.0010051221522833055,1.0,0.9999999999999998,0.012973216868502127,10,0.5030382723067932,0.5,0,23,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+replay_file_model,acoustic,0.01972450608204156,0.9966918714555766,0.9971287940935192,0.03593792678469063,10,0.5064565263397482,0.5,0,42,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+replay_file_model,combined,0.02679905166446776,0.9858223062381852,0.9885101335220579,0.02326873223546427,10,0.5007617066945772,0.5,1,44,Calibration reviewed from OOF probabilities only; no fitted calibration model.
+replay_file_model,ssl,0.026660191237461817,0.9886578449905482,0.9868499821216445,0.025976843098008302,10,0.49217599747528357,0.5,1,44,Calibration reviewed from OOF probabilities only; no fitted calibration model.
