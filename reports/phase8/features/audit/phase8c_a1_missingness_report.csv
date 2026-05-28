@@ -1,0 +1,107 @@
+level,feature,missing_percent,non_null_count,row_count,variance,usability,note
+file,rms_mean,0.0,184,184,0.0004597194502322345,usable,
+file,rms_std,0.0,184,184,0.0002568198900591323,usable,
+file,rms_min,0.0,184,184,8.767740641722075e-05,usable,
+file,rms_max,0.0,184,184,0.0076541926788088145,usable,
+file,peak_amplitude,0.0,184,184,0.029661155825291594,usable,
+file,mean_amplitude,0.0,184,184,0.0002746711694044812,usable,
+file,std_amplitude,0.0,184,184,0.0006233322095820036,usable,
+file,dc_offset,0.0,184,184,6.606635738814481e-09,usable,
+file,zero_crossing_rate_mean,0.0,184,184,0.0016468078214124727,usable,
+file,zero_crossing_rate_std,0.0,184,184,0.0010433072656968947,usable,
+file,clipping_ratio,0.0,184,184,2.4771573336964326e-11,usable,
+file,silence_ratio,0.0,184,184,0.0009293827464652272,usable,
+file,active_audio_ratio,0.0,184,184,0.0009293827532253397,usable,
+file,spectral_centroid_mean,0.0,184,184,133872.8206853508,usable,
+file,spectral_centroid_std,0.0,184,184,80073.7514223836,usable,
+file,spectral_bandwidth_mean,0.0,184,184,34991.70832285517,usable,
+file,spectral_bandwidth_std,0.0,184,184,9980.093430269415,usable,
+file,spectral_rolloff_mean,0.0,184,184,467808.5750647838,usable,
+file,spectral_rolloff_std,0.0,184,184,151022.10136162234,usable,
+file,spectral_flatness_mean,0.0,184,184,0.0003403472723994197,usable,
+file,spectral_flatness_std,0.0,184,184,0.00018912664202944872,usable,
+file,spectral_contrast_mean,0.0,184,184,1.523348674445135,usable,
+file,spectral_contrast_std,0.0,184,184,0.44216655912803254,usable,
+file,low_band_energy_ratio,0.0,184,184,0.049511403274160704,usable,
+file,mid_band_energy_ratio,0.0,184,184,0.0362623267724599,usable,
+file,high_band_energy_ratio,0.0,184,184,0.009273275333238531,usable,
+file,very_high_band_energy_ratio,100.0,0,184,,exclude_for_now,100% missing
+file,noise_floor_proxy,0.0,184,184,0.0001890034522626711,usable,
+file,snr_proxy,0.0,184,184,170266.95742364868,usable,
+file,dynamic_range_proxy,0.0,184,184,0.008445167928670854,usable,
+file,spectral_entropy_mean,0.0,184,184,0.29994443604081,usable,
+file,spectral_entropy_std,0.0,184,184,0.041898654877854484,usable,
+file,high_freq_rolloff_ratio,0.0,184,184,0.00730950898798359,usable,
+file,bandwidth_occupied_95,0.0,184,184,0.05290228793642368,usable,
+file,mfcc_1_mean,0.0,184,184,4780.7889057379125,usable,
+file,mfcc_1_std,0.0,184,184,1832.0331328220186,usable,
+file,mfcc_2_mean,0.0,184,184,413.7764085057417,usable,
+file,mfcc_2_std,0.0,184,184,306.33727150213724,usable,
+file,mfcc_3_mean,0.0,184,184,241.98355966743688,usable,
+file,mfcc_3_std,0.0,184,184,68.55479988713556,usable,
+file,mfcc_4_mean,0.0,184,184,201.11464979704414,usable,
+file,mfcc_4_std,0.0,184,184,48.82948600923263,usable,
+file,mfcc_5_mean,0.0,184,184,199.71560072636225,usable,
+file,mfcc_5_std,0.0,184,184,40.36880635778475,usable,
+file,mfcc_6_mean,0.0,184,184,111.86730193566252,usable,
+file,mfcc_6_std,0.0,184,184,18.932006658004457,usable,
+file,mfcc_7_mean,0.0,184,184,92.82562880280454,usable,
+file,mfcc_7_std,0.0,184,184,11.58752499506358,usable,
+file,mfcc_8_mean,0.0,184,184,66.0655308481951,usable,
+file,mfcc_8_std,0.0,184,184,9.65032388719189,usable,
+file,mfcc_9_mean,0.0,184,184,47.96849089133913,usable,
+file,mfcc_9_std,0.0,184,184,6.769241766094409,usable,
+file,mfcc_10_mean,0.0,184,184,53.2965489145154,usable,
+file,mfcc_10_std,0.0,184,184,5.860285555934879,usable,
+file,mfcc_11_mean,0.0,184,184,32.497934684059054,usable,
+file,mfcc_11_std,0.0,184,184,5.125302499007365,usable,
+file,mfcc_12_mean,0.0,184,184,18.794170982494272,usable,
+file,mfcc_12_std,0.0,184,184,3.694750551076564,usable,
+file,mfcc_13_mean,0.0,184,184,40.40517927039393,usable,
+file,mfcc_13_std,0.0,184,184,2.920946470824033,usable,
+segment,rms_mean,0.0,4189,4189,0.0006269322274375967,usable,
+segment,rms_std,0.0,4189,4189,0.00029984349650056483,usable,
+segment,peak_amplitude,0.0,4189,4189,0.025001516680269377,usable,
+segment,zero_crossing_rate_mean,0.0,4189,4189,0.0021732310946379527,usable,
+segment,clipping_ratio,0.0,4189,4189,8.700918023638005e-11,usable,
+segment,silence_ratio,0.0,4189,4189,0.002544353722840241,usable,
+segment,spectral_centroid_mean,0.0,4189,4189,168061.03194057185,usable,
+segment,spectral_bandwidth_mean,0.0,4189,4189,41788.13203164368,usable,
+segment,spectral_rolloff_mean,0.0,4189,4189,565901.360458928,usable,
+segment,spectral_flatness_mean,0.0,4189,4189,0.00041576455381027124,usable,
+segment,spectral_contrast_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,low_band_energy_ratio,0.0,4189,4189,0.0554462854894017,usable,
+segment,mid_band_energy_ratio,0.0,4189,4189,0.04226481255756152,usable,
+segment,high_band_energy_ratio,0.0,4189,4189,0.011170482436093277,usable,
+segment,very_high_band_energy_ratio,100.0,0,4189,,exclude_for_now,100% missing
+segment,noise_floor_proxy,0.0,4189,4189,0.0002817025623871057,usable,
+segment,snr_proxy,0.0,4189,4189,266198.2267091805,usable,
+segment,dynamic_range_proxy,0.0,4189,4189,0.004900830552689733,usable,
+segment,spectral_entropy_mean,0.0,4189,4189,0.35015622464375723,usable,
+segment,bandwidth_occupied_95,0.0,4189,4189,0.05920757936739504,usable,
+segment,mfcc_1_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_1_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_2_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_2_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_3_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_3_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_4_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_4_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_5_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_5_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_6_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_6_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_7_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_7_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_8_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_8_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_9_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_9_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_10_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_10_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_11_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_11_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_12_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_12_std,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_13_mean,100.0,0,4189,,exclude_for_now,100% missing
+segment,mfcc_13_std,100.0,0,4189,,exclude_for_now,100% missing

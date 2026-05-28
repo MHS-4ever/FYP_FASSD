@@ -1,6 +1,6 @@
 # Phase 8 — Multi-Axis Forensic Audio Intelligence (Code)
 
-**Status:** Initialized — **no implementation yet**  
+**Status:** Phase 8B complete (7C1) · Phase 8C scripts created — extraction **not yet executed**  
 **Reports hub:** [reports/phase8/README.md](../../reports/phase8/README.md)
 
 ---
@@ -17,8 +17,8 @@ Phase 8 does **not** begin by training another binary classifier.
 
 | Folder | Planned role |
 |--------|----------------|
-| `evidence_table/` | Per-file / per-segment evidence table builder (Phase 8B) |
-| `features/` | Acoustic, channel, partial-region, and SSL embedding extraction |
+| `evidence_table/` | Phase 8B builder (`build_phase8b_evidence_tables.py`, `phase8b_schema_utils.py`) |
+| `features/` | Phase 8C acoustic extraction (`extract_phase8c_acoustic_features.py`) |
 | `models/` | Lightweight multi-axis classifiers (not monolithic fake/real) |
 | `fusion/` | Calibrated fusion, abstention, manual-review routing |
 | `reporting/` | Report-ready evidence summaries (Phase 8G) |
@@ -35,9 +35,27 @@ Phase 8 does **not** begin by training another binary classifier.
 
 ---
 
-## Planned modules (not implemented)
+## Phase 8C (scripts only — run manually)
 
-1. Evidence table schema + builder  
+```text
+python code/phase8/features/extract_phase8c_acoustic_features.py --allow_missing_audio
+python code/phase8/validation/validate_phase8c_features.py
+```
+
+See [reports/phase8/roadmap/phase8c_status.md](../../reports/phase8/roadmap/phase8c_status.md).
+
+## Phase 8B (completed for 7C1)
+
+```text
+python code/phase8/evidence_table/build_phase8b_evidence_tables.py --input_manifests <manifest.csv> --allow_missing_audio
+python code/phase8/validation/validate_phase8b_evidence_tables.py
+```
+
+See [reports/phase8/roadmap/phase8b_status.md](../../reports/phase8/roadmap/phase8b_status.md).
+
+## Planned modules (later phases)
+
+1. ~~Evidence table builder~~ (8B scripts ready)  
 2. Feature extractors (acoustic/channel + frozen SSL later)  
 3. Parallel axis scorers (origin, manipulation, segment)  
 4. Fusion layer with abstention  
