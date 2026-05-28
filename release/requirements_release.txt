@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+gradio
+pandas
+numpy
+scikit-learn
+joblib
+librosa
+soundfile
+torch
+transformers
+safetensors
+huggingface_hub
+pydantic
+python-multipart
+matplotlib
+PyYAML

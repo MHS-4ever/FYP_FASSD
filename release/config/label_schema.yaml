@@ -1,0 +1,14 @@
+status: experimental_forensic_prototype
+evidence_axes:
+  - origin_evidence
+  - replay_evidence
+  - mixer_channel_evidence
+  - partial_fabrication_evidence
+allowed_axis_labels:
+  - pending
+  - pending_model_artifact
+  - low_indicator
+  - moderate_indicator
+  - high_indicator
+notes:
+  - "Axes remain separate; no single final score in Phase 9A."

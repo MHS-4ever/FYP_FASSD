@@ -1,0 +1,4 @@
+origin: release/models/origin/origin_file_model__ssl__experimental.joblib
+replay: release/models/replay/replay_file_model__acoustic__experimental.joblib
+mixer: release/models/mixer/mixer_file_model__acoustic__experimental.joblib
+partial_segment: release/models/partial_segment/partial_segment_model__combined__experimental.joblib

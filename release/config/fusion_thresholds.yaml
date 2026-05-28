@@ -1,0 +1,13 @@
+origin_file_model:
+  feature_set: ssl
+  threshold_candidate: 0.20
+replay_file_model:
+  feature_set: acoustic
+  threshold_candidate: 0.65
+mixer_file_model:
+  feature_set: acoustic
+  threshold_candidate: 0.75
+partial_fabrication_segment_model:
+  feature_set: combined
+  threshold_candidate: 0.50
+  note: "candidate threshold from Phase 8E-3 review; verify during Phase 9C/9G"

@@ -1,0 +1,5 @@
+target_sample_rate: 16000
+segment_duration_sec: 4.0
+segment_hop_sec: 2.0
+device: auto
+status: experimental_forensic_prototype
