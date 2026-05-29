@@ -1,0 +1,12 @@
+expected_category,case_count,expected_count,acceptable_with_manual_review,unexpected_axis,pipeline_error,needs_review
+ai_direct,5,5,0,0,0,0
+ai_fabricated,5,0,0,0,0,5
+ai_mixer,5,1,0,1,0,3
+ai_replay,5,5,0,0,0,0
+bad_audio_invalid,1,1,0,0,0,0
+bad_audio_short,1,1,0,0,0,0
+bad_audio_silent,1,1,0,0,0,0
+human_direct,5,0,5,0,0,0
+human_fabricated,5,0,0,0,0,5
+human_mixer,5,4,0,0,0,1
+human_replay,5,4,0,1,0,0

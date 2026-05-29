@@ -1,0 +1,57 @@
+{
+  "case_id": "phase9d_bad_audio_short_001_bad_short_0_3sec",
+  "status": "error",
+  "audio_metadata": {},
+  "origin_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "replay_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "mixer_channel_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "partial_fabrication_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "segment_candidates": [],
+  "fusion_status": "not_evaluated",
+  "forensic_risk_level": "inconclusive",
+  "forensic_summary": "Audio load failed: Audio appears silent or invalid.",
+  "manual_review_required": true,
+  "manual_review_reason": "none",
+  "limitations": [
+    "experimental_forensic_prototype",
+    "evidence indicators only",
+    "Audio appears silent or invalid."
+  ],
+  "debug_info": null
+}

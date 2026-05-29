@@ -1,0 +1,41 @@
+{
+  "artifact_schema_version": "phase9br_reference_v1",
+  "model_family": "AASIST",
+  "status": "legacy_reference_experimental",
+  "active_in_fusion": false,
+  "used_by_default": false,
+  "not_final_forensic_decision": true,
+  "source_phase": "earlier Phase 7/8 baseline experiment",
+  "purpose": "legacy/reference spoofing or deepfake-audio baseline model",
+  "allowed_use": [
+    "reference comparison",
+    "historical baseline documentation",
+    "future validation candidate"
+  ],
+  "forbidden_use": [
+    "active Phase 9C inference without validation",
+    "final fake/real decision",
+    "court-ready proof",
+    "replacement for multi-axis fusion"
+  ],
+  "limitations": [
+    "not integrated into current multi-axis evidence architecture",
+    "may not distinguish AI origin from replay/channel artifacts",
+    "requires separate validation before active use"
+  ],
+  "phase9c_note": "Not part of active Phase 9C inference unless separately validated and explicitly enabled.",
+  "files": [
+    {
+      "source_path": "E:/FYP/models_saved/pretrained_reference/aasist_l_official_pretrained_reference.pth",
+      "dest_path": "E:/FYP/release/models/reference/aasist/aasist_l_official_pretrained_reference.pth",
+      "action": "copied"
+    },
+    {
+      "source_path": "E:/FYP/models_saved/pretrained_reference/aasist_official_pretrained_reference.pth",
+      "dest_path": "E:/FYP/release/models/reference/aasist/aasist_official_pretrained_reference.pth",
+      "action": "copied"
+    }
+  ],
+  "created_at": "2026-05-29T12:07:26.792083+00:00",
+  "created_by_script": "copy_phase9br_reference_models.py"
+}

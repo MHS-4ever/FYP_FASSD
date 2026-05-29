@@ -1,27 +1,41 @@
-# Phase 9 Release Skeleton (Phase 9A)
+# Phase 9 Release (Experimental Forensic Prototype)
 
-This `release/` folder is the local release architecture for an **experimental_forensic_prototype**.
+This `release/` folder contains the local experimental forensic prototype.
 
-## Scope of Phase 9A
+## Status
 
-- Skeleton folder structure and source module placeholders.
-- FastAPI and Gradio app skeletons for future integration.
-- Config and documentation skeletons.
-- No model packaging, no live inference, no app launch in this phase.
+- Phase 9A: skeleton — **COMPLETED**
+- Phase 9B: active model packaging — **COMPLETED**
+- Phase 9B-R: reference models (inactive) — **COMPLETED**
+- Phase 9C: live inference CLI — **SCRIPT CREATED** (P1: aligns to `feature_names_in_`)
 
-## Running Later (Manual)
+## Phase 9C CLI (manual run)
 
-- FastAPI (later): `run_fastapi.bat`
-- Gradio (later): `run_gradio.bat`
+From repository root, after dependencies and packaged models are in place:
 
-Do not treat Phase 9A outputs as final system behavior. Torch installation may depend on local CPU/CUDA setup.
+```bat
+cd release
+python analyze_audio_cli.py --audio sample_audio\your_file.wav --case_id demo001
+```
 
-## Pending Phases
+Outputs:
+- `release/sample_outputs/<case_id>_analysis.json`
+- `release/sample_outputs/<case_id>_report.md`
 
-- Phase 9B: model packaging
-- Phase 9C: live inference
-- Phase 9G: end-to-end testing and freeze
+Options:
+- `--device auto|cpu|cuda`
+- `--debug` for step trace
 
-## Experimental Warning
+## Web apps (later)
 
-All outputs are evidence indicators for review workflow support. Manual review is required.
+- FastAPI: `run_fastapi.bat` (Phase 9D+)
+- Gradio: `run_gradio.bat` (Phase 9E+)
+
+## Safety
+
+- Active models only: origin / replay / mixer / partial_segment
+- AASIST and HybridResNet are reference-only and inactive
+- No fake_score / real_score / final fake-real decision
+- Manual review recommended
+
+Torch/transformers install may depend on local CPU/CUDA setup.
