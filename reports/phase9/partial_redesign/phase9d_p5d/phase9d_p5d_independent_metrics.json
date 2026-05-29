@@ -1,0 +1,68 @@
+{
+  "total_files": 25,
+  "evaluated_files": 22,
+  "failed_files": 3,
+  "independent_holdout_count": 25,
+  "seen_in_p5_training_count": 0,
+  "seen_in_p5c_controlled_count": 0,
+  "unknown_overlap_count": 0,
+  "partial_file_count": 2,
+  "non_partial_file_count": 20,
+  "partial_evidence_recall": 1.0,
+  "non_partial_false_alarm_rate": 0.05,
+  "direct_condition_count": 12,
+  "replay_condition_count": 5,
+  "mixer_condition_count": 3,
+  "unknown_condition_count": 0,
+  "direct_false_partial_rate": 0.08333333333333333,
+  "replay_false_partial_rate": 0.0,
+  "mixer_false_partial_rate": 0.0,
+  "unknown_condition_positive_rate": null,
+  "unknown_condition_positive_rate_status": "not_applicable",
+  "partial_evidence_positive_file_count": 3,
+  "broad_activation_rate_when_positive": 0.0,
+  "top1_hit_rate_when_positive": 0.0,
+  "top3_hit_rate_when_positive": 1.0,
+  "top5_hit_rate_when_positive": 1.0,
+  "timestamp_positive_count": 1,
+  "median_candidate_timestamp_error_seconds": null,
+  "invalid_file_handling_pass_rate": 1.0,
+  "folder_wise": {
+    "fabricated": {
+      "files": 1,
+      "partial_evidence_positive_rate": 1.0,
+      "partial_evidence_recall": 1.0
+    },
+    "t1": {
+      "files": 5,
+      "partial_evidence_positive_rate": 0.2,
+      "partial_evidence_recall": NaN
+    },
+    "t2": {
+      "files": 4,
+      "partial_evidence_positive_rate": 0.0,
+      "partial_evidence_recall": NaN
+    },
+    "t3": {
+      "files": 4,
+      "partial_evidence_positive_rate": 0.0,
+      "partial_evidence_recall": NaN
+    },
+    "t4": {
+      "files": 3,
+      "partial_evidence_positive_rate": 0.3333333333333333,
+      "partial_evidence_recall": 1.0
+    },
+    "t5": {
+      "files": 5,
+      "partial_evidence_positive_rate": 0.0,
+      "partial_evidence_recall": NaN
+    }
+  },
+  "accepted_cascade_thresholds": {
+    "file_gate_threshold": 0.5,
+    "segment_threshold": 0.9,
+    "contrast_threshold": 0.25,
+    "broad_limit": 0.45
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "total_files": 184,
+  "evaluated_files": 184,
+  "failed_files": 0,
+  "independent_holdout_count": 0,
+  "seen_controlled_count": 184,
+  "unknown_overlap_count": 0,
+  "partial_file_count": 46,
+  "non_partial_file_count": 138,
+  "partial_evidence_recall": 1.0,
+  "non_partial_false_alarm_rate": 0.021739130434782608,
+  "direct_false_partial_rate": 0.06521739130434782,
+  "replay_false_partial_rate": 0.0,
+  "mixer_false_partial_rate": 0.0,
+  "broad_activation_rate_when_positive": 0.0,
+  "top1_hit_rate_when_positive": NaN,
+  "top3_hit_rate_when_positive": NaN,
+  "top5_hit_rate_when_positive": NaN,
+  "timestamp_positive_count": 0,
+  "invalid_file_handling_pass_rate": 1.0,
+  "median_candidate_timestamp_error_seconds": NaN,
+  "accepted_cascade_thresholds": {
+    "file_gate_threshold": 0.5,
+    "segment_threshold": 0.9,
+    "contrast_threshold": 0.25,
+    "broad_limit": 0.45
+  }
+}

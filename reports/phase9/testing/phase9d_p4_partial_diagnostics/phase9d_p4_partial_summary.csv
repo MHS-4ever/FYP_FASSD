@@ -1,0 +1,13 @@
+metric,value
+total_partial_files,46
+ai_fabricated_files,23
+human_fabricated_files,23
+localized_success_count,0
+top5_hit_count,36
+broad_activation_count,46
+no_timestamp_hit_count,0
+ai_fabricated_top5_hit_rate,65.2%
+human_fabricated_top5_hit_rate,91.3%
+ai_fabricated_broad_activation_rate,100.0%
+human_fabricated_broad_activation_rate,100.0%
+recommendation,segment_retraining_with_non_partial_negatives_and_file_level_partial_candidate

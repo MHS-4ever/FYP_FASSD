@@ -1,0 +1,8 @@
+task_name,feature_set,raw_feature_count,usable_feature_count,dropped_all_missing_count,dropped_non_numeric_count,dropped_forbidden_count,forbidden_feature_hits,leakage_check_status,split_method,group_column,group_integrity_status,group_integrity_violations
+partial_file_candidate_model,acoustic,60,59,0,1,0,,passed,StratifiedGroupKFold,leakage_group_id,passed,0
+partial_file_candidate_model,ssl,768,768,0,0,0,,passed,StratifiedGroupKFold,leakage_group_id,passed,0
+partial_file_candidate_model,combined,828,827,0,1,0,,passed,StratifiedGroupKFold,leakage_group_id,passed,0
+partial_segment_localizer_v2,acoustic,46,18,0,28,0,,passed,StratifiedGroupKFold,file_id,passed,0
+partial_segment_localizer_v2,ssl,768,768,0,0,0,,passed,StratifiedGroupKFold,file_id,passed,0
+partial_segment_localizer_v2,localization,10,10,0,0,0,,passed,StratifiedGroupKFold,file_id,passed,0
+partial_segment_localizer_v2,combined,824,796,0,28,0,,passed,StratifiedGroupKFold,file_id,passed,0
