@@ -1,0 +1,8 @@
+{
+  "phase": "Phase 9D-P5F-P2",
+  "input_dir": "E:\\FYP\\reports\\phase9\\partial_redesign\\phase9d_p5f",
+  "output_dir": "E:\\FYP\\reports\\phase9\\partial_redesign\\phase9d_p5f_p2_diagnostics",
+  "false_negative_count": 3,
+  "false_positive_count": 2,
+  "metrics_fn_count": 3
+}

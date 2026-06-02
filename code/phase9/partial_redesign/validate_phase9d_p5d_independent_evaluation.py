@@ -76,6 +76,8 @@ FILE_PRED_COLUMNS = [
     "partial_evidence_positive",
     "candidate_segment_start",
     "candidate_segment_end",
+    "candidate_segment_probability",
+    "candidate_segment_rank",
     "has_timestamp_label",
     "candidate_timestamp_error_seconds",
     "top1_timestamp_hit",
@@ -83,12 +85,18 @@ FILE_PRED_COLUMNS = [
     "top5_timestamp_hit",
     "error_status",
     "error_message",
+    "ssl_extraction_mode",
+    "ssl_chunked_fallback_used",
+    "ssl_cpu_fallback_used",
+    "ssl_cuda_oom_recovered",
+    "audio_duration_sec",
 ]
 
 SEG_PRED_COLUMNS = [
     "file_path",
     "file_name",
     "segment_index",
+    "segment_index_chronological",
     "segment_start",
     "segment_end",
     "segment_probability",
@@ -126,6 +134,32 @@ METRIC_KEYS = [
     "timestamp_error_count",
     "median_candidate_timestamp_error_seconds",
     "median_candidate_timestamp_error_available",
+    "candidate_rank1_consistency_count",
+    "candidate_rank1_consistency_rate",
+    "candidate_segment_probability_available_rate",
+    "mp4_file_count",
+    "mp4_evaluated_count",
+    "mp4_failed_count",
+    "mp4_load_success_rate",
+    "ssl_cuda_oom_count",
+    "ssl_cpu_fallback_attempt_count",
+    "ssl_cpu_fallback_success_count",
+    "ssl_cpu_fallback_failure_count",
+    "ssl_cpu_fallback_skipped_long_audio_count",
+    "ssl_chunked_fallback_attempt_count",
+    "ssl_chunked_fallback_success_count",
+    "ssl_chunked_fallback_failure_count",
+    "ssl_chunked_cpu_fallback_attempt_count",
+    "ssl_chunked_cpu_fallback_success_count",
+    "ssl_chunked_cpu_fallback_failure_count",
+    "ssl_long_audio_file_count",
+    "ssl_long_audio_recovered_count",
+    "ssl_long_audio_failed_count",
+    "ssl_chunked_embedding_used_count",
+    "ssl_chunked_embedding_max_chunks_observed",
+    "robustness_failed_file_count",
+    "robustness_recovered_file_count",
+    "evaluation_runtime_seconds",
     "invalid_file_handling_pass_rate",
 ]
 
@@ -270,6 +304,58 @@ FORBIDDEN_PRED_COL_FRAGMENTS = (
     "reference_fusion",
     "fusion_score",
 )
+
+ROBUST_FAILURE_TYPES = {
+    "load_failure",
+    "unsupported_container_or_decoder_missing",
+    "no_audio_stream",
+    "too_short",
+    "silent_or_invalid",
+    "acoustic_feature_failure",
+    "ssl_cuda_oom",
+    "ssl_cuda_oom_cpu_fallback_failed",
+    "ssl_chunked_fallback_failed",
+    "ssl_embedding_failure",
+    "model_feature_mismatch",
+    "prediction_failure",
+}
+
+
+def _ssl_oom_recovery_reported_ok(metrics: dict[str, Any]) -> tuple[bool, str]:
+    """CUDA OOM is handled if full CPU or chunked (incl. chunked CPU) fallback was attempted and documented."""
+    oom = int(metrics.get("ssl_cuda_oom_count", 0))
+    cpu_attempts = int(metrics.get("ssl_cpu_fallback_attempt_count", 0))
+    cpu_success = int(metrics.get("ssl_cpu_fallback_success_count", 0))
+    cpu_failure = int(metrics.get("ssl_cpu_fallback_failure_count", 0))
+    chunked_attempts = int(metrics.get("ssl_chunked_fallback_attempt_count", 0))
+    chunked_success = int(metrics.get("ssl_chunked_fallback_success_count", 0))
+    chunked_failure = int(metrics.get("ssl_chunked_fallback_failure_count", 0))
+    chunked_cpu_attempts = int(metrics.get("ssl_chunked_cpu_fallback_attempt_count", 0))
+    chunked_cpu_success = int(metrics.get("ssl_chunked_cpu_fallback_success_count", 0))
+    chunked_cpu_failure = int(metrics.get("ssl_chunked_cpu_fallback_failure_count", 0))
+    detail = (
+        f"oom={oom} cpu_attempts={cpu_attempts} cpu_success={cpu_success} cpu_failure={cpu_failure} "
+        f"chunked_attempts={chunked_attempts} chunked_success={chunked_success} chunked_failure={chunked_failure} "
+        f"chunked_cpu_attempts={chunked_cpu_attempts} chunked_cpu_success={chunked_cpu_success} "
+        f"chunked_cpu_failure={chunked_cpu_failure}"
+    )
+    if oom <= 0:
+        return True, detail
+    recovery_attempted = (
+        cpu_attempts >= 1 or chunked_attempts >= 1 or chunked_cpu_attempts >= 1
+    )
+    recovery_documented = any(
+        count >= 1
+        for count in (
+            cpu_success,
+            cpu_failure,
+            chunked_success,
+            chunked_failure,
+            chunked_cpu_success,
+            chunked_cpu_failure,
+        )
+    )
+    return recovery_attempted and recovery_documented, detail
 
 
 def _norm_path_text(text: str) -> str:
@@ -444,6 +530,83 @@ def _safe_read_csv(path: Path) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def _candidate_segment_integrity_checks(file_pred: pd.DataFrame, seg_pred: pd.DataFrame) -> tuple[bool, str, bool, str]:
+    """Return candidate_rank_valid, detail, candidate_match_valid, detail."""
+    ok = file_pred[file_pred["error_status"].astype(str) == "ok"].copy()
+    bad_rank: list[str] = []
+    bad_match: list[str] = []
+    for _, r in ok.iterrows():
+        fp = str(r["file_path"])
+        rank = pd.to_numeric(r.get("candidate_segment_rank"), errors="coerce")
+        prob = pd.to_numeric(r.get("candidate_segment_probability"), errors="coerce")
+        cs = pd.to_numeric(r.get("candidate_segment_start"), errors="coerce")
+        ce = pd.to_numeric(r.get("candidate_segment_end"), errors="coerce")
+        if not (np.isfinite(rank) and int(rank) == 1 and np.isfinite(prob) and np.isfinite(cs) and np.isfinite(ce)):
+            bad_rank.append(fp)
+            continue
+        g = seg_pred[seg_pred["file_path"].astype(str) == fp]
+        g1 = g[pd.to_numeric(g["segment_rank"], errors="coerce").eq(1)]
+        if g1.empty:
+            bad_match.append(f"{fp}:no_rank1")
+            continue
+        s = g1.iloc[0]
+        s_start = float(pd.to_numeric(s["segment_start"], errors="coerce"))
+        s_end = float(pd.to_numeric(s["segment_end"], errors="coerce"))
+        s_prob = float(pd.to_numeric(s["segment_probability"], errors="coerce"))
+        if not (
+            abs(float(cs) - s_start) <= 1e-6
+            and abs(float(ce) - s_end) <= 1e-6
+            and abs(float(prob) - s_prob) <= 1e-6
+        ):
+            bad_match.append(fp)
+    return (
+        len(bad_rank) == 0,
+        "ok" if not bad_rank else f"invalid rank/prob/start/end for {len(bad_rank)} file(s): {bad_rank[:3]}",
+        len(bad_match) == 0,
+        "ok" if not bad_match else f"candidate != rank1 segment for {len(bad_match)} file(s): {bad_match[:3]}",
+    )
+
+
+def _segment_index_rank_checks(seg_pred: pd.DataFrame) -> tuple[bool, str, bool, str]:
+    """Return segment_index_chronological_valid + segment_rank_valid checks."""
+    bad_idx: list[str] = []
+    bad_rank: list[str] = []
+    for fp, g in seg_pred.groupby("file_path"):
+        gx = g.copy()
+        gx["segment_index"] = pd.to_numeric(gx["segment_index"], errors="coerce")
+        gx["segment_index_chronological"] = pd.to_numeric(gx["segment_index_chronological"], errors="coerce")
+        gx["segment_rank"] = pd.to_numeric(gx["segment_rank"], errors="coerce")
+        gx["segment_start"] = pd.to_numeric(gx["segment_start"], errors="coerce")
+        gx["segment_probability"] = pd.to_numeric(gx["segment_probability"], errors="coerce")
+
+        chrono = gx.sort_values("segment_start")["segment_index_chronological"].astype(int).tolist()
+        same_index = (
+            gx["segment_index"].astype(float).fillna(-1).to_numpy()
+            == gx["segment_index_chronological"].astype(float).fillna(-2).to_numpy()
+        ).all()
+        if chrono != list(range(len(chrono))) or not same_index:
+            bad_idx.append(str(fp))
+
+        ranks = gx["segment_rank"].dropna().astype(int).tolist()
+        expected = list(range(1, len(gx) + 1))
+        rank1 = gx[gx["segment_rank"] == 1]
+        max_prob = gx["segment_probability"].max()
+        if sorted(ranks) != expected or len(set(ranks)) != len(ranks):
+            bad_rank.append(str(fp))
+        elif rank1.empty or abs(float(rank1.iloc[0]["segment_probability"]) - float(max_prob)) > 1e-9:
+            bad_rank.append(str(fp))
+    return (
+        len(bad_idx) == 0,
+        "ok" if not bad_idx else f"invalid segment index chronology in {len(bad_idx)} file(s): {bad_idx[:3]}",
+        len(bad_rank) == 0,
+        "ok" if not bad_rank else f"invalid segment ranks in {len(bad_rank)} file(s): {bad_rank[:3]}",
+    )
+    try:
+        return pd.read_csv(path, low_memory=False)
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame()
+
+
 def main() -> int:
     args = parse_args()
     root = Path(args.project_root)
@@ -459,6 +622,9 @@ def main() -> int:
     if not p5b_dir.is_absolute():
         p5b_dir = (root / p5b_dir).resolve()
     cand_dir = p5c_candidate_models_dir(p5b_dir)
+
+    report_path = in_dir / "phase9d_p5d_independent_evaluation_report.md"
+    report_text = report_path.read_text(encoding="utf-8") if report_path.is_file() else ""
 
     checks: list[dict] = []
     fresh_ok, fresh_detail = False, "run status not loaded"
@@ -493,6 +659,9 @@ def main() -> int:
     if err_path.is_file() and err_path.stat().st_size > 0:
         err_df = _safe_read_csv(err_path)
         checks.append(_check("error_cases_has_header", len(err_df.columns) > 0, str(list(err_df.columns))))
+        if not err_df.empty and "failure_type" in err_df.columns:
+            bad_ft = sorted(set(err_df["failure_type"].dropna().astype(str)) - ROBUST_FAILURE_TYPES)
+            checks.append(_check("error_case_failure_type_valid", len(bad_ft) == 0, ", ".join(bad_ft)))
     else:
         checks.append(_check("error_cases_has_header", err_path.is_file(), "file missing or empty"))
 
@@ -521,6 +690,13 @@ def main() -> int:
         seg_cols = list(seg_pred.columns)
     missing_sp = [c for c in SEG_PRED_COLUMNS if c not in seg_cols]
     checks.append(_check("segment_predictions_required_columns", not missing_sp, ", ".join(missing_sp)))
+    if not seg_pred.empty and not file_pred.empty and not missing_sp and not missing_fp:
+        rank_ok, rank_detail, match_ok, match_detail = _candidate_segment_integrity_checks(file_pred, seg_pred)
+        checks.append(_check("candidate_segment_rank_valid", rank_ok, rank_detail))
+        checks.append(_check("candidate_matches_rank1_segment", match_ok, match_detail))
+        idx_ok, idx_detail, sr_ok, sr_detail = _segment_index_rank_checks(seg_pred)
+        checks.append(_check("segment_index_chronological_valid", idx_ok, idx_detail))
+        checks.append(_check("segment_rank_valid", sr_ok, sr_detail))
 
     metrics: dict[str, Any] = {}
     metrics_path = in_dir / "phase9d_p5d_independent_metrics.json"
@@ -566,17 +742,195 @@ def main() -> int:
             if k in CORE_FINITE_METRICS:
                 non_finite.append(f"{k} (non-numeric)")
     checks.append(_check("metrics_finite_where_applicable", not non_finite, ", ".join(non_finite)))
-
-    report_text = (
-        (in_dir / "phase9d_p5d_independent_evaluation_report.md").read_text(encoding="utf-8")
-        if (in_dir / "phase9d_p5d_independent_evaluation_report.md").is_file()
-        else ""
+    checks.append(
+        _check(
+            "robustness_metrics_present",
+            all(k in metrics for k in (
+                "mp4_file_count",
+                "mp4_evaluated_count",
+                "mp4_failed_count",
+                "mp4_load_success_rate",
+                "ssl_cuda_oom_count",
+                "ssl_cpu_fallback_attempt_count",
+                "ssl_cpu_fallback_success_count",
+                "ssl_cpu_fallback_failure_count",
+                "ssl_cpu_fallback_skipped_long_audio_count",
+                "ssl_chunked_fallback_attempt_count",
+                "ssl_chunked_fallback_success_count",
+                "ssl_chunked_fallback_failure_count",
+                "ssl_chunked_cpu_fallback_attempt_count",
+                "ssl_chunked_cpu_fallback_success_count",
+                "ssl_chunked_cpu_fallback_failure_count",
+                "ssl_long_audio_file_count",
+                "ssl_long_audio_recovered_count",
+                "ssl_long_audio_failed_count",
+                "ssl_chunked_embedding_used_count",
+                "ssl_chunked_embedding_max_chunks_observed",
+                "robustness_failed_file_count",
+                "robustness_recovered_file_count",
+            )),
+            "",
+        )
     )
+    if int(metrics.get("mp4_file_count", 0)) > 0:
+        checks.append(
+            _check(
+                "mp4_robustness_reported",
+                int(metrics.get("mp4_evaluated_count", -1)) + int(metrics.get("mp4_failed_count", -1))
+                == int(metrics.get("mp4_file_count", 0)),
+                f"mp4_total={metrics.get('mp4_file_count')} ok={metrics.get('mp4_evaluated_count')} fail={metrics.get('mp4_failed_count')}",
+            )
+        )
+    if int(metrics.get("ssl_cuda_oom_count", 0)) > 0:
+        oom_recovery_ok, oom_recovery_detail = _ssl_oom_recovery_reported_ok(metrics)
+        checks.append(
+            _check(
+                "ssl_oom_fallback_reported",
+                oom_recovery_ok,
+                oom_recovery_detail,
+            )
+        )
+    if err_path.is_file() and err_path.stat().st_size > 0:
+        err_df = _safe_read_csv(err_path)
+        ssl_related = err_df["failure_type"].astype(str).isin(
+            {"ssl_cuda_oom", "ssl_cuda_oom_cpu_fallback_failed", "ssl_chunked_fallback_failed"}
+        ).sum() if not err_df.empty and "failure_type" in err_df.columns else 0
+        ssl_fallback_failed = err_df["failure_type"].astype(str).eq(
+            "ssl_cuda_oom_cpu_fallback_failed"
+        ).sum() if not err_df.empty and "failure_type" in err_df.columns else 0
+        ssl_chunked_failed = err_df["failure_type"].astype(str).eq(
+            "ssl_chunked_fallback_failed"
+        ).sum() if not err_df.empty and "failure_type" in err_df.columns else 0
+        long_skip = err_df["error_message"].astype(str).str.contains(
+            "CPU fallback skipped for long audio", na=False
+        ).sum() if not err_df.empty and "error_message" in err_df.columns else 0
+        checks.append(
+            _check(
+                "robustness_ssl_counters_match_error_cases",
+                (
+                    (ssl_related == 0 or int(metrics.get("ssl_cuda_oom_count", 0)) >= 1)
+                    and (ssl_fallback_failed == 0 or int(metrics.get("ssl_cpu_fallback_attempt_count", 0)) >= 1)
+                    and (ssl_fallback_failed == 0 or int(metrics.get("ssl_cpu_fallback_failure_count", 0)) >= 1)
+                    and (long_skip == 0 or int(metrics.get("ssl_cpu_fallback_skipped_long_audio_count", 0)) >= 1)
+                    and (
+                        ssl_chunked_failed == 0
+                        or int(metrics.get("ssl_chunked_fallback_failure_count", 0)) >= 1
+                    )
+                ),
+                (
+                    f"ssl_related={ssl_related}, ssl_fallback_failed={ssl_fallback_failed}, "
+                    f"ssl_chunked_failed={ssl_chunked_failed}, long_skip={long_skip}, "
+                    f"oom_count={metrics.get('ssl_cuda_oom_count', 0)}, "
+                    f"fallback_attempt={metrics.get('ssl_cpu_fallback_attempt_count', 0)}, "
+                    f"fallback_failure={metrics.get('ssl_cpu_fallback_failure_count', 0)}, "
+                    f"skip_long={metrics.get('ssl_cpu_fallback_skipped_long_audio_count', 0)}, "
+                    f"chunked_fail={metrics.get('ssl_chunked_fallback_failure_count', 0)}"
+                ),
+            )
+        )
+
+    long_audio_sec = 60.0
+    if "audio_duration_sec" in file_pred.columns:
+        dur_series = pd.to_numeric(file_pred["audio_duration_sec"], errors="coerce")
+        long_files = dur_series[np.isfinite(dur_series) & (dur_series >= long_audio_sec)]
+        if len(long_files) > 0:
+            long_audio_reported = (
+                int(metrics.get("ssl_long_audio_file_count", 0)) > 0
+                and (
+                    "long-audio" in report_text.lower()
+                    or "long audio" in report_text.lower()
+                    or "ssl_long_audio" in report_text.lower()
+                )
+            )
+            checks.append(
+                _check(
+                    "long_audio_ssl_recovery_reported",
+                    long_audio_reported,
+                    f"long_files={len(long_files)} ssl_long_audio_file_count={metrics.get('ssl_long_audio_file_count', 0)}",
+                )
+            )
+
+    chunked_attempts = int(metrics.get("ssl_chunked_fallback_attempt_count", 0))
+    chunked_success = int(metrics.get("ssl_chunked_fallback_success_count", 0))
+    chunked_failure = int(metrics.get("ssl_chunked_fallback_failure_count", 0))
+    if chunked_attempts > 0:
+        checks.append(
+            _check(
+                "chunked_fallback_counters_consistent",
+                chunked_success + chunked_failure <= chunked_attempts
+                and (chunked_success > 0 or chunked_failure > 0),
+                f"attempts={chunked_attempts} success={chunked_success} failure={chunked_failure}",
+            )
+        )
+    if "ssl_chunked_fallback_used" in file_pred.columns:
+        chunked_used = int(file_pred["ssl_chunked_fallback_used"].astype(bool).sum())
+        if chunked_used > 0:
+            checks.append(
+                _check(
+                    "chunked_fallback_file_flags_consistent",
+                    int(metrics.get("ssl_chunked_fallback_success_count", 0)) >= 1
+                    and int(metrics.get("ssl_chunked_embedding_used_count", 0)) >= 1,
+                    f"chunked_used={chunked_used} success={metrics.get('ssl_chunked_fallback_success_count', 0)}",
+                )
+            )
+
+    t41_path = "testing_audios/t4/t4.1.mp3"
+    t41_norm = file_pred["file_path"].astype(str).str.lower().str.replace("\\", "/") if not file_pred.empty else pd.Series(dtype=str)
+    t41_mask = t41_norm == t41_path if len(t41_norm) else pd.Series(dtype=bool)
+    t41_in_pred = bool(t41_mask.any()) if len(t41_mask) else False
+    t41_in_err = False
+    if err_path.is_file() and err_path.stat().st_size > 0:
+        err_df_t41 = _safe_read_csv(err_path)
+        if not err_df_t41.empty and "file_path" in err_df_t41.columns:
+            t41_in_err = bool(
+                (err_df_t41["file_path"].astype(str).str.lower().str.replace("\\", "/") == t41_path).any()
+            )
+    t41_ok = False
+    t41_documented_fail = False
+    if t41_in_pred:
+        t41_row = file_pred.loc[t41_mask].iloc[0]
+        t41_status = str(t41_row.get("error_status", ""))
+        t41_ok = t41_status == "ok"
+        t41_documented_fail = t41_status in (
+            "ssl_chunked_fallback_failed",
+            "ssl_cuda_oom_cpu_fallback_failed",
+            "ssl_embedding_failure",
+        )
+    checks.append(
+        _check(
+            "previous_ssl_failure_recovered_or_documented",
+            t41_in_pred and (t41_ok or t41_documented_fail),
+            f"in_pred={t41_in_pred} ok={t41_ok} documented_fail={t41_documented_fail} in_err={t41_in_err}",
+        )
+    )
+
+    non_ok_pred = int((file_pred["error_status"].astype(str) != "ok").sum()) if not file_pred.empty else 0
+    err_rows = 0
+    if err_path.is_file() and err_path.stat().st_size > 0:
+        err_df_fc = _safe_read_csv(err_path)
+        err_rows = len(err_df_fc) if not err_df_fc.empty else 0
+    checks.append(
+        _check(
+            "failed_files_consistent_with_error_cases",
+            int(metrics.get("failed_files", 0)) == non_ok_pred
+            and (non_ok_pred == 0 or err_rows >= 1)
+            and (non_ok_pred == err_rows or non_ok_pred <= err_rows),
+            f"failed_files={metrics.get('failed_files', 0)} non_ok_pred={non_ok_pred} err_rows={err_rows}",
+        )
+    )
+
     forbidden_hits = _forbidden_phrase_hits(report_text)
     checks.append(_check("report_forbidden_wording", not forbidden_hits, ", ".join(forbidden_hits)))
 
     missing_th = [ln for ln in REQUIRED_THRESHOLD_LINES if ln not in report_text]
     checks.append(_check("accepted_thresholds_documented", not missing_th, ", ".join(missing_th)))
+    checks.append(
+        _check(
+            "robustness_behavior_section_present",
+            "robustness behavior" in report_text.lower(),
+            "report must include robustness behavior section",
+        )
+    )
 
     release_hits = list((root / "release" / "models").rglob("phase9d_p5d*")) if (root / "release" / "models").is_dir() else []
     active_hits = list((root / "models_saved" / "active").rglob("phase9d_p5d*")) if (root / "models_saved" / "active").is_dir() else []
@@ -752,6 +1106,14 @@ def main() -> int:
             "release_blockers_documented_in_report",
             (not packaging_ready and blocked_in_report) or packaging_ready,
             "report must document packaging blockers when not ready",
+        )
+    )
+    checks.append(
+        _check(
+            "release_remains_blocked",
+            not packaging_ready
+            and int(metrics.get("partial_file_count", 0)) < 5,
+            f"packaging_ready={packaging_ready} partial={metrics.get('partial_file_count', 0)} ts_pos={metrics.get('timestamp_positive_count', 0)}",
         )
     )
 

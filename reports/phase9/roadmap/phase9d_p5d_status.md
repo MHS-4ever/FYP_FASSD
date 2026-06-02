@@ -2,10 +2,46 @@
 
 | Field | Value |
 |-------|--------|
-| Phase | 9D-P5D-P4 — Timestamp error metric |
-| Status | **P5D-P4 scripts ready** — re-run evaluator then validator after pull |
+| Phase | 9D-P5D-R2-P1 — Validator recovery-path logic for chunked SSL |
+| Status | **P5D-R2-P1 validator fix ready** — validate existing R2 outputs, then optional re-run |
 | Blocker from P5C | All 184 P5C files were `seen_in_p5_training`; no independent holdout |
 | Goal | Evaluate P5B candidate cascade on `testing_audios` (t1–t5, fabricated) |
+
+## P5D-R2-P1 changes
+
+- Validator accepts CUDA OOM recovery via chunked fallback (`ssl_chunked_fallback_*`) when full CPU fallback was skipped for long audio.
+- `ssl_oom_fallback_reported` detail now includes CPU and chunked attempt/success/failure counters.
+- No evaluator/SSL/chunking/threshold changes; release packaging remains blocked.
+
+## P5D-R2 changes
+
+- Memory-safe chunked SSL fallback for long audio after CUDA OOM (targets `testing_audios/T4/T4.1.mp3` recovery).
+- Preserves 45s full-audio CPU fallback cap; long files use chunked CPU fallback instead of silent skip.
+- Adds chunked/long-audio robustness metrics, file-level SSL mode columns, and validator checks.
+- Thresholds, cascade logic, and release packaging gates unchanged; need more independent partial-positive files before release packaging.
+
+## P5D-R1-P1 changes
+
+- Fixes robustness stats propagation (`robustness_stats is None` guard instead of truthy replacement).
+- Adds explicit SSL counter increment helper and long-audio fallback skip counter.
+- Validator cross-checks SSL OOM/fallback counters against error cases.
+- Reporting/metrics consistency fix only; thresholds and cascade behavior are unchanged.
+- Long-audio chunking is deferred to P5D-R2. Release packaging remains blocked.
+
+## P5D-R1 changes
+
+- MP4/M4A robustness handling with explicit decoder/container failure classification.
+- SSL CUDA OOM handling with optional CPU fallback and explicit fallback counters.
+- Robustness metrics + report section added; failed files remain visible and classified.
+- Release packaging remains blocked when robustness blockers remain.
+
+## P5D-P5 changes
+
+- Fix candidate segment selection to always use rank-1 segment after probability sorting.
+- Add `candidate_segment_probability` and `candidate_segment_rank` to file outputs.
+- Separate chronological segment index from probability rank (`segment_index_chronological` vs `segment_rank`).
+- Add validator checks for candidate/rank matching and segment index/rank integrity.
+- Reporting only; no threshold/model behavior change. Release packaging remains blocked.
 
 ## P5D-P4 changes
 

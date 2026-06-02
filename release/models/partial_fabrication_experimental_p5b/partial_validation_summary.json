@@ -1,0 +1,25 @@
+{
+  "source_evaluations": [
+    "phase9d_p5d",
+    "phase9d_p5f",
+    "phase9d_p5f_p2_diagnostics"
+  ],
+  "p5f_total_files": 35,
+  "p5f_evaluated_files": 35,
+  "p5f_failed_files": 0,
+  "p5f_partial_file_count": 12,
+  "fabricated_20pct_file_count": 10,
+  "fabricated_20pct_recall": 0.7,
+  "fabricated_20pct_false_negative_count": 3,
+  "false_partial_count": 2,
+  "broad_activation_rate_when_positive": 0.0,
+  "timestamp_positive_count": 8,
+  "fabricated_20pct_top5_hit_rate": 1.0,
+  "release_packaging_as_final_detector": false,
+  "integration_packaging_only": true,
+  "validation_phases_passed": [
+    "P5D-R2-P1",
+    "P5F-P1",
+    "P5F-P2"
+  ]
+}

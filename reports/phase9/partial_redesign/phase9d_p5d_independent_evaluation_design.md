@@ -75,6 +75,54 @@ Directory: `reports/phase9/partial_redesign/phase9d_p5d/`
 
 Validation: `reports/phase9/validation/phase9d_p5d_independent_evaluation_validation_report.md`
 
+## P5D-P5 (candidate segment integrity)
+
+- Candidate segment now explicitly means **rank-1 segment** by segment-localizer probability.
+- File outputs include `candidate_segment_probability` and `candidate_segment_rank`.
+- Segment outputs separate `segment_index_chronological` (time order) from `segment_rank` (probability order).
+- Validator enforces candidate/rank alignment and segment index/rank integrity.
+- This is a reporting-integrity fix only; model behavior, thresholds, and cascade logic are unchanged.
+
+## P5D-R2-P1 (validator recovery-path logic)
+
+- Fixes `ssl_oom_fallback_reported` so CUDA OOM may be satisfied by chunked fallback (not only full-audio CPU fallback).
+- Loads evaluation report text before any check that references it (avoids `report_text` unbound errors).
+- Validator-only change; no model thresholds, cascade logic, SSL extraction, or chunking behavior changes.
+- Release packaging remains blocked when sample-size/localization gates are not met.
+
+## P5D-R2 (long-audio SSL chunking / memory-safe fallback)
+
+- Adds `extract_ssl_embedding_chunked_robust()` with duration-weighted chunk embedding aggregation (no temp audio files).
+- On CUDA OOM, retries with chunked SSL fallback; long audio uses chunked CPU fallback instead of full-audio CPU skip (45s limit preserved for full-audio CPU only).
+- CLI: `--ssl_chunk_sec`, `--ssl_chunk_hop_sec`, `--ssl_chunk_max_chunks`, `--disable_ssl_chunked_fallback`, `--prefer_cpu_for_long_audio`, `--long_audio_sec`.
+- File predictions: `ssl_extraction_mode`, `ssl_chunked_fallback_used`, `ssl_cpu_fallback_used`, `ssl_cuda_oom_recovered`, `audio_duration_sec`.
+- New failure type: `ssl_chunked_fallback_failed`.
+- Chunked/long-audio robustness metrics and validator consistency checks (including `testing_audios/T4/T4.1.mp3` recovery documentation).
+- **No** threshold, cascade, retrain, or release-packaging changes. Release packaging remains blocked by sample-size/localization limits even if all files evaluate.
+
+## P5D-R1-P1 (robustness counter accounting)
+
+- Fixes shared robustness counter propagation when caller passes an empty stats dict.
+- Adds explicit `_inc_stat()` helper for SSL OOM/fallback counters.
+- Adds `ssl_cpu_fallback_skipped_long_audio_count` metric and validator consistency check against error cases.
+- No threshold/model/cascade behavior changes; long-audio chunking is deferred to P5D-R2.
+
+## P5D-R1 (robustness for held-out audio)
+
+- Robust audio loading fallback path for MP4/M4A and decoder-missing classification.
+- SSL CUDA OOM handling with optional CPU fallback for embedding extraction.
+- Robustness metrics: MP4 success/failure, SSL OOM/fallback, recovered vs failed robustness cases.
+- Adds evaluation controls: `--ssl_device`, `--disable_ssl_cpu_fallback`, `--max_audio_duration_sec`, `--max_segments_per_file`.
+- P5D-R2 adds chunked SSL controls: `--ssl_chunk_sec`, `--ssl_chunk_hop_sec`, `--ssl_chunk_max_chunks`, `--disable_ssl_chunked_fallback`, `--prefer_cpu_for_long_audio`, `--long_audio_sec`.
+- Robustness behavior is explicitly reported; release packaging remains blocked when robustness blockers remain.
+
+## P5D-P5 (candidate segment integrity)
+
+- Candidate segment explicitly equals rank-1 localizer segment by probability.
+- File predictions include candidate segment probability and rank.
+- Segment output separates chronological index from probability rank.
+- Validator enforces candidate/rank/index integrity end-to-end.
+
 ## P5D-P4 (timestamp error metric)
 
 - File predictions include `candidate_timestamp_error_seconds` (center-to-center vs known fabricated region).

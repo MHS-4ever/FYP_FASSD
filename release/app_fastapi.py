@@ -1,46 +1,166 @@
-"""Phase 9A FastAPI skeleton for experimental forensic prototype."""
+"""Phase 9E FastAPI — release app over Phase 9C inference + P6 partial contract."""
 
 from __future__ import annotations
 
+import shutil
+import tempfile
+from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, Query, UploadFile
 
-from src.inference_pipeline import run_inference_pipeline
+from src.app_report_formatting import (
+    APP_NAME,
+    APP_PHASE,
+    build_api_analyze_response,
+    check_phase9c_models_available,
+    load_model_inventory,
+    load_partial_module_metadata,
+    load_partial_validation_summary,
+    release_root,
+    repo_root,
+    safety_banner,
+)
+from src.inference_pipeline import analyze_audio_file
 
-app = FastAPI(title="Audio Forensic Prototype API", version="phase9a-skeleton")
+app = FastAPI(
+    title=APP_NAME,
+    version="phase9e-release",
+    description="Experimental forensic evidence demo — manual review required.",
+)
+
+_models_checked = False
+_models_ok = False
+_models_err = ""
+
+
+def _ensure_models_checked() -> None:
+    global _models_checked, _models_ok, _models_err
+    if not _models_checked:
+        _models_ok, _models_err = check_phase9c_models_available()
+        _models_checked = True
 
 
 @app.get("/")
-def root() -> dict[str, str]:
+def root() -> dict[str, Any]:
     return {
-        "message": "Phase 9A release skeleton",
-        "status": "experimental_forensic_prototype",
+        "app_name": APP_NAME,
+        "phase": APP_PHASE,
+        "status": "experimental_forensic_demo",
+        "message": "Phase 9C/9E release forensic prototype API",
+        "endpoints": ["/", "/health", "/model-info", "/analyze-audio"],
+        "safety": safety_banner(),
+        "primary_app_path": "release/",
     }
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok", "mode": "skeleton_only"}
+def health() -> dict[str, Any]:
+    _ensure_models_checked()
+    meta = load_partial_module_metadata()
+    return {
+        "status": "ok",
+        "phase": APP_PHASE,
+        "models_loaded": _models_ok,
+        "models_load_error": _models_err if not _models_ok else "",
+        "partial_module_status": meta.get("status", "experimental_manual_review_only"),
+        "manual_review_required": bool(meta.get("manual_review_required", True)),
+        "conclusive_authenticity_decision": False,
+    }
 
 
 @app.get("/model-info")
 def model_info() -> dict[str, Any]:
+    _ensure_models_checked()
+    meta = load_partial_module_metadata()
+    inv = load_model_inventory()
+    val = load_partial_validation_summary()
     return {
+        "phase": APP_PHASE,
         "status": "experimental_forensic_prototype",
-        "message": "Model packaging pending Phase 9B",
-        "models": {
-            "origin": "pending_artifact",
-            "replay": "pending_artifact",
-            "mixer": "pending_artifact",
-            "partial_segment": "pending_artifact",
+        "models_loaded": _models_ok,
+        "model_inventory_summary": {
+            "status": inv.get("status"),
+            "model_count": len(inv.get("models", [])),
+            "integration_modules": list((inv.get("integration_modules") or {}).keys()),
+            "warnings": inv.get("warnings", [])[:5],
         },
+        "partial_fabrication_experimental_p5b": {
+            "package_path": str(release_root() / "models" / "partial_fabrication_experimental_p5b"),
+            "metadata": meta,
+            "thresholds": meta.get("thresholds", {}),
+            "limitations": meta.get("limitations", []),
+            "validation_summary": val,
+        },
+        "manual_review_required": True,
+        "conclusive_authenticity_decision": False,
+        "operational_deployment_claim": False,
+        "legal_evidence_claim": False,
+        "safety": safety_banner(),
     }
 
 
 @app.post("/analyze-audio")
 async def analyze_audio(
+    audio_file: UploadFile = File(...),
+    case_id: str | None = Form(default=None),
+    return_top_segments: bool = Query(default=True),
+    save_report: bool = Query(default=False),
+) -> dict[str, Any]:
+    _ensure_models_checked()
+    if not _models_ok:
+        return {
+            "processing_status": "error",
+            "error_message": f"Phase 9C models not loaded: {_models_err}",
+            "manual_review_required": True,
+            "partial_fabrication": {
+                "module_status": "experimental_manual_review_only",
+                "evidence_label": "partial_fabrication_analysis_unavailable",
+                "user_facing_message": (
+                    "Partial-fabrication analysis was unavailable for this file. "
+                    "Manual forensic review is recommended if partial manipulation is suspected."
+                ),
+            },
+        }
+
+    suffix = Path(audio_file.filename or "upload.wav").suffix or ".wav"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        shutil.copyfileobj(audio_file.file, tmp)
+        tmp_path = Path(tmp.name)
+
+    output_dir = None
+    save_path = None
+    if save_report:
+        output_dir = repo_root() / "reports" / "phase9" / "app" / "sample_outputs"
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        phase9c = analyze_audio_file(
+            audio_path=str(tmp_path),
+            case_id=case_id,
+            output_dir=output_dir,
+            device="auto",
+            return_debug=return_top_segments,
+        )
+        if save_report and output_dir and phase9c.get("case_id"):
+            save_path = str(output_dir / f"{phase9c['case_id']}_analysis.json")
+    finally:
+        try:
+            tmp_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+    return build_api_analyze_response(
+        file_name=audio_file.filename or tmp_path.name,
+        phase9c_result=phase9c,
+        return_top_segments=return_top_segments,
+        save_report_path=save_path,
+    )
+
+
+# Backward-compatible alias used by older clients/tests.
+@app.post("/analyze")
+async def analyze_legacy(
     audio_file: UploadFile = File(...), case_id: str | None = Form(default=None)
 ) -> dict[str, Any]:
-    # Phase 9A: placeholder route. Full live inference is out of scope.
-    return run_inference_pipeline(audio_path=audio_file.filename or "", case_id=case_id)
+    return await analyze_audio(audio_file=audio_file, case_id=case_id)

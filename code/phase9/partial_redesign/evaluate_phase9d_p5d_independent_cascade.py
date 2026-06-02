@@ -50,6 +50,7 @@ SEG_PRED_COLUMNS = [
     "file_path",
     "file_name",
     "segment_index",
+    "segment_index_chronological",
     "segment_start",
     "segment_end",
     "segment_probability",
@@ -79,6 +80,8 @@ FILE_PRED_COLUMNS = [
     "partial_evidence_positive",
     "candidate_segment_start",
     "candidate_segment_end",
+    "candidate_segment_probability",
+    "candidate_segment_rank",
     "has_timestamp_label",
     "candidate_timestamp_error_seconds",
     "top1_timestamp_hit",
@@ -86,6 +89,11 @@ FILE_PRED_COLUMNS = [
     "top5_timestamp_hit",
     "error_status",
     "error_message",
+    "ssl_extraction_mode",
+    "ssl_chunked_fallback_used",
+    "ssl_cpu_fallback_used",
+    "ssl_cuda_oom_recovered",
+    "audio_duration_sec",
 ]
 
 
@@ -115,6 +123,17 @@ def parse_args() -> argparse.Namespace:
         "--p5c_manifest",
         default=str(root / "reports/phase9/partial_redesign/phase9d_p5c/phase9d_p5c_controlled_manifest.csv"),
     )
+    p.add_argument("--ssl_device", choices=("auto", "cpu", "cuda"), default="auto")
+    p.add_argument("--disable_ssl_cpu_fallback", action="store_true")
+    p.add_argument("--ssl_chunk_sec", type=float, default=30.0)
+    p.add_argument("--ssl_chunk_hop_sec", type=float, default=None)
+    p.add_argument("--ssl_chunk_max_chunks", type=int, default=200)
+    p.add_argument("--disable_ssl_chunked_fallback", action="store_true")
+    p.add_argument("--prefer_cpu_for_long_audio", action="store_true")
+    p.add_argument("--long_audio_sec", type=float, default=60.0)
+    p.add_argument("--max_audio_duration_sec", type=float, default=None)
+    p.add_argument("--max_segments_per_file", type=int, default=500)
+    p.add_argument("--keep_failed_outputs", action="store_true", default=True)
     p.add_argument("--make_plots", action="store_true")
     p.add_argument("--no_progress", action="store_true")
     return p.parse_args()
@@ -355,6 +374,9 @@ def _empty_file_pred_row(base: dict[str, Any]) -> dict[str, Any]:
         "top1_timestamp_hit",
         "top3_timestamp_hit",
         "top5_timestamp_hit",
+        "ssl_chunked_fallback_used",
+        "ssl_cpu_fallback_used",
+        "ssl_cuda_oom_recovered",
     ):
         row[k] = False
     row["error_status"] = base.get("error_status", "skipped")
@@ -393,7 +415,10 @@ def _format_metric_for_report(value: Any, *, not_applicable: bool = False) -> st
     return str(value)
 
 
-def compute_p5d_metrics(file_df: pd.DataFrame, overlap_df: pd.DataFrame) -> dict[str, Any]:
+def compute_p5d_metrics(
+    file_df: pd.DataFrame, overlap_df: pd.DataFrame, robustness_stats: dict[str, Any] | None = None
+) -> dict[str, Any]:
+    robustness_stats = robustness_stats or {}
     ok = file_df[file_df["error_status"].astype(str) == "ok"].copy()
     metrics: dict[str, Any] = {
         "total_files": int(len(file_df)),
@@ -503,6 +528,80 @@ def compute_p5d_metrics(file_df: pd.DataFrame, overlap_df: pd.DataFrame) -> dict
             else np.nan,
         }
     metrics["folder_wise"] = folder_stats
+    metrics["candidate_rank1_consistency_count"] = int(
+        ok["candidate_segment_rank"].fillna(-1).astype(float).eq(1.0).sum()
+    )
+    metrics["candidate_rank1_consistency_rate"] = (
+        float(metrics["candidate_rank1_consistency_count"] / len(ok)) if len(ok) else None
+    )
+    metrics["candidate_segment_probability_available_rate"] = (
+        float(pd.to_numeric(ok["candidate_segment_probability"], errors="coerce").notna().mean())
+        if len(ok)
+        else None
+    )
+    mp4_mask = file_df["file_name"].astype(str).str.lower().str.endswith(".mp4")
+    mp4_all = file_df[mp4_mask]
+    mp4_ok = mp4_all[mp4_all["error_status"].astype(str) == "ok"]
+    metrics["mp4_file_count"] = int(len(mp4_all))
+    metrics["mp4_evaluated_count"] = int(len(mp4_ok))
+    metrics["mp4_failed_count"] = int(len(mp4_all) - len(mp4_ok))
+    metrics["mp4_load_success_rate"] = float(len(mp4_ok) / len(mp4_all)) if len(mp4_all) else None
+    metrics["ssl_cuda_oom_count"] = int(robustness_stats.get("ssl_cuda_oom_count", 0))
+    metrics["ssl_cpu_fallback_attempt_count"] = int(robustness_stats.get("ssl_cpu_fallback_attempt_count", 0))
+    metrics["ssl_cpu_fallback_success_count"] = int(robustness_stats.get("ssl_cpu_fallback_success_count", 0))
+    metrics["ssl_cpu_fallback_failure_count"] = int(robustness_stats.get("ssl_cpu_fallback_failure_count", 0))
+    metrics["ssl_cpu_fallback_skipped_long_audio_count"] = int(
+        robustness_stats.get("ssl_cpu_fallback_skipped_long_audio_count", 0)
+    )
+    metrics["ssl_chunked_fallback_attempt_count"] = int(
+        robustness_stats.get("ssl_chunked_fallback_attempt_count", 0)
+    )
+    metrics["ssl_chunked_fallback_success_count"] = int(
+        robustness_stats.get("ssl_chunked_fallback_success_count", 0)
+    )
+    metrics["ssl_chunked_fallback_failure_count"] = int(
+        robustness_stats.get("ssl_chunked_fallback_failure_count", 0)
+    )
+    metrics["ssl_chunked_cpu_fallback_attempt_count"] = int(
+        robustness_stats.get("ssl_chunked_cpu_fallback_attempt_count", 0)
+    )
+    metrics["ssl_chunked_cpu_fallback_success_count"] = int(
+        robustness_stats.get("ssl_chunked_cpu_fallback_success_count", 0)
+    )
+    metrics["ssl_chunked_cpu_fallback_failure_count"] = int(
+        robustness_stats.get("ssl_chunked_cpu_fallback_failure_count", 0)
+    )
+    metrics["ssl_long_audio_file_count"] = int(robustness_stats.get("ssl_long_audio_file_count", 0))
+    metrics["ssl_long_audio_recovered_count"] = int(robustness_stats.get("ssl_long_audio_recovered_count", 0))
+    metrics["ssl_long_audio_failed_count"] = int(robustness_stats.get("ssl_long_audio_failed_count", 0))
+    metrics["ssl_chunked_embedding_used_count"] = int(
+        robustness_stats.get("ssl_chunked_embedding_used_count", 0)
+    )
+    metrics["ssl_chunked_embedding_max_chunks_observed"] = int(
+        robustness_stats.get("ssl_chunked_embedding_max_chunks_observed", 0)
+    )
+    metrics["robustness_failed_file_count"] = int(
+        file_df["error_status"].astype(str).isin(
+            {
+                "unsupported_container_or_decoder_missing",
+                "no_audio_stream",
+                "ssl_cuda_oom",
+                "ssl_cuda_oom_cpu_fallback_failed",
+                "ssl_chunked_fallback_failed",
+                "ssl_embedding_failure",
+            }
+        ).sum()
+    )
+    recovered_files = 0
+    if "ssl_cuda_oom_recovered" in file_df.columns:
+        recovered_files += int(file_df["ssl_cuda_oom_recovered"].astype(bool).sum())
+    metrics["robustness_recovered_file_count"] = int(
+        max(
+            recovered_files,
+            metrics["ssl_cpu_fallback_success_count"] + metrics["ssl_chunked_fallback_success_count"],
+        )
+    )
+    metrics["evaluation_runtime_seconds"] = float(robustness_stats.get("evaluation_runtime_seconds", np.nan))
     return metrics
 
 
@@ -532,6 +631,7 @@ def write_p5d_report(
     failure_reasons: list[str],
     examples_success: pd.DataFrame,
     examples_false: pd.DataFrame,
+    file_pred: pd.DataFrame | None = None,
 ) -> None:
     holdout = int(metrics.get("independent_holdout_count", 0))
     seen_train = int(metrics.get("seen_in_p5_training_count", 0))
@@ -635,6 +735,8 @@ def write_p5d_report(
             "",
             f"- timestamp_positive_count: {metrics.get('timestamp_positive_count', 0)}",
             f"- timestamp_error_count: {metrics.get('timestamp_error_count', 0)}",
+            "- Candidate segment means rank-1 segment by segment-localizer probability.",
+            "- median_candidate_timestamp_error_seconds is computed from the corrected rank-1 candidate segment.",
             f"- top1_hit_rate_when_positive: {_format_metric_for_report(metrics.get('top1_hit_rate_when_positive'), not_applicable=int(metrics.get('timestamp_positive_count', 0)) == 0)}",
             f"- top3_hit_rate_when_positive: {_format_metric_for_report(metrics.get('top3_hit_rate_when_positive'), not_applicable=int(metrics.get('timestamp_positive_count', 0)) == 0)}",
             f"- top5_hit_rate_when_positive: {_format_metric_for_report(metrics.get('top5_hit_rate_when_positive'), not_applicable=int(metrics.get('timestamp_positive_count', 0)) == 0)}",
@@ -657,13 +759,68 @@ def write_p5d_report(
             "## Broad activation behavior",
             "",
             f"- broad_activation_rate_when_positive: {metrics.get('broad_activation_rate_when_positive', np.nan)}",
+            f"- candidate_rank1_consistency_count: {metrics.get('candidate_rank1_consistency_count', 0)}",
+            f"- candidate_rank1_consistency_rate: {metrics.get('candidate_rank1_consistency_rate', np.nan)}",
+            f"- candidate_segment_probability_available_rate: {metrics.get('candidate_segment_probability_available_rate', np.nan)}",
             "",
             "## Error handling",
             "",
             f"- invalid_file_handling_pass_rate: {metrics.get('invalid_file_handling_pass_rate', np.nan)}",
             "",
+            "## Robustness behavior",
+            "",
+            f"- mp4_file_count: {metrics.get('mp4_file_count', 0)}",
+            f"- mp4_evaluated_count: {metrics.get('mp4_evaluated_count', 0)}",
+            f"- mp4_failed_count: {metrics.get('mp4_failed_count', 0)}",
+            f"- mp4_load_success_rate: {_format_metric_for_report(metrics.get('mp4_load_success_rate'), not_applicable=metrics.get('mp4_file_count', 0) == 0)}",
+            f"- ssl_cuda_oom_count: {metrics.get('ssl_cuda_oom_count', 0)}",
+            f"- ssl_cpu_fallback_attempt_count: {metrics.get('ssl_cpu_fallback_attempt_count', 0)}",
+            f"- ssl_cpu_fallback_success_count: {metrics.get('ssl_cpu_fallback_success_count', 0)}",
+            f"- ssl_cpu_fallback_failure_count: {metrics.get('ssl_cpu_fallback_failure_count', 0)}",
+            f"- ssl_cpu_fallback_skipped_long_audio_count: {metrics.get('ssl_cpu_fallback_skipped_long_audio_count', 0)}",
+            f"- ssl_chunked_fallback_attempt_count: {metrics.get('ssl_chunked_fallback_attempt_count', 0)}",
+            f"- ssl_chunked_fallback_success_count: {metrics.get('ssl_chunked_fallback_success_count', 0)}",
+            f"- ssl_chunked_fallback_failure_count: {metrics.get('ssl_chunked_fallback_failure_count', 0)}",
+            f"- ssl_chunked_cpu_fallback_attempt_count: {metrics.get('ssl_chunked_cpu_fallback_attempt_count', 0)}",
+            f"- ssl_chunked_cpu_fallback_success_count: {metrics.get('ssl_chunked_cpu_fallback_success_count', 0)}",
+            f"- ssl_chunked_cpu_fallback_failure_count: {metrics.get('ssl_chunked_cpu_fallback_failure_count', 0)}",
+            f"- ssl_long_audio_file_count: {metrics.get('ssl_long_audio_file_count', 0)}",
+            f"- ssl_long_audio_recovered_count: {metrics.get('ssl_long_audio_recovered_count', 0)}",
+            f"- ssl_long_audio_failed_count: {metrics.get('ssl_long_audio_failed_count', 0)}",
+            f"- ssl_chunked_embedding_used_count: {metrics.get('ssl_chunked_embedding_used_count', 0)}",
+            f"- ssl_chunked_embedding_max_chunks_observed: {metrics.get('ssl_chunked_embedding_max_chunks_observed', 0)}",
+            f"- robustness_failed_file_count: {metrics.get('robustness_failed_file_count', 0)}",
+            f"- robustness_recovered_file_count: {metrics.get('robustness_recovered_file_count', 0)}",
+            "",
+            "Robustness counters are derived from SSL extraction/fallback events and cross-checked against error cases.",
+            "P5D-R2 improves memory-safe SSL extraction only; it does not change the partial cascade model, thresholds, or release readiness decision.",
+            "",
         ]
     )
+    t41_path = "testing_audios/t4/t4.1.mp3"
+    fp_df = file_pred if file_pred is not None else pd.DataFrame()
+    t41_rows = fp_df[fp_df["file_path"].astype(str).str.lower().str.replace("\\", "/") == t41_path]
+    if not t41_rows.empty and str(t41_rows.iloc[0].get("error_status", "")) == "ok":
+        lines.append(
+            "The previous long-audio SSL failure was recovered through chunked fallback."
+        )
+        lines.append("")
+    elif not t41_rows.empty:
+        t41_err = str(t41_rows.iloc[0].get("error_status", ""))
+        if t41_err == "ssl_chunked_fallback_failed":
+            lines.append(
+                "The previous long-audio SSL failure remains; chunked fallback attempted but did not recover the file."
+            )
+        elif t41_err == "ssl_cuda_oom_cpu_fallback_failed":
+            lines.append(
+                "The previous long-audio SSL failure remains; chunked fallback was not attempted or did not recover the file."
+            )
+        lines.append("")
+    if int(metrics.get("ssl_long_audio_failed_count", 0)) > 0:
+        lines.append(
+            "Some long-audio files remain failed after chunked SSL fallback; review error cases for details."
+        )
+        lines.append("")
     failed_n = int(metrics.get("failed_files", 0))
     if failed_n:
         lines.extend(
@@ -686,11 +843,24 @@ def write_p5d_report(
     if examples_success.empty:
         lines.append("- None selected.")
     else:
+        rank_warn = (
+            int(metrics.get("candidate_rank1_consistency_count", 0)) != int(metrics.get("evaluated_files", 0))
+            if metrics.get("evaluated_files", 0)
+            else False
+        )
+        if rank_warn:
+            lines.append(
+                "- **Integrity warning:** some candidate segments are not rank-1; review localization outputs."
+            )
         for _, r in examples_success.head(5).iterrows():
+            rank_val = pd.to_numeric(r.get("candidate_segment_rank"), errors="coerce")
+            rank_str = str(int(rank_val)) if np.isfinite(rank_val) else "n/a"
             lines.append(
                 f"- `{r['file_path']}` — experimental partial-fabrication candidate segment "
                 f"{r.get('candidate_segment_start', 'n/a')}–{r.get('candidate_segment_end', 'n/a')}s "
-                f"(gate={r.get('file_gate_probability', np.nan):.3f}; manual review recommended)"
+                f"(gate={r.get('file_gate_probability', np.nan):.3f}, "
+                f"candidate_seg_prob={r.get('candidate_segment_probability', np.nan):.3f}, "
+                f"candidate_rank={rank_str}; manual review recommended)"
             )
 
     lines.extend(["", "## Examples — false partial evidence (if any)", ""])
@@ -802,7 +972,7 @@ def main() -> int:
             input_root=input_root,
             run_status=run_status,
         )
-    except Exception as exc:
+    except BaseException as exc:
         run_status["status"] = "failed"
         run_status["error_message"] = str(exc)
         run_status["traceback_summary"] = traceback.format_exc()[-4000:]
@@ -875,7 +1045,13 @@ def _run_p5d_evaluation(
     segment_master = pd.read_csv(sm_path, low_memory=False) if sm_path.is_file() else pd.DataFrame()
 
     progress("Running independent cascade inference (live extraction when needed)...", enabled=show)
-    file_pred, seg_pred, error_list = evaluate_manifest_cascade(
+    import time
+    t_eval0 = time.perf_counter()
+    ssl_chunk_hop = args.ssl_chunk_hop_sec
+    if ssl_chunk_hop is None:
+        ssl_chunk_hop = float(args.ssl_chunk_sec)
+
+    file_pred, seg_pred, error_list, robustness_stats = evaluate_manifest_cascade(
         manifest=manifest,
         overlap_df=overlap_df,
         file_master=file_master,
@@ -885,7 +1061,18 @@ def _run_p5d_evaluation(
         show=show,
         progress_fn=lambda msg: progress(msg, enabled=show),
         use_live_extraction=True,
+        ssl_device=args.ssl_device,
+        disable_ssl_cpu_fallback=args.disable_ssl_cpu_fallback,
+        disable_ssl_chunked_fallback=args.disable_ssl_chunked_fallback,
+        ssl_chunk_sec=float(args.ssl_chunk_sec),
+        ssl_chunk_hop_sec=ssl_chunk_hop,
+        ssl_chunk_max_chunks=int(args.ssl_chunk_max_chunks),
+        prefer_cpu_for_long_audio=bool(args.prefer_cpu_for_long_audio),
+        long_audio_sec=float(args.long_audio_sec),
+        max_audio_duration_sec=args.max_audio_duration_sec,
+        max_segments_per_file=args.max_segments_per_file,
     )
+    robustness_stats["evaluation_runtime_seconds"] = float(time.perf_counter() - t_eval0)
     file_pred = normalize_file_predictions(file_pred)
     file_pred.to_csv(out_dir / "phase9d_p5d_file_predictions.csv", index=False)
     if seg_pred.empty:
@@ -898,11 +1085,23 @@ def _run_p5d_evaluation(
     seg_pred.to_csv(out_dir / "phase9d_p5d_segment_predictions.csv", index=False)
 
     err_df = pd.DataFrame(error_list)
+    if not err_df.empty and "failure_type" in err_df.columns:
+        err_df["failure_type"] = (
+            err_df["failure_type"]
+            .replace(
+                {
+                    "feature_extraction_failure": "acoustic_feature_failure",
+                    "file_gate_predict_failure": "prediction_failure",
+                    "segment_predict_failure": "prediction_failure",
+                }
+            )
+            .fillna("prediction_failure")
+        )
     if err_df.empty:
         err_df = pd.DataFrame(columns=["file_path", "failure_type", "error_message"])
     err_df.to_csv(out_dir / "phase9d_p5d_error_cases.csv", index=False)
 
-    metrics = compute_p5d_metrics(file_pred, overlap_df)
+    metrics = compute_p5d_metrics(file_pred, overlap_df, robustness_stats=robustness_stats)
     metrics["accepted_cascade_thresholds"] = artifacts.get("thresholds", P5C_ACCEPTED_CASCADE_THRESHOLDS)
     csv_row = {
         k: ("" if v is None else v)
@@ -958,6 +1157,7 @@ def _run_p5d_evaluation(
         failure_reasons=failure_reasons,
         examples_success=examples_success,
         examples_false=examples_false,
+        file_pred=file_pred,
     )
 
     if args.make_plots:

@@ -25,9 +25,25 @@
       "model_name": "partial_fabrication_segment_model",
       "artifact_path": "E:/FYP/release/models/partial_segment/partial_segment_model__combined__experimental.joblib",
       "metadata_path": "E:/FYP/release/models/partial_segment/partial_segment_model__combined__metadata.json",
-      "status": "experimental_forensic_prototype"
+      "status": "experimental_forensic_prototype_legacy",
+      "deprecated_for_p5b_cascade": true,
+      "active_for_phase9e_demo": false
     }
   ],
   "missing_artifacts": [],
-  "warnings": []
+  "warnings": [
+    "partial_fabrication_experimental_p5b is the P5B/P5F cascade for Phase 9E demo evidence; legacy partial_fabrication_segment_model remains for compatibility but is not the active P5B cascade."
+  ],
+  "integration_modules": {
+    "partial_fabrication_experimental_p5b": {
+      "status": "experimental_manual_review_only",
+      "active_for_phase9e_demo": true,
+      "final_verdict_model": false,
+      "manual_review_required": true,
+      "package_path": "release/models/partial_fabrication_experimental_p5b",
+      "report_contract": "partial_report_contract.json",
+      "source_validation": "phase9d_p5f",
+      "packaged_at": "2026-06-02T19:53:03.588+00:00"
+    }
+  }
 }

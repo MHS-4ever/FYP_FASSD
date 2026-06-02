@@ -1,0 +1,34 @@
+{
+  "partial_fabrication": {
+    "module_status": "experimental_manual_review_only",
+    "evidence_detected": null,
+    "evidence_label": "partial_fabrication_analysis_unavailable",
+    "file_gate_probability": null,
+    "max_segment_probability": null,
+    "high_segment_fraction": null,
+    "topk_minus_rest_probability": null,
+    "broad_activation_flag": null,
+    "candidate_segment": {
+      "start_sec": null,
+      "end_sec": null,
+      "probability": null,
+      "rank": null
+    },
+    "top_segments": [],
+    "thresholds": {
+      "file_gate_threshold": 0.5,
+      "segment_threshold": 0.9,
+      "contrast_threshold": 0.25,
+      "broad_limit": 0.45
+    },
+    "limitations": [
+      "Experimental partial-fabrication evidence indicator only.",
+      "Conclusive authenticity decision: no.",
+      "Manual forensic review is recommended.",
+      "Known false negatives and false positives remain in held-out testing."
+    ],
+    "user_facing_summary_detected": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+    "user_facing_summary_not_detected": "No partial-fabrication evidence was detected by the experimental partial module. This does not prove the audio is authentic; subtle or unseen partial manipulations may still be missed.",
+    "user_facing_summary_unavailable": "Partial-fabrication analysis was unavailable for this file. Manual forensic review is recommended if partial manipulation is suspected."
+  }
+}

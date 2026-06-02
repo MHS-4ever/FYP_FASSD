@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import gc
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,6 +33,7 @@ AUDIO_EXTENSIONS = {".wav", ".flac", ".mp3", ".ogg", ".m4a", ".mp4"}
 SEGMENT_DURATION_SEC = 4.0
 SEGMENT_HOP_SEC = 2.0
 TARGET_SR = 16000
+CPU_SSL_FALLBACK_MAX_SEC = 45.0
 
 _CODE_ROOT = Path(__file__).resolve().parents[2]
 
@@ -73,6 +75,20 @@ def cheap_file_hash(path: Path, max_bytes: int = 65536) -> str:
         return ""
 
 
+def _classify_audio_load_failure(path: Path, err: str) -> tuple[str, str]:
+    low = str(err or "").lower()
+    ext = path.suffix.lower()
+    if "no audio" in low or "audio stream" in low:
+        return "no_audio_stream", "no_audio_stream"
+    if ext in {".mp4", ".m4a"} and any(
+        k in low for k in ("format not recognised", "unsupported", "decoder", "audioread", "ffmpeg")
+    ):
+        return "unsupported_container_or_decoder_missing", "unsupported_container_or_decoder_missing"
+    if "silent" in low:
+        return "silent_or_invalid", "silent_or_invalid"
+    return "load_failure", "load_failure"
+
+
 def load_audio_probe(path: Path) -> tuple[str, str, float | None]:
     try:
         import soundfile as sf
@@ -85,10 +101,34 @@ def load_audio_probe(path: Path) -> tuple[str, str, float | None]:
             return "too_short", f"duration_sec={dur:.3f}", dur
         return "ok", "", dur
     except Exception as exc:
-        return "load_failure", str(exc), None
+        # Probe fallback: attempt lightweight duration lookup via librosa/torchaudio.
+        try:
+            import librosa  # type: ignore
+
+            dur = float(librosa.get_duration(path=str(path)))
+            if dur < 0.25:
+                return "too_short", f"duration_sec={dur:.3f}", dur
+            return "ok", "", dur
+        except Exception:
+            pass
+        try:
+            import torchaudio  # type: ignore
+
+            info = torchaudio.info(str(path))
+            sr = float(getattr(info, "sample_rate", 0) or 0)
+            nf = float(getattr(info, "num_frames", 0) or 0)
+            if sr > 0 and nf > 0:
+                dur = nf / sr
+                if dur < 0.25:
+                    return "too_short", f"duration_sec={dur:.3f}", dur
+                return "ok", "", dur
+        except Exception:
+            pass
+        st, _ = _classify_audio_load_failure(path, str(exc))
+        return st, str(exc), None
 
 
-def synthetic_segments(duration_sec: float) -> list[tuple[float, float]]:
+def synthetic_segments(duration_sec: float, max_segments_per_file: int = 500) -> list[tuple[float, float]]:
     if duration_sec <= 0:
         return [(0.0, min(SEGMENT_DURATION_SEC, 0.25))]
     segs: list[tuple[float, float]] = []
@@ -98,18 +138,18 @@ def synthetic_segments(duration_sec: float) -> list[tuple[float, float]]:
         if end - start >= 0.1:
             segs.append((start, end))
         start += SEGMENT_HOP_SEC
-        if len(segs) > 500:
+        if len(segs) >= max_segments_per_file:
             break
     return segs or [(0.0, min(SEGMENT_DURATION_SEC, duration_sec))]
 
 
-_SSL_CTX: dict[str, Any] | None = None
+_SSL_CTX: dict[str, dict[str, Any]] = {}
 
 
-def _get_ssl_context() -> dict[str, Any] | None:
+def _get_ssl_context(device_pref: str = "auto") -> dict[str, Any] | None:
     global _SSL_CTX
-    if _SSL_CTX is not None:
-        return _SSL_CTX
+    if device_pref in _SSL_CTX:
+        return _SSL_CTX[device_pref]
     try:
         from phase8d_ssl_utils import (
             extract_ssl_embedding,
@@ -120,9 +160,9 @@ def _get_ssl_context() -> dict[str, Any] | None:
 
         model_name = "microsoft/wavlm-base-plus"
         pooling = "mean"
-        device = get_device("auto")
+        device = get_device(device_pref)
         model, processor = load_ssl_model_and_processor(model_name, device)
-        _SSL_CTX = {
+        _SSL_CTX[device_pref] = {
             "model": model,
             "processor": processor,
             "device": device,
@@ -130,17 +170,336 @@ def _get_ssl_context() -> dict[str, Any] | None:
             "extract": extract_ssl_embedding,
             "columns": make_embedding_columns,
         }
-        return _SSL_CTX
+        return _SSL_CTX[device_pref]
     except Exception:
         return None
+
+
+def _is_cuda_oom(exc: Exception) -> bool:
+    msg = str(exc).lower()
+    return "out of memory" in msg and "cuda" in msg
+
+
+def _cleanup_torch_memory() -> None:
+    try:
+        import torch  # type: ignore
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
+    gc.collect()
+
+
+def _inc_stat(stats: dict[str, int], key: str, amount: int = 1) -> None:
+    stats[key] = int(stats.get(key, 0)) + int(amount)
+
+
+def _ssl_chunk_starts(total_samples: int, chunk_samples: int, hop_samples: int, max_chunks: int) -> list[int]:
+    if total_samples <= 0 or chunk_samples < 1 or hop_samples < 1:
+        return []
+    starts: list[int] = []
+    pos = 0
+    while pos < total_samples and len(starts) < max_chunks:
+        starts.append(pos)
+        pos += hop_samples
+    return starts
+
+
+def extract_ssl_embedding_chunked_robust(
+    y: np.ndarray,
+    sr: int,
+    *,
+    ssl_device: str,
+    disable_ssl_cpu_fallback: bool,
+    robustness_stats: dict[str, int],
+    chunk_sec: float = 30.0,
+    hop_sec: float | None = None,
+    max_chunks: int = 200,
+    prefer_cpu: bool = False,
+) -> tuple[np.ndarray | None, str, str]:
+    """Duration-weighted mean of per-chunk SSL embeddings (no temp files)."""
+    if len(y) == 0:
+        return None, "ssl_embedding_failure", "empty audio"
+    if sr <= 0:
+        return None, "ssl_embedding_failure", f"invalid sample rate {sr}"
+
+    if hop_sec is None or hop_sec <= 0:
+        hop_sec = chunk_sec
+    chunk_samples = max(1, int(round(chunk_sec * sr)))
+    hop_samples = max(1, int(round(hop_sec * sr)))
+    min_chunk_samples = max(1, int(0.5 * sr))
+    starts = _ssl_chunk_starts(len(y), chunk_samples, hop_samples, max_chunks)
+    if not starts:
+        return None, "ssl_embedding_failure", "no SSL chunks scheduled"
+
+    devices: list[str] = []
+    if prefer_cpu:
+        devices.append("cpu")
+    else:
+        devices.append(ssl_device)
+        if not disable_ssl_cpu_fallback and ssl_device != "cpu":
+            devices.append("cpu")
+
+    last_err = "no valid SSL chunks extracted"
+    for device_name in devices:
+        if disable_ssl_cpu_fallback and device_name == "cpu":
+            continue
+        ctx = _get_ssl_context(device_name)
+        if ctx is None:
+            last_err = f"SSL model unavailable on {device_name}"
+            continue
+        emb_chunks: list[np.ndarray] = []
+        weights: list[float] = []
+        def _run_chunks() -> None:
+            for start in starts:
+                end = min(start + chunk_samples, len(y))
+                chunk = y[start:end]
+                if len(chunk) < min_chunk_samples:
+                    continue
+                emb = ctx["extract"](
+                    chunk,
+                    sr,
+                    ctx["processor"],
+                    ctx["model"],
+                    ctx["device"],
+                    ctx["meta"]["pooling"],
+                )
+                emb_chunks.append(np.asarray(emb, dtype=np.float32))
+                weights.append(float(len(chunk) / sr))
+                _cleanup_torch_memory()
+
+        try:
+            try:
+                import torch  # type: ignore
+
+                with torch.inference_mode():
+                    _run_chunks()
+            except Exception:
+                _run_chunks()
+            if emb_chunks:
+                _inc_stat(robustness_stats, "ssl_chunked_embedding_max_chunks_observed", len(emb_chunks))
+                stacked = np.stack(emb_chunks, axis=0)
+                w = np.asarray(weights, dtype=np.float32)
+                if float(w.sum()) <= 0:
+                    last_err = "zero total weight in chunk aggregation"
+                    continue
+                emb = np.average(stacked, axis=0, weights=w)
+                _inc_stat(robustness_stats, "ssl_chunked_embedding_used_count")
+                return emb.astype(np.float32), "", ""
+        except Exception as exc:
+            last_err = str(exc)
+            _cleanup_torch_memory()
+            continue
+
+    return None, "ssl_embedding_failure", last_err
+
+
+def _try_chunked_ssl_fallback(
+    y: np.ndarray,
+    sr: int,
+    *,
+    ssl_device: str,
+    disable_ssl_cpu_fallback: bool,
+    disable_ssl_chunked_fallback: bool,
+    robustness_stats: dict[str, int],
+    chunk_sec: float,
+    hop_sec: float | None,
+    max_chunks: int,
+    prefer_cpu: bool,
+    after_cuda_oom: bool,
+    long_audio_sec: float = 60.0,
+) -> tuple[np.ndarray | None, str, str, str]:
+    """Return (emb, extraction_mode, failure_type, message)."""
+    if disable_ssl_chunked_fallback:
+        return None, "", "ssl_chunked_fallback_failed", "chunked SSL fallback disabled"
+
+    _inc_stat(robustness_stats, "ssl_chunked_fallback_attempt_count")
+    duration_sec = len(y) / float(max(sr, 1))
+    if duration_sec >= long_audio_sec:
+        _inc_stat(robustness_stats, "ssl_long_audio_file_count")
+
+    modes_to_try: list[tuple[str, bool]] = []
+    if prefer_cpu or after_cuda_oom:
+        modes_to_try.append(("chunked_cpu_fallback", True))
+        if not prefer_cpu and ssl_device != "cpu":
+            modes_to_try.append(("chunked_cuda_fallback", False))
+    else:
+        modes_to_try.append(("chunked_cuda_fallback", False))
+        if not disable_ssl_cpu_fallback:
+            modes_to_try.append(("chunked_cpu_fallback", True))
+
+    last_msg = "chunked SSL fallback failed"
+    for mode_name, use_cpu in modes_to_try:
+        if use_cpu:
+            _inc_stat(robustness_stats, "ssl_chunked_cpu_fallback_attempt_count")
+        emb, _ft, msg = extract_ssl_embedding_chunked_robust(
+            y,
+            sr,
+            ssl_device="cpu" if use_cpu else ssl_device,
+            disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+            robustness_stats=robustness_stats,
+            chunk_sec=chunk_sec,
+            hop_sec=hop_sec,
+            max_chunks=max_chunks,
+            prefer_cpu=use_cpu,
+        )
+        if emb is not None:
+            _inc_stat(robustness_stats, "ssl_chunked_fallback_success_count")
+            if use_cpu:
+                _inc_stat(robustness_stats, "ssl_chunked_cpu_fallback_success_count")
+            if after_cuda_oom and duration_sec >= long_audio_sec:
+                _inc_stat(robustness_stats, "ssl_long_audio_recovered_count")
+            return emb, mode_name, "", ""
+        last_msg = msg or last_msg
+        if use_cpu:
+            _inc_stat(robustness_stats, "ssl_chunked_cpu_fallback_failure_count")
+
+    _inc_stat(robustness_stats, "ssl_chunked_fallback_failure_count")
+    if duration_sec >= long_audio_sec:
+        _inc_stat(robustness_stats, "ssl_long_audio_failed_count")
+    return None, "", "ssl_chunked_fallback_failed", last_msg
+
+
+def _extract_ssl_embedding_robust(
+    y: np.ndarray,
+    sr: int,
+    *,
+    ssl_device: str,
+    disable_ssl_cpu_fallback: bool,
+    disable_ssl_chunked_fallback: bool = False,
+    robustness_stats: dict[str, int],
+    chunk_sec: float = 30.0,
+    hop_sec: float | None = None,
+    max_chunks: int = 200,
+    prefer_cpu: bool = False,
+    long_audio_sec: float = 60.0,
+    prefer_cpu_for_long_audio: bool = False,
+) -> tuple[np.ndarray | None, str, str, str]:
+    """Return (embedding, extraction_mode, failure_type, message). failure_type empty on success."""
+    duration_sec = len(y) / float(max(sr, 1))
+    cuda_oom_seen = False
+
+    if prefer_cpu_for_long_audio and duration_sec >= long_audio_sec and not disable_ssl_chunked_fallback:
+        emb, mode, fail_type, fail_msg = _try_chunked_ssl_fallback(
+            y,
+            sr,
+            ssl_device=ssl_device,
+            disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+            disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+            robustness_stats=robustness_stats,
+            chunk_sec=chunk_sec,
+            hop_sec=hop_sec,
+            max_chunks=max_chunks,
+            prefer_cpu=True,
+            after_cuda_oom=False,
+            long_audio_sec=long_audio_sec,
+        )
+        if emb is not None:
+            return emb, mode or "chunked_cpu_fallback", "", ""
+
+    primary = _get_ssl_context(ssl_device)
+    if primary is None:
+        return None, "", "ssl_embedding_failure", "SSL model unavailable"
+    try:
+        emb = primary["extract"](
+            y, sr, primary["processor"], primary["model"], primary["device"], primary["meta"]["pooling"]
+        )
+        return emb, "normal", "", ""
+    except Exception as exc:
+        if not _is_cuda_oom(exc):
+            return None, "", "ssl_embedding_failure", str(exc)
+
+        cuda_oom_seen = True
+        _inc_stat(robustness_stats, "ssl_cuda_oom_count")
+        _cleanup_torch_memory()
+
+        if disable_ssl_cpu_fallback and disable_ssl_chunked_fallback:
+            return None, "", "ssl_cuda_oom", str(exc)
+
+        if not disable_ssl_cpu_fallback and ssl_device != "cpu" and duration_sec <= CPU_SSL_FALLBACK_MAX_SEC:
+            _inc_stat(robustness_stats, "ssl_cpu_fallback_attempt_count")
+            cpu_ctx = _get_ssl_context("cpu")
+            if cpu_ctx is None:
+                _inc_stat(robustness_stats, "ssl_cpu_fallback_failure_count")
+            else:
+                try:
+                    if "cpu" not in str(cpu_ctx.get("device", "")).lower():
+                        raise RuntimeError(f"CPU fallback context device is not CPU: {cpu_ctx.get('device')}")
+                    emb = cpu_ctx["extract"](
+                        y,
+                        sr,
+                        cpu_ctx["processor"],
+                        cpu_ctx["model"],
+                        cpu_ctx["device"],
+                        cpu_ctx["meta"]["pooling"],
+                    )
+                    _inc_stat(robustness_stats, "ssl_cpu_fallback_success_count")
+                    return emb, "cpu_fallback", "", ""
+                except Exception as cpu_exc:
+                    _inc_stat(robustness_stats, "ssl_cpu_fallback_failure_count")
+                    if not _is_cuda_oom(cpu_exc):
+                        last_cpu_msg = str(cpu_exc)
+                    else:
+                        last_cpu_msg = str(cpu_exc)
+                    _cleanup_torch_memory()
+                    emb, mode, fail_type, fail_msg = _try_chunked_ssl_fallback(
+                        y,
+                        sr,
+                        ssl_device=ssl_device,
+                        disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+                        disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+                        robustness_stats=robustness_stats,
+                        chunk_sec=chunk_sec,
+                        hop_sec=hop_sec,
+                        max_chunks=max_chunks,
+                        prefer_cpu=True,
+                        after_cuda_oom=True,
+                        long_audio_sec=long_audio_sec,
+                    )
+                    if emb is not None:
+                        return emb, mode, "", ""
+                    return None, "", fail_type or "ssl_chunked_fallback_failed", fail_msg or last_cpu_msg
+
+        if duration_sec > CPU_SSL_FALLBACK_MAX_SEC:
+            _inc_stat(robustness_stats, "ssl_cpu_fallback_skipped_long_audio_count")
+
+        emb, mode, fail_type, fail_msg = _try_chunked_ssl_fallback(
+            y,
+            sr,
+            ssl_device=ssl_device,
+            disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+            disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+            robustness_stats=robustness_stats,
+            chunk_sec=chunk_sec,
+            hop_sec=hop_sec,
+            max_chunks=max_chunks,
+            prefer_cpu=cuda_oom_seen,
+            after_cuda_oom=True,
+            long_audio_sec=long_audio_sec,
+        )
+        if emb is not None:
+            return emb, mode, "", ""
+        return None, "", fail_type or "ssl_chunked_fallback_failed", fail_msg or str(exc)
 
 
 def extract_live_feature_tables(
     abs_path: Path,
     *,
     segment_mode: str = "fast",
-) -> tuple[pd.DataFrame, pd.DataFrame, str, str]:
-    """Return (file_one_row_df, segment_df, error_status, error_message)."""
+    ssl_device: str = "auto",
+    disable_ssl_cpu_fallback: bool = False,
+    disable_ssl_chunked_fallback: bool = False,
+    ssl_chunk_sec: float = 30.0,
+    ssl_chunk_hop_sec: float | None = None,
+    ssl_chunk_max_chunks: int = 200,
+    prefer_cpu_for_long_audio: bool = False,
+    long_audio_sec: float = 60.0,
+    max_audio_duration_sec: float | None = None,
+    max_segments_per_file: int = 500,
+    robustness_stats: dict[str, int] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame, str, str, dict[str, Any]]:
+    """Return (file_one_row_df, segment_df, error_status, error_message, ssl_meta)."""
     from phase8c_feature_utils import (
         empty_feature_dict,
         extract_file_feature_dict,
@@ -149,39 +508,70 @@ def extract_live_feature_tables(
         safe_audio_slice,
     )
 
+    if robustness_stats is None:
+        robustness_stats = {}
+    ssl_meta: dict[str, Any] = {
+        "ssl_extraction_mode": "",
+        "ssl_chunked_fallback_used": False,
+        "ssl_cpu_fallback_used": False,
+        "ssl_cuda_oom_recovered": False,
+        "audio_duration_sec": np.nan,
+    }
     try:
         y, sr, _feature_source, load_err = load_audio_mono(str(abs_path), TARGET_SR)
     except Exception as exc:
-        return pd.DataFrame(), pd.DataFrame(), "load_failure", str(exc)
+        st, _ = _classify_audio_load_failure(abs_path, str(exc))
+        return pd.DataFrame(), pd.DataFrame(), st, str(exc), ssl_meta
 
     if y is None or sr is None:
-        return pd.DataFrame(), pd.DataFrame(), "load_failure", load_err or "missing_audio"
+        st, _ = _classify_audio_load_failure(abs_path, load_err or "missing_audio")
+        return pd.DataFrame(), pd.DataFrame(), st, load_err or "missing_audio", ssl_meta
 
     duration = len(y) / float(sr)
+    ssl_meta["audio_duration_sec"] = float(duration)
+    if max_audio_duration_sec is not None and np.isfinite(max_audio_duration_sec) and duration > max_audio_duration_sec:
+        y = y[: int(max_audio_duration_sec * sr)]
+        duration = len(y) / float(sr)
+        ssl_meta["audio_duration_sec"] = float(duration)
     if duration < 0.25:
-        return pd.DataFrame(), pd.DataFrame(), "too_short", f"duration_sec={duration:.3f}"
+        return pd.DataFrame(), pd.DataFrame(), "too_short", f"duration_sec={duration:.3f}", ssl_meta
 
     try:
         file_acoustic = extract_file_feature_dict(y, sr)
     except Exception as exc:
-        return pd.DataFrame(), pd.DataFrame(), "feature_extraction_failure", f"acoustic_file: {exc}"
+        return pd.DataFrame(), pd.DataFrame(), "feature_extraction_failure", f"acoustic_file: {exc}", ssl_meta
 
-    ssl_ctx = _get_ssl_context()
+    oom_before = int(robustness_stats.get("ssl_cuda_oom_count", 0))
     file_ssl: dict[str, float] = {}
-    if ssl_ctx is None:
-        return pd.DataFrame(), pd.DataFrame(), "ssl_embedding_failure", "SSL model unavailable"
-
-    try:
-        emb = ssl_ctx["extract"](y, sr, ssl_ctx["processor"], ssl_ctx["model"], ssl_ctx["device"], ssl_ctx["meta"]["pooling"])
-        for i, col in enumerate(ssl_ctx["columns"](emb)):
-            file_ssl[col] = float(emb[i])
-    except Exception as exc:
-        return pd.DataFrame(), pd.DataFrame(), "ssl_embedding_failure", str(exc)
+    emb, extraction_mode, fail_type, fail_msg = _extract_ssl_embedding_robust(
+        y,
+        sr,
+        ssl_device=ssl_device,
+        disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+        disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+        robustness_stats=robustness_stats,
+        chunk_sec=ssl_chunk_sec,
+        hop_sec=ssl_chunk_hop_sec,
+        max_chunks=ssl_chunk_max_chunks,
+        prefer_cpu_for_long_audio=prefer_cpu_for_long_audio,
+        long_audio_sec=long_audio_sec,
+    )
+    if emb is None:
+        return pd.DataFrame(), pd.DataFrame(), fail_type or "ssl_embedding_failure", fail_msg or "SSL failure", ssl_meta
+    ssl_meta["ssl_extraction_mode"] = extraction_mode or "normal"
+    ssl_meta["ssl_chunked_fallback_used"] = extraction_mode.startswith("chunked_")
+    ssl_meta["ssl_cpu_fallback_used"] = extraction_mode in ("cpu_fallback", "chunked_cpu_fallback")
+    ssl_meta["ssl_cuda_oom_recovered"] = int(robustness_stats.get("ssl_cuda_oom_count", 0)) > oom_before and (
+        extraction_mode in ("cpu_fallback", "chunked_cpu_fallback", "chunked_cuda_fallback")
+    )
+    cols = [f"ssl_emb_{i:03d}" for i in range(len(emb))]
+    for i, col in enumerate(cols):
+        file_ssl[col] = float(emb[i])
 
     file_row = {**file_acoustic, **file_ssl}
     file_df = pd.DataFrame([file_row])
 
-    seg_defs = synthetic_segments(duration)
+    seg_defs = synthetic_segments(duration, max_segments_per_file=max_segments_per_file)
     seg_rows: list[dict[str, Any]] = []
     for idx, (start, end) in enumerate(seg_defs):
         seg_audio, slice_err = safe_audio_slice(y, sr, start, end)
@@ -190,14 +580,28 @@ def extract_live_feature_tables(
         try:
             seg_ac = extract_segment_feature_dict(seg_audio, sr, mode=segment_mode)
         except Exception as exc:
-            return file_df, pd.DataFrame(), "feature_extraction_failure", f"segment_acoustic: {exc}"
-        try:
-            seg_emb = ssl_ctx["extract"](
-                seg_audio, sr, ssl_ctx["processor"], ssl_ctx["model"], ssl_ctx["device"], ssl_ctx["meta"]["pooling"]
+            return file_df, pd.DataFrame(), "feature_extraction_failure", f"segment_acoustic: {exc}", ssl_meta
+        seg_emb, _seg_mode, seg_fail_type, seg_fail_msg = _extract_ssl_embedding_robust(
+            seg_audio,
+            sr,
+            ssl_device=ssl_device,
+            disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+            disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+            robustness_stats=robustness_stats,
+            chunk_sec=ssl_chunk_sec,
+            hop_sec=ssl_chunk_hop_sec,
+            max_chunks=ssl_chunk_max_chunks,
+            long_audio_sec=long_audio_sec,
+        )
+        if seg_emb is None:
+            return (
+                file_df,
+                pd.DataFrame(),
+                seg_fail_type or "ssl_embedding_failure",
+                f"segment_ssl: {seg_fail_msg}",
+                ssl_meta,
             )
-            seg_ssl = {col: float(seg_emb[i]) for i, col in enumerate(ssl_ctx["columns"](seg_emb))}
-        except Exception as exc:
-            return file_df, pd.DataFrame(), "ssl_embedding_failure", f"segment_ssl: {exc}"
+        seg_ssl = {f"ssl_emb_{i:03d}": float(seg_emb[i]) for i in range(len(seg_emb))}
         seg_rows.append(
             {
                 "segment_id": f"live_{idx:04d}",
@@ -210,11 +614,11 @@ def extract_live_feature_tables(
         )
 
     if not seg_rows:
-        return file_df, pd.DataFrame(), "too_short", "no segments after slicing"
+        return file_df, pd.DataFrame(), "too_short", "no segments after slicing", ssl_meta
 
     seg_df = pd.DataFrame(seg_rows)
     seg_df = compute_live_localization_features(seg_df)
-    return file_df, seg_df, "ok", ""
+    return file_df, seg_df, "ok", "", ssl_meta
 
 
 def evaluate_manifest_cascade(
@@ -229,7 +633,17 @@ def evaluate_manifest_cascade(
     progress_fn: Any,
     use_live_extraction: bool = True,
     segment_mode: str = "fast",
-) -> tuple[pd.DataFrame, pd.DataFrame, list[dict[str, Any]]]:
+    ssl_device: str = "auto",
+    disable_ssl_cpu_fallback: bool = False,
+    disable_ssl_chunked_fallback: bool = False,
+    ssl_chunk_sec: float = 30.0,
+    ssl_chunk_hop_sec: float | None = None,
+    ssl_chunk_max_chunks: int = 200,
+    prefer_cpu_for_long_audio: bool = False,
+    long_audio_sec: float = 60.0,
+    max_audio_duration_sec: float | None = None,
+    max_segments_per_file: int = 500,
+) -> tuple[pd.DataFrame, pd.DataFrame, list[dict[str, Any]], dict[str, int]]:
     thresholds = artifacts.get("thresholds", P5C_ACCEPTED_CASCADE_THRESHOLDS)
     fg_bundle = artifacts["file_gate_bundle"]
     sg_bundle = artifacts["segment_bundle"]
@@ -246,6 +660,7 @@ def evaluate_manifest_cascade(
     segment_rows: list[dict[str, Any]] = []
     error_rows: list[dict[str, Any]] = []
 
+    robustness_stats: dict[str, int] = {}
     for i, m in enumerate(manifest.itertuples(index=False), start=1):
         fp = normalize_path_str(m.file_path)
         abs_path = root / fp
@@ -258,6 +673,10 @@ def evaluate_manifest_cascade(
         base["source_split_status"] = split_status
         base["error_status"] = err_status
         base["error_message"] = err_msg
+        if dur is not None and np.isfinite(dur):
+            base["audio_duration_sec"] = float(dur)
+
+        live_ssl_fields: dict[str, Any] = {}
 
         if err_status != "ok":
             error_rows.append({**base, "failure_type": err_status})
@@ -269,12 +688,34 @@ def evaluate_manifest_cascade(
 
         if fm.empty and sm.empty and use_live_extraction:
             try:
-                fm, sm, live_st, live_msg = extract_live_feature_tables(abs_path, segment_mode=segment_mode)
+                fm, sm, live_st, live_msg, ssl_meta = extract_live_feature_tables(
+                    abs_path,
+                    segment_mode=segment_mode,
+                    ssl_device=ssl_device,
+                    disable_ssl_cpu_fallback=disable_ssl_cpu_fallback,
+                    disable_ssl_chunked_fallback=disable_ssl_chunked_fallback,
+                    ssl_chunk_sec=ssl_chunk_sec,
+                    ssl_chunk_hop_sec=ssl_chunk_hop_sec,
+                    ssl_chunk_max_chunks=ssl_chunk_max_chunks,
+                    prefer_cpu_for_long_audio=prefer_cpu_for_long_audio,
+                    long_audio_sec=long_audio_sec,
+                    max_audio_duration_sec=max_audio_duration_sec,
+                    max_segments_per_file=max_segments_per_file,
+                    robustness_stats=robustness_stats,
+                )
+                live_ssl_fields = {
+                    "ssl_extraction_mode": ssl_meta.get("ssl_extraction_mode", ""),
+                    "ssl_chunked_fallback_used": bool(ssl_meta.get("ssl_chunked_fallback_used", False)),
+                    "ssl_cpu_fallback_used": bool(ssl_meta.get("ssl_cpu_fallback_used", False)),
+                    "ssl_cuda_oom_recovered": bool(ssl_meta.get("ssl_cuda_oom_recovered", False)),
+                    "audio_duration_sec": ssl_meta.get("audio_duration_sec", np.nan),
+                }
                 if live_st != "ok":
                     error_rows.append({**base, "failure_type": live_st, "error_message": live_msg})
                     file_rows.append(
                         {
                             **base,
+                            **live_ssl_fields,
                             "error_status": live_st,
                             "error_message": live_msg,
                             "partial_evidence_positive": False,
@@ -321,6 +762,9 @@ def evaluate_manifest_cascade(
             file_rows.append({**base, "partial_evidence_positive": False})
             continue
 
+        seg_work["segment_index_chronological"] = (
+            seg_work["start_sec"].rank(method="first").astype(int) - 1
+        )
         seg_work["segment_probability"] = seg_probs
         seg_work = seg_work.sort_values("segment_probability", ascending=False).reset_index(drop=True)
         seg_work["segment_rank"] = np.arange(1, len(seg_work) + 1)
@@ -331,9 +775,11 @@ def evaluate_manifest_cascade(
             segment_probs=seg_probs,
             thresholds=thresholds,
         )
-        best_idx = int(np.argmax(seg_probs)) if len(seg_probs) else 0
-        cand_start = float(seg_work.iloc[best_idx]["start_sec"])
-        cand_end = float(seg_work.iloc[best_idx]["end_sec"])
+        best_row = seg_work.iloc[0]
+        cand_start = float(best_row["start_sec"])
+        cand_end = float(best_row["end_sec"])
+        cand_prob = float(best_row["segment_probability"])
+        cand_rank = int(best_row["segment_rank"])
 
         has_ts = bool(getattr(m, "has_timestamp_label", False))
         ts_start = pd.to_numeric(getattr(m, "timestamp_start", np.nan), errors="coerce")
@@ -373,12 +819,15 @@ def evaluate_manifest_cascade(
 
         out_row = {
             **base,
+            **live_ssl_fields,
             "error_status": "ok",
             "error_message": "",
             "file_gate_probability": gate_proba,
             **cascade,
             "candidate_segment_start": cand_start,
             "candidate_segment_end": cand_end,
+            "candidate_segment_probability": cand_prob,
+            "candidate_segment_rank": cand_rank,
             "has_timestamp_label": has_ts,
             "candidate_timestamp_error_seconds": cand_ts_error if cand_ts_error is not None else np.nan,
             "top1_timestamp_hit": top1,
@@ -403,7 +852,8 @@ def evaluate_manifest_cascade(
                 {
                     "file_path": fp,
                     "file_name": seg_file_name,
-                    "segment_index": int(srow["segment_rank"]) - 1,
+                    "segment_index": int(srow["segment_index_chronological"]),
+                    "segment_index_chronological": int(srow["segment_index_chronological"]),
                     "segment_start": float(srow["start_sec"]),
                     "segment_end": float(srow["end_sec"]),
                     "segment_probability": float(srow["segment_probability"]),
@@ -417,7 +867,7 @@ def evaluate_manifest_cascade(
         if show and progress_fn and i % 10 == 0:
             progress_fn(f"Evaluated {i}/{len(manifest)} files...")
 
-    return pd.DataFrame(file_rows), pd.DataFrame(segment_rows), error_rows
+    return pd.DataFrame(file_rows), pd.DataFrame(segment_rows), error_rows, robustness_stats
 
 
 def p5d_run_status_path(out_dir: Path) -> Path:

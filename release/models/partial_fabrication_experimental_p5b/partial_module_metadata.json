@@ -1,0 +1,68 @@
+{
+  "module_name": "partial_fabrication_experimental_p5b",
+  "evidence_axis": "partial_fabrication",
+  "status": "experimental_manual_review_only",
+  "production_ready": false,
+  "court_ready": false,
+  "final_verdict_model": false,
+  "manual_review_required": true,
+  "source_phase": "Phase 9D-P5B/P5F",
+  "packaged_phase": "Phase 9D-P6",
+  "file_gate_feature_set": "ssl",
+  "segment_localizer_feature_set": "combined",
+  "thresholds": {
+    "file_gate_threshold": 0.5,
+    "segment_threshold": 0.9,
+    "contrast_threshold": 0.25,
+    "broad_limit": 0.45
+  },
+  "validation_summary": {
+    "source_evaluations": [
+      "phase9d_p5d",
+      "phase9d_p5f",
+      "phase9d_p5f_p2_diagnostics"
+    ],
+    "p5f_total_files": 35,
+    "p5f_evaluated_files": 35,
+    "p5f_failed_files": 0,
+    "p5f_partial_file_count": 12,
+    "fabricated_20pct_file_count": 10,
+    "fabricated_20pct_recall": 0.7,
+    "fabricated_20pct_false_negative_count": 3,
+    "false_partial_count": 2,
+    "broad_activation_rate_when_positive": 0.0,
+    "timestamp_positive_count": 8,
+    "fabricated_20pct_top5_hit_rate": 1.0,
+    "release_packaging_as_final_detector": false,
+    "integration_packaging_only": true,
+    "validation_phases_passed": [
+      "P5D-R2-P1",
+      "P5F-P1",
+      "P5F-P2"
+    ]
+  },
+  "limitations": [
+    "3/10 new fabricated_20pct false negatives remain (P5F-P1 holdout).",
+    "2 non-partial false positives remain on direct-labelled testing audio (P5F-P2).",
+    "fabricated_20pct_recall = 0.70 on expanded P5F holdout.",
+    "broad_activation_rate_when_positive = 0.0 in P5F metrics.",
+    "Not optimized or tuned on the current 10 fabricated_20pct examples.",
+    "This module provides an experimental evidence indicator only.",
+    "Manual forensic review is recommended for any candidate segment.",
+    "Top-k localization on detected timestamp-labelled positives is useful but not conclusive proof."
+  ],
+  "forbidden_claims": [
+    "conclusive synthetic/authentic claim",
+    "conclusive authenticity decision",
+    "legal-evidence claim",
+    "operational deployment claim",
+    "conclusive proof claim"
+  ],
+  "tags": [
+    "experimental_partial_fabrication_evidence",
+    "manual_review_required",
+    "no_conclusive_authenticity_decision",
+    "no_operational_deployment_claim",
+    "no_legal_evidence_claim"
+  ]
+}

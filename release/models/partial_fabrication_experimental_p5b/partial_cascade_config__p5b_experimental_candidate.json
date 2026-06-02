@@ -1,0 +1,16 @@
+{
+  "schema": "phase9d_p5c_cascade_config_v1",
+  "experimental_only": true,
+  "file_gate_feature_set": "ssl",
+  "segment_feature_set": "combined",
+  "thresholds": {
+    "file_gate_threshold": 0.5,
+    "segment_threshold": 0.9,
+    "contrast_threshold": 0.25,
+    "broad_limit": 0.45
+  },
+  "model_artifacts": {
+    "file_gate": "partial_file_gate__ssl__p5b_experimental_candidate.joblib",
+    "segment_localizer": "partial_segment_localizer_v2__combined__p5b_experimental_candidate.joblib"
+  }
+}
