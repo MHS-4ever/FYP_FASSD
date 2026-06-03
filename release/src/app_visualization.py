@@ -91,6 +91,22 @@ def _decimate(y: np.ndarray, max_points: int) -> tuple[np.ndarray, np.ndarray]:
     return idx.astype(np.float64), y[idx].astype(np.float64)
 
 
+def _waveform_highlight_style(response: dict[str, Any]) -> tuple[str, str, str | None]:
+    """Return (mode, legend_label, color) for waveform highlighting."""
+    try:
+        from src.app_report_formatting import build_user_result_summary
+
+        summary = build_user_result_summary(response)
+        level = summary.get("recommendation_level", "none")
+        if level == "review_recommended":
+            return "strong", "Highlighted evidence region", "#f97316"
+        if level == "optional_review" or summary.get("segment_candidate_only"):
+            return "candidate", "Candidate region for optional review", "#eab308"
+    except Exception:
+        pass
+    return "none", "No highlighted evidence region", None
+
+
 def generate_waveform_highlight(
     audio_path: str | None,
     response: dict[str, Any],
@@ -108,6 +124,12 @@ def generate_waveform_highlight(
     png_path = out_dir / f"waveform_{uuid.uuid4().hex[:12]}.png"
 
     segments = extract_candidate_segments(response)
+    mode, span_label, span_color = _waveform_highlight_style(response)
+    if mode == "none":
+        segments = []
+    elif mode == "candidate":
+        segments = segments[:1]
+
     audio_meta = response.get("audio_metadata") or {}
     duration = float(audio_meta.get("duration_sec") or 0.0)
 
@@ -126,6 +148,7 @@ def generate_waveform_highlight(
         t_sec = t_idx / float(sr)
         ax.plot(t_sec, y_plot, color="#334155", linewidth=0.6, label="Audio waveform")
         highlighted = False
+        label_color = span_color or "#f97316"
         for seg in segments:
             start = seg.get("start_sec")
             end = seg.get("end_sec")
@@ -134,16 +157,16 @@ def generate_waveform_highlight(
             ax.axvspan(
                 float(start),
                 float(end),
-                color="#f97316",
+                color=label_color,
                 alpha=0.35,
-                label="Highlighted suspicious segment" if not highlighted else None,
+                label=span_label if not highlighted else None,
             )
             highlighted = True
         if not highlighted:
             ax.text(
                 0.5,
                 0.92,
-                "No candidate segment highlighted",
+                "No highlighted evidence region",
                 transform=ax.transAxes,
                 ha="center",
                 fontsize=9,

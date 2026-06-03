@@ -91,9 +91,10 @@ table {{ border-collapse: collapse; width: 100%; }} th, td {{ border: 1px solid 
 </div>
 <div class="box">
 <h2>Main result</h2>
-<p><b>{html.escape(summary.get('finding_title',''))}</b></p>
+<p><b>{html.escape(summary.get('voice_origin_text') or summary.get('finding_title',''))}</b></p>
+<p>{html.escape(summary.get('forensic_indicator_summary',''))}</p>
 <p>{html.escape(summary.get('highlighted_segment_text',''))}</p>
-<p>{html.escape(summary.get('recommendation_text',''))}</p>
+<p><b>Recommendation ({html.escape(str(summary.get('recommendation_level', 'none')))}):</b> {html.escape(summary.get('recommendation_text',''))}</p>
 </div>
 <div class="box"><h2>Evidence axes</h2><ul>{card_blocks}</ul></div>
 <div class="box"><h2>Visual evidence</h2>{img_block or '<p>Waveform image not available.</p>'}</div>
@@ -155,8 +156,16 @@ def _write_pdf_reportlab(
     story.append(Spacer(1, 0.15 * inch))
 
     story.append(Paragraph("<b>Main result</b>", styles["Heading2"]))
-    for key in ("finding_title", "highlighted_segment_text", "recommendation_text"):
-        story.append(Paragraph(str(summary.get(key, "")), styles["Normal"]))
+    story.append(Paragraph(str(summary.get("voice_origin_text") or summary.get("finding_title", "")), styles["Normal"]))
+    story.append(Paragraph(str(summary.get("forensic_indicator_summary", "")), styles["Normal"]))
+    story.append(Paragraph(str(summary.get("highlighted_segment_text", "")), styles["Normal"]))
+    story.append(
+        Paragraph(
+            f"Recommendation ({summary.get('recommendation_level', 'none')}): "
+            f"{summary.get('recommendation_text', '')}",
+            styles["Normal"],
+        )
+    )
     story.append(Spacer(1, 0.15 * inch))
 
     story.append(Paragraph("<b>Evidence axis summary</b>", styles["Heading2"]))

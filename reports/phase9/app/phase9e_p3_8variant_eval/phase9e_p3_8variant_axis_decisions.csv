@@ -1,0 +1,737 @@
+file_name,variant,base_id,axis_name,status,score_text
+ai_001_direct.wav,ai_clean,001,AI-origin evidence,Detected,Evidence score: 0.999
+ai_001_direct.wav,ai_clean,001,Replay evidence,Not detected,Evidence score: 0.001
+ai_001_direct.wav,ai_clean,001,Channel/mixer evidence,Not detected,Evidence score: 0.012
+ai_001_direct.wav,ai_clean,001,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_002_direct.wav,ai_clean,002,AI-origin evidence,Detected,Evidence score: 1.000
+ai_002_direct.wav,ai_clean,002,Replay evidence,Not detected,Evidence score: 0.001
+ai_002_direct.wav,ai_clean,002,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_002_direct.wav,ai_clean,002,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_003_direct.wav,ai_clean,003,AI-origin evidence,Detected,Evidence score: 0.999
+ai_003_direct.wav,ai_clean,003,Replay evidence,Not detected,Evidence score: 0.001
+ai_003_direct.wav,ai_clean,003,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_003_direct.wav,ai_clean,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_004_direct.wav,ai_clean,004,AI-origin evidence,Detected,Evidence score: 1.000
+ai_004_direct.wav,ai_clean,004,Replay evidence,Not detected,Evidence score: 0.001
+ai_004_direct.wav,ai_clean,004,Channel/mixer evidence,Not detected,Evidence score: 0.004
+ai_004_direct.wav,ai_clean,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_005_direct.wav,ai_clean,005,AI-origin evidence,Detected,Evidence score: 1.000
+ai_005_direct.wav,ai_clean,005,Replay evidence,Not detected,Evidence score: 0.001
+ai_005_direct.wav,ai_clean,005,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_005_direct.wav,ai_clean,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_006_direct.wav,ai_clean,006,AI-origin evidence,Detected,Evidence score: 1.000
+ai_006_direct.wav,ai_clean,006,Replay evidence,Not detected,Evidence score: 0.001
+ai_006_direct.wav,ai_clean,006,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_006_direct.wav,ai_clean,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_007_direct.wav,ai_clean,007,AI-origin evidence,Detected,Evidence score: 0.996
+ai_007_direct.wav,ai_clean,007,Replay evidence,Not detected,Evidence score: 0.004
+ai_007_direct.wav,ai_clean,007,Channel/mixer evidence,Not detected,Evidence score: 0.023
+ai_007_direct.wav,ai_clean,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_008_direct.wav,ai_clean,008,AI-origin evidence,Detected,Evidence score: 0.999
+ai_008_direct.wav,ai_clean,008,Replay evidence,Not detected,Evidence score: 0.001
+ai_008_direct.wav,ai_clean,008,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_008_direct.wav,ai_clean,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_009_direct.wav,ai_clean,009,AI-origin evidence,Detected,Evidence score: 0.998
+ai_009_direct.wav,ai_clean,009,Replay evidence,Not detected,Evidence score: 0.001
+ai_009_direct.wav,ai_clean,009,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_009_direct.wav,ai_clean,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_010_direct.wav,ai_clean,010,AI-origin evidence,Detected,Evidence score: 0.999
+ai_010_direct.wav,ai_clean,010,Replay evidence,Not detected,Evidence score: 0.003
+ai_010_direct.wav,ai_clean,010,Channel/mixer evidence,Not detected,Evidence score: 0.010
+ai_010_direct.wav,ai_clean,010,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_011_direct.wav,ai_clean,011,AI-origin evidence,Detected,Evidence score: 0.999
+ai_011_direct.wav,ai_clean,011,Replay evidence,Not detected,Evidence score: 0.000
+ai_011_direct.wav,ai_clean,011,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_011_direct.wav,ai_clean,011,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_012_direct.wav,ai_clean,012,AI-origin evidence,Detected,Evidence score: 0.980
+ai_012_direct.wav,ai_clean,012,Replay evidence,Not detected,Evidence score: 0.000
+ai_012_direct.wav,ai_clean,012,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_012_direct.wav,ai_clean,012,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_013_direct.wav,ai_clean,013,AI-origin evidence,Detected,Evidence score: 0.999
+ai_013_direct.wav,ai_clean,013,Replay evidence,Not detected,Evidence score: 0.001
+ai_013_direct.wav,ai_clean,013,Channel/mixer evidence,Not detected,Evidence score: 0.002
+ai_013_direct.wav,ai_clean,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_014_direct.wav,ai_clean,014,AI-origin evidence,Detected,Evidence score: 0.999
+ai_014_direct.wav,ai_clean,014,Replay evidence,Not detected,Evidence score: 0.001
+ai_014_direct.wav,ai_clean,014,Channel/mixer evidence,Not detected,Evidence score: 0.007
+ai_014_direct.wav,ai_clean,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_015_direct.wav,ai_clean,015,AI-origin evidence,Detected,Evidence score: 0.994
+ai_015_direct.wav,ai_clean,015,Replay evidence,Not detected,Evidence score: 0.002
+ai_015_direct.wav,ai_clean,015,Channel/mixer evidence,Not detected,Evidence score: 0.064
+ai_015_direct.wav,ai_clean,015,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_016_direct.wav,ai_clean,016,AI-origin evidence,Detected,Evidence score: 0.991
+ai_016_direct.wav,ai_clean,016,Replay evidence,Not detected,Evidence score: 0.001
+ai_016_direct.wav,ai_clean,016,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_016_direct.wav,ai_clean,016,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_017_direct.wav,ai_clean,017,AI-origin evidence,Detected,Evidence score: 0.965
+ai_017_direct.wav,ai_clean,017,Replay evidence,Not detected,Evidence score: 0.003
+ai_017_direct.wav,ai_clean,017,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_017_direct.wav,ai_clean,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_018_direct.wav,ai_clean,018,AI-origin evidence,Detected,Evidence score: 0.994
+ai_018_direct.wav,ai_clean,018,Replay evidence,Not detected,Evidence score: 0.002
+ai_018_direct.wav,ai_clean,018,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_018_direct.wav,ai_clean,018,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_019_direct.wav,ai_clean,019,AI-origin evidence,Detected,Evidence score: 0.975
+ai_019_direct.wav,ai_clean,019,Replay evidence,Not detected,Evidence score: 0.001
+ai_019_direct.wav,ai_clean,019,Channel/mixer evidence,Not detected,Evidence score: 0.006
+ai_019_direct.wav,ai_clean,019,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_020_direct.wav,ai_clean,020,AI-origin evidence,Detected,Evidence score: 0.994
+ai_020_direct.wav,ai_clean,020,Replay evidence,Not detected,Evidence score: 0.003
+ai_020_direct.wav,ai_clean,020,Channel/mixer evidence,Not detected,Evidence score: 0.002
+ai_020_direct.wav,ai_clean,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_021_direct.wav,ai_clean,021,AI-origin evidence,Detected,Evidence score: 0.997
+ai_021_direct.wav,ai_clean,021,Replay evidence,Not detected,Evidence score: 0.001
+ai_021_direct.wav,ai_clean,021,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_021_direct.wav,ai_clean,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_022_direct.wav,ai_clean,022,AI-origin evidence,Detected,Evidence score: 1.000
+ai_022_direct.wav,ai_clean,022,Replay evidence,Not detected,Evidence score: 0.002
+ai_022_direct.wav,ai_clean,022,Channel/mixer evidence,Not detected,Evidence score: 0.002
+ai_022_direct.wav,ai_clean,022,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_023_direct.wav,ai_clean,023,AI-origin evidence,Detected,Evidence score: 0.999
+ai_023_direct.wav,ai_clean,023,Replay evidence,Not detected,Evidence score: 0.001
+ai_023_direct.wav,ai_clean,023,Channel/mixer evidence,Not detected,Evidence score: 0.002
+ai_023_direct.wav,ai_clean,023,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_001_fabricated.wav,ai_fabricated,001,AI-origin evidence,Detected,Evidence score: 0.997
+ai_001_fabricated.wav,ai_fabricated,001,Replay evidence,Not detected,Evidence score: 0.002
+ai_001_fabricated.wav,ai_fabricated,001,Channel/mixer evidence,Not detected,Evidence score: 0.010
+ai_001_fabricated.wav,ai_fabricated,001,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_002_fabricated.wav,ai_fabricated,002,AI-origin evidence,Detected,Evidence score: 0.999
+ai_002_fabricated.wav,ai_fabricated,002,Replay evidence,Not detected,Evidence score: 0.001
+ai_002_fabricated.wav,ai_fabricated,002,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_002_fabricated.wav,ai_fabricated,002,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_003_fabricated.wav,ai_fabricated,003,AI-origin evidence,Detected,Evidence score: 0.998
+ai_003_fabricated.wav,ai_fabricated,003,Replay evidence,Not detected,Evidence score: 0.001
+ai_003_fabricated.wav,ai_fabricated,003,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_003_fabricated.wav,ai_fabricated,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_004_fabricated.wav,ai_fabricated,004,AI-origin evidence,Detected,Evidence score: 0.999
+ai_004_fabricated.wav,ai_fabricated,004,Replay evidence,Not detected,Evidence score: 0.001
+ai_004_fabricated.wav,ai_fabricated,004,Channel/mixer evidence,Not detected,Evidence score: 0.003
+ai_004_fabricated.wav,ai_fabricated,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_005_fabricated.wav,ai_fabricated,005,AI-origin evidence,Detected,Evidence score: 0.999
+ai_005_fabricated.wav,ai_fabricated,005,Replay evidence,Not detected,Evidence score: 0.000
+ai_005_fabricated.wav,ai_fabricated,005,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_005_fabricated.wav,ai_fabricated,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_006_fabricated.wav,ai_fabricated,006,AI-origin evidence,Detected,Evidence score: 0.999
+ai_006_fabricated.wav,ai_fabricated,006,Replay evidence,Not detected,Evidence score: 0.001
+ai_006_fabricated.wav,ai_fabricated,006,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_006_fabricated.wav,ai_fabricated,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_007_fabricated.wav,ai_fabricated,007,AI-origin evidence,Detected,Evidence score: 0.988
+ai_007_fabricated.wav,ai_fabricated,007,Replay evidence,Not detected,Evidence score: 0.008
+ai_007_fabricated.wav,ai_fabricated,007,Channel/mixer evidence,Not detected,Evidence score: 0.034
+ai_007_fabricated.wav,ai_fabricated,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_008_fabricated.wav,ai_fabricated,008,AI-origin evidence,Detected,Evidence score: 0.999
+ai_008_fabricated.wav,ai_fabricated,008,Replay evidence,Not detected,Evidence score: 0.001
+ai_008_fabricated.wav,ai_fabricated,008,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_008_fabricated.wav,ai_fabricated,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_009_fabricated.wav,ai_fabricated,009,AI-origin evidence,Detected,Evidence score: 0.985
+ai_009_fabricated.wav,ai_fabricated,009,Replay evidence,Not detected,Evidence score: 0.001
+ai_009_fabricated.wav,ai_fabricated,009,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_009_fabricated.wav,ai_fabricated,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_010_fabricated.wav,ai_fabricated,010,AI-origin evidence,Detected,Evidence score: 0.997
+ai_010_fabricated.wav,ai_fabricated,010,Replay evidence,Not detected,Evidence score: 0.002
+ai_010_fabricated.wav,ai_fabricated,010,Channel/mixer evidence,Not detected,Evidence score: 0.009
+ai_010_fabricated.wav,ai_fabricated,010,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_011_fabricated.wav,ai_fabricated,011,AI-origin evidence,Detected,Evidence score: 0.997
+ai_011_fabricated.wav,ai_fabricated,011,Replay evidence,Not detected,Evidence score: 0.000
+ai_011_fabricated.wav,ai_fabricated,011,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_011_fabricated.wav,ai_fabricated,011,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_012_fabricated.wav,ai_fabricated,012,AI-origin evidence,Detected,Evidence score: 0.919
+ai_012_fabricated.wav,ai_fabricated,012,Replay evidence,Not detected,Evidence score: 0.000
+ai_012_fabricated.wav,ai_fabricated,012,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_012_fabricated.wav,ai_fabricated,012,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_013_fabricated.wav,ai_fabricated,013,AI-origin evidence,Detected,Evidence score: 0.998
+ai_013_fabricated.wav,ai_fabricated,013,Replay evidence,Not detected,Evidence score: 0.002
+ai_013_fabricated.wav,ai_fabricated,013,Channel/mixer evidence,Not detected,Evidence score: 0.004
+ai_013_fabricated.wav,ai_fabricated,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_014_fabricated.wav,ai_fabricated,014,AI-origin evidence,Detected,Evidence score: 0.998
+ai_014_fabricated.wav,ai_fabricated,014,Replay evidence,Not detected,Evidence score: 0.001
+ai_014_fabricated.wav,ai_fabricated,014,Channel/mixer evidence,Not detected,Evidence score: 0.007
+ai_014_fabricated.wav,ai_fabricated,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_015_fabricated.wav,ai_fabricated,015,AI-origin evidence,Detected,Evidence score: 0.968
+ai_015_fabricated.wav,ai_fabricated,015,Replay evidence,Not detected,Evidence score: 0.003
+ai_015_fabricated.wav,ai_fabricated,015,Channel/mixer evidence,Not detected,Evidence score: 0.055
+ai_015_fabricated.wav,ai_fabricated,015,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_016_fabricated.wav,ai_fabricated,016,AI-origin evidence,Detected,Evidence score: 0.975
+ai_016_fabricated.wav,ai_fabricated,016,Replay evidence,Not detected,Evidence score: 0.001
+ai_016_fabricated.wav,ai_fabricated,016,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_016_fabricated.wav,ai_fabricated,016,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_017_fabricated.wav,ai_fabricated,017,AI-origin evidence,Detected,Evidence score: 0.875
+ai_017_fabricated.wav,ai_fabricated,017,Replay evidence,Not detected,Evidence score: 0.003
+ai_017_fabricated.wav,ai_fabricated,017,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_017_fabricated.wav,ai_fabricated,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_018_fabricated.wav,ai_fabricated,018,AI-origin evidence,Detected,Evidence score: 0.972
+ai_018_fabricated.wav,ai_fabricated,018,Replay evidence,Not detected,Evidence score: 0.001
+ai_018_fabricated.wav,ai_fabricated,018,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_018_fabricated.wav,ai_fabricated,018,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_019_fabricated.wav,ai_fabricated,019,AI-origin evidence,Detected,Evidence score: 0.913
+ai_019_fabricated.wav,ai_fabricated,019,Replay evidence,Not detected,Evidence score: 0.000
+ai_019_fabricated.wav,ai_fabricated,019,Channel/mixer evidence,Not detected,Evidence score: 0.004
+ai_019_fabricated.wav,ai_fabricated,019,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_020_fabricated.wav,ai_fabricated,020,AI-origin evidence,Detected,Evidence score: 0.957
+ai_020_fabricated.wav,ai_fabricated,020,Replay evidence,Not detected,Evidence score: 0.002
+ai_020_fabricated.wav,ai_fabricated,020,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_020_fabricated.wav,ai_fabricated,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_021_fabricated.wav,ai_fabricated,021,AI-origin evidence,Detected,Evidence score: 0.988
+ai_021_fabricated.wav,ai_fabricated,021,Replay evidence,Not detected,Evidence score: 0.001
+ai_021_fabricated.wav,ai_fabricated,021,Channel/mixer evidence,Not detected,Evidence score: 0.000
+ai_021_fabricated.wav,ai_fabricated,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_022_fabricated.wav,ai_fabricated,022,AI-origin evidence,Detected,Evidence score: 0.997
+ai_022_fabricated.wav,ai_fabricated,022,Replay evidence,Not detected,Evidence score: 0.002
+ai_022_fabricated.wav,ai_fabricated,022,Channel/mixer evidence,Not detected,Evidence score: 0.002
+ai_022_fabricated.wav,ai_fabricated,022,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_023_fabricated.wav,ai_fabricated,023,AI-origin evidence,Detected,Evidence score: 0.998
+ai_023_fabricated.wav,ai_fabricated,023,Replay evidence,Not detected,Evidence score: 0.001
+ai_023_fabricated.wav,ai_fabricated,023,Channel/mixer evidence,Not detected,Evidence score: 0.001
+ai_023_fabricated.wav,ai_fabricated,023,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_001_mixer_processed.wav,ai_mixer,001,AI-origin evidence,Detected,Evidence score: 0.242
+ai_001_mixer_processed.wav,ai_mixer,001,Replay evidence,Not detected,Evidence score: 0.558
+ai_001_mixer_processed.wav,ai_mixer,001,Channel/mixer evidence,Detected,Evidence score: 0.954
+ai_001_mixer_processed.wav,ai_mixer,001,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_002_mixer_processed.wav,ai_mixer,002,AI-origin evidence,Detected,Evidence score: 0.855
+ai_002_mixer_processed.wav,ai_mixer,002,Replay evidence,Not detected,Evidence score: 0.538
+ai_002_mixer_processed.wav,ai_mixer,002,Channel/mixer evidence,Detected,Evidence score: 0.987
+ai_002_mixer_processed.wav,ai_mixer,002,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_003_mixer_processed.wav,ai_mixer,003,AI-origin evidence,Detected,Evidence score: 0.635
+ai_003_mixer_processed.wav,ai_mixer,003,Replay evidence,Not detected,Evidence score: 0.468
+ai_003_mixer_processed.wav,ai_mixer,003,Channel/mixer evidence,Detected,Evidence score: 0.963
+ai_003_mixer_processed.wav,ai_mixer,003,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_004_mixer_processed.wav,ai_mixer,004,AI-origin evidence,Detected,Evidence score: 0.795
+ai_004_mixer_processed.wav,ai_mixer,004,Replay evidence,Not detected,Evidence score: 0.621
+ai_004_mixer_processed.wav,ai_mixer,004,Channel/mixer evidence,Detected,Evidence score: 0.989
+ai_004_mixer_processed.wav,ai_mixer,004,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_005_mixer_processed.wav,ai_mixer,005,AI-origin evidence,Detected,Evidence score: 0.890
+ai_005_mixer_processed.wav,ai_mixer,005,Replay evidence,Not detected,Evidence score: 0.362
+ai_005_mixer_processed.wav,ai_mixer,005,Channel/mixer evidence,Detected,Evidence score: 0.989
+ai_005_mixer_processed.wav,ai_mixer,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_006_mixer_processed.wav,ai_mixer,006,AI-origin evidence,Detected,Evidence score: 0.904
+ai_006_mixer_processed.wav,ai_mixer,006,Replay evidence,Not detected,Evidence score: 0.476
+ai_006_mixer_processed.wav,ai_mixer,006,Channel/mixer evidence,Detected,Evidence score: 0.957
+ai_006_mixer_processed.wav,ai_mixer,006,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_007_mixer_processed.wav,ai_mixer,007,AI-origin evidence,Detected,Evidence score: 0.690
+ai_007_mixer_processed.wav,ai_mixer,007,Replay evidence,Not detected,Evidence score: 0.291
+ai_007_mixer_processed.wav,ai_mixer,007,Channel/mixer evidence,Detected,Evidence score: 0.982
+ai_007_mixer_processed.wav,ai_mixer,007,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_008_mixer_processed.wav,ai_mixer,008,AI-origin evidence,Detected,Evidence score: 0.539
+ai_008_mixer_processed.wav,ai_mixer,008,Replay evidence,Not detected,Evidence score: 0.295
+ai_008_mixer_processed.wav,ai_mixer,008,Channel/mixer evidence,Detected,Evidence score: 0.993
+ai_008_mixer_processed.wav,ai_mixer,008,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_009_mixer_processed.wav,ai_mixer,009,AI-origin evidence,Detected,Evidence score: 0.867
+ai_009_mixer_processed.wav,ai_mixer,009,Replay evidence,Not detected,Evidence score: 0.355
+ai_009_mixer_processed.wav,ai_mixer,009,Channel/mixer evidence,Detected,Evidence score: 0.999
+ai_009_mixer_processed.wav,ai_mixer,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_010_mixer_processed.wav,ai_mixer,010,AI-origin evidence,Detected,Evidence score: 0.700
+ai_010_mixer_processed.wav,ai_mixer,010,Replay evidence,Not detected,Evidence score: 0.448
+ai_010_mixer_processed.wav,ai_mixer,010,Channel/mixer evidence,Detected,Evidence score: 0.995
+ai_010_mixer_processed.wav,ai_mixer,010,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_011_mixer_processed.wav,ai_mixer,011,AI-origin evidence,Detected,Evidence score: 0.820
+ai_011_mixer_processed.wav,ai_mixer,011,Replay evidence,Not detected,Evidence score: 0.185
+ai_011_mixer_processed.wav,ai_mixer,011,Channel/mixer evidence,Detected,Evidence score: 0.992
+ai_011_mixer_processed.wav,ai_mixer,011,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_012_mixer_processed.wav,ai_mixer,012,AI-origin evidence,Not detected,Evidence score: 0.073
+ai_012_mixer_processed.wav,ai_mixer,012,Replay evidence,Not detected,Evidence score: 0.222
+ai_012_mixer_processed.wav,ai_mixer,012,Channel/mixer evidence,Detected,Evidence score: 0.983
+ai_012_mixer_processed.wav,ai_mixer,012,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_013_mixer_processed.wav,ai_mixer,013,AI-origin evidence,Detected,Evidence score: 0.634
+ai_013_mixer_processed.wav,ai_mixer,013,Replay evidence,Not detected,Evidence score: 0.264
+ai_013_mixer_processed.wav,ai_mixer,013,Channel/mixer evidence,Detected,Evidence score: 0.977
+ai_013_mixer_processed.wav,ai_mixer,013,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_014_mixer_processed.wav,ai_mixer,014,AI-origin evidence,Detected,Evidence score: 0.790
+ai_014_mixer_processed.wav,ai_mixer,014,Replay evidence,Not detected,Evidence score: 0.555
+ai_014_mixer_processed.wav,ai_mixer,014,Channel/mixer evidence,Detected,Evidence score: 0.993
+ai_014_mixer_processed.wav,ai_mixer,014,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_015_mixer_processed.wav,ai_mixer,015,AI-origin evidence,Detected,Evidence score: 0.225
+ai_015_mixer_processed.wav,ai_mixer,015,Replay evidence,Not detected,Evidence score: 0.271
+ai_015_mixer_processed.wav,ai_mixer,015,Channel/mixer evidence,Detected,Evidence score: 0.976
+ai_015_mixer_processed.wav,ai_mixer,015,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_016_mixer_processed.wav,ai_mixer,016,AI-origin evidence,Not detected,Evidence score: 0.125
+ai_016_mixer_processed.wav,ai_mixer,016,Replay evidence,Not detected,Evidence score: 0.355
+ai_016_mixer_processed.wav,ai_mixer,016,Channel/mixer evidence,Detected,Evidence score: 0.992
+ai_016_mixer_processed.wav,ai_mixer,016,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_017_mixer_processed.wav,ai_mixer,017,AI-origin evidence,Not detected,Evidence score: 0.034
+ai_017_mixer_processed.wav,ai_mixer,017,Replay evidence,Not detected,Evidence score: 0.396
+ai_017_mixer_processed.wav,ai_mixer,017,Channel/mixer evidence,Detected,Evidence score: 0.981
+ai_017_mixer_processed.wav,ai_mixer,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_018_mixer_processed.wav,ai_mixer,018,AI-origin evidence,Not detected,Evidence score: 0.080
+ai_018_mixer_processed.wav,ai_mixer,018,Replay evidence,Not detected,Evidence score: 0.416
+ai_018_mixer_processed.wav,ai_mixer,018,Channel/mixer evidence,Detected,Evidence score: 0.976
+ai_018_mixer_processed.wav,ai_mixer,018,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_019_mixer_processed.wav,ai_mixer,019,AI-origin evidence,Not detected,Evidence score: 0.119
+ai_019_mixer_processed.wav,ai_mixer,019,Replay evidence,Not detected,Evidence score: 0.353
+ai_019_mixer_processed.wav,ai_mixer,019,Channel/mixer evidence,Detected,Evidence score: 0.967
+ai_019_mixer_processed.wav,ai_mixer,019,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_020_mixer_processed.wav,ai_mixer,020,AI-origin evidence,Detected,Evidence score: 0.525
+ai_020_mixer_processed.wav,ai_mixer,020,Replay evidence,Not detected,Evidence score: 0.234
+ai_020_mixer_processed.wav,ai_mixer,020,Channel/mixer evidence,Detected,Evidence score: 0.904
+ai_020_mixer_processed.wav,ai_mixer,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_021_mixer_processed.wav,ai_mixer,021,AI-origin evidence,Detected,Evidence score: 0.211
+ai_021_mixer_processed.wav,ai_mixer,021,Replay evidence,Not detected,Evidence score: 0.314
+ai_021_mixer_processed.wav,ai_mixer,021,Channel/mixer evidence,Detected,Evidence score: 0.988
+ai_021_mixer_processed.wav,ai_mixer,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_022_mixer_processed.wav,ai_mixer,022,AI-origin evidence,Detected,Evidence score: 0.612
+ai_022_mixer_processed.wav,ai_mixer,022,Replay evidence,Not detected,Evidence score: 0.399
+ai_022_mixer_processed.wav,ai_mixer,022,Channel/mixer evidence,Detected,Evidence score: 0.987
+ai_022_mixer_processed.wav,ai_mixer,022,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_023_mixer_processed.wav,ai_mixer,023,AI-origin evidence,Detected,Evidence score: 0.697
+ai_023_mixer_processed.wav,ai_mixer,023,Replay evidence,Not detected,Evidence score: 0.384
+ai_023_mixer_processed.wav,ai_mixer,023,Channel/mixer evidence,Detected,Evidence score: 0.982
+ai_023_mixer_processed.wav,ai_mixer,023,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_001_replay_laptop_mobile.wav,ai_replayed,001,AI-origin evidence,Not detected,Evidence score: 0.011
+ai_001_replay_laptop_mobile.wav,ai_replayed,001,Replay evidence,Detected,Evidence score: 0.996
+ai_001_replay_laptop_mobile.wav,ai_replayed,001,Channel/mixer evidence,Not detected,Evidence score: 0.106
+ai_001_replay_laptop_mobile.wav,ai_replayed,001,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_002_replay_laptop_mobile.wav,ai_replayed,002,AI-origin evidence,Not detected,Evidence score: 0.012
+ai_002_replay_laptop_mobile.wav,ai_replayed,002,Replay evidence,Detected,Evidence score: 0.998
+ai_002_replay_laptop_mobile.wav,ai_replayed,002,Channel/mixer evidence,Not detected,Evidence score: 0.039
+ai_002_replay_laptop_mobile.wav,ai_replayed,002,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_003_replay_laptop_mobile.wav,ai_replayed,003,AI-origin evidence,Not detected,Evidence score: 0.107
+ai_003_replay_laptop_mobile.wav,ai_replayed,003,Replay evidence,Detected,Evidence score: 0.999
+ai_003_replay_laptop_mobile.wav,ai_replayed,003,Channel/mixer evidence,Not detected,Evidence score: 0.093
+ai_003_replay_laptop_mobile.wav,ai_replayed,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_004_replay_laptop_mobile.wav,ai_replayed,004,AI-origin evidence,Not detected,Evidence score: 0.031
+ai_004_replay_laptop_mobile.wav,ai_replayed,004,Replay evidence,Detected,Evidence score: 0.992
+ai_004_replay_laptop_mobile.wav,ai_replayed,004,Channel/mixer evidence,Not detected,Evidence score: 0.017
+ai_004_replay_laptop_mobile.wav,ai_replayed,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_005_replay_laptop_mobile.wav,ai_replayed,005,AI-origin evidence,Not detected,Evidence score: 0.001
+ai_005_replay_laptop_mobile.wav,ai_replayed,005,Replay evidence,Detected,Evidence score: 0.994
+ai_005_replay_laptop_mobile.wav,ai_replayed,005,Channel/mixer evidence,Not detected,Evidence score: 0.016
+ai_005_replay_laptop_mobile.wav,ai_replayed,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_006_replay_laptop_mobile.wav,ai_replayed,006,AI-origin evidence,Not detected,Evidence score: 0.019
+ai_006_replay_laptop_mobile.wav,ai_replayed,006,Replay evidence,Detected,Evidence score: 0.999
+ai_006_replay_laptop_mobile.wav,ai_replayed,006,Channel/mixer evidence,Not detected,Evidence score: 0.053
+ai_006_replay_laptop_mobile.wav,ai_replayed,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_007_replay_laptop_mobile.wav,ai_replayed,007,AI-origin evidence,Not detected,Evidence score: 0.048
+ai_007_replay_laptop_mobile.wav,ai_replayed,007,Replay evidence,Detected,Evidence score: 1.000
+ai_007_replay_laptop_mobile.wav,ai_replayed,007,Channel/mixer evidence,Not detected,Evidence score: 0.109
+ai_007_replay_laptop_mobile.wav,ai_replayed,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_008_replay_laptop_mobile.wav,ai_replayed,008,AI-origin evidence,Not detected,Evidence score: 0.036
+ai_008_replay_laptop_mobile.wav,ai_replayed,008,Replay evidence,Detected,Evidence score: 0.999
+ai_008_replay_laptop_mobile.wav,ai_replayed,008,Channel/mixer evidence,Not detected,Evidence score: 0.144
+ai_008_replay_laptop_mobile.wav,ai_replayed,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_009_replay_laptop_mobile.wav,ai_replayed,009,AI-origin evidence,Not detected,Evidence score: 0.002
+ai_009_replay_laptop_mobile.wav,ai_replayed,009,Replay evidence,Detected,Evidence score: 0.998
+ai_009_replay_laptop_mobile.wav,ai_replayed,009,Channel/mixer evidence,Not detected,Evidence score: 0.213
+ai_009_replay_laptop_mobile.wav,ai_replayed,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_010_replay_laptop_mobile.wav,ai_replayed,010,AI-origin evidence,Not detected,Evidence score: 0.001
+ai_010_replay_laptop_mobile.wav,ai_replayed,010,Replay evidence,Detected,Evidence score: 0.998
+ai_010_replay_laptop_mobile.wav,ai_replayed,010,Channel/mixer evidence,Not detected,Evidence score: 0.067
+ai_010_replay_laptop_mobile.wav,ai_replayed,010,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_011_replay_laptop_mobile.wav,ai_replayed,011,AI-origin evidence,Not detected,Evidence score: 0.048
+ai_011_replay_laptop_mobile.wav,ai_replayed,011,Replay evidence,Detected,Evidence score: 1.000
+ai_011_replay_laptop_mobile.wav,ai_replayed,011,Channel/mixer evidence,Not detected,Evidence score: 0.079
+ai_011_replay_laptop_mobile.wav,ai_replayed,011,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_012_replay_laptop_mobile.wav,ai_replayed,012,AI-origin evidence,Not detected,Evidence score: 0.001
+ai_012_replay_laptop_mobile.wav,ai_replayed,012,Replay evidence,Detected,Evidence score: 0.998
+ai_012_replay_laptop_mobile.wav,ai_replayed,012,Channel/mixer evidence,Not detected,Evidence score: 0.077
+ai_012_replay_laptop_mobile.wav,ai_replayed,012,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_013_replay_laptop_mobile.wav,ai_replayed,013,AI-origin evidence,Not detected,Evidence score: 0.001
+ai_013_replay_laptop_mobile.wav,ai_replayed,013,Replay evidence,Detected,Evidence score: 0.998
+ai_013_replay_laptop_mobile.wav,ai_replayed,013,Channel/mixer evidence,Not detected,Evidence score: 0.043
+ai_013_replay_laptop_mobile.wav,ai_replayed,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_014_replay_laptop_mobile.wav,ai_replayed,014,AI-origin evidence,Not detected,Evidence score: 0.003
+ai_014_replay_laptop_mobile.wav,ai_replayed,014,Replay evidence,Detected,Evidence score: 1.000
+ai_014_replay_laptop_mobile.wav,ai_replayed,014,Channel/mixer evidence,Not detected,Evidence score: 0.093
+ai_014_replay_laptop_mobile.wav,ai_replayed,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_015_replay_laptop_mobile.wav,ai_replayed,015,AI-origin evidence,Not detected,Evidence score: 0.035
+ai_015_replay_laptop_mobile.wav,ai_replayed,015,Replay evidence,Detected,Evidence score: 0.999
+ai_015_replay_laptop_mobile.wav,ai_replayed,015,Channel/mixer evidence,Not detected,Evidence score: 0.055
+ai_015_replay_laptop_mobile.wav,ai_replayed,015,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_016_replay_laptop_mobile.wav,ai_replayed,016,AI-origin evidence,Not detected,Evidence score: 0.005
+ai_016_replay_laptop_mobile.wav,ai_replayed,016,Replay evidence,Detected,Evidence score: 0.998
+ai_016_replay_laptop_mobile.wav,ai_replayed,016,Channel/mixer evidence,Not detected,Evidence score: 0.070
+ai_016_replay_laptop_mobile.wav,ai_replayed,016,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_017_replay_laptop_mobile.wav,ai_replayed,017,AI-origin evidence,Not detected,Evidence score: 0.069
+ai_017_replay_laptop_mobile.wav,ai_replayed,017,Replay evidence,Detected,Evidence score: 0.998
+ai_017_replay_laptop_mobile.wav,ai_replayed,017,Channel/mixer evidence,Not detected,Evidence score: 0.037
+ai_017_replay_laptop_mobile.wav,ai_replayed,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_018_replay_laptop_mobile.wav,ai_replayed,018,AI-origin evidence,Not detected,Evidence score: 0.009
+ai_018_replay_laptop_mobile.wav,ai_replayed,018,Replay evidence,Detected,Evidence score: 0.998
+ai_018_replay_laptop_mobile.wav,ai_replayed,018,Channel/mixer evidence,Not detected,Evidence score: 0.067
+ai_018_replay_laptop_mobile.wav,ai_replayed,018,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_019_replay_laptop_mobile.wav,ai_replayed,019,AI-origin evidence,Not detected,Evidence score: 0.059
+ai_019_replay_laptop_mobile.wav,ai_replayed,019,Replay evidence,Detected,Evidence score: 0.999
+ai_019_replay_laptop_mobile.wav,ai_replayed,019,Channel/mixer evidence,Not detected,Evidence score: 0.148
+ai_019_replay_laptop_mobile.wav,ai_replayed,019,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_020_replay_laptop_mobile.wav,ai_replayed,020,AI-origin evidence,Not detected,Evidence score: 0.039
+ai_020_replay_laptop_mobile.wav,ai_replayed,020,Replay evidence,Detected,Evidence score: 0.998
+ai_020_replay_laptop_mobile.wav,ai_replayed,020,Channel/mixer evidence,Not detected,Evidence score: 0.033
+ai_020_replay_laptop_mobile.wav,ai_replayed,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_021_replay_laptop_mobile.wav,ai_replayed,021,AI-origin evidence,Not detected,Evidence score: 0.063
+ai_021_replay_laptop_mobile.wav,ai_replayed,021,Replay evidence,Detected,Evidence score: 1.000
+ai_021_replay_laptop_mobile.wav,ai_replayed,021,Channel/mixer evidence,Not detected,Evidence score: 0.045
+ai_021_replay_laptop_mobile.wav,ai_replayed,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+ai_022_replay_laptop_mobile.wav,ai_replayed,022,AI-origin evidence,Not detected,Evidence score: 0.056
+ai_022_replay_laptop_mobile.wav,ai_replayed,022,Replay evidence,Detected,Evidence score: 0.999
+ai_022_replay_laptop_mobile.wav,ai_replayed,022,Channel/mixer evidence,Not detected,Evidence score: 0.103
+ai_022_replay_laptop_mobile.wav,ai_replayed,022,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+ai_023_replay_laptop_mobile.wav,ai_replayed,023,AI-origin evidence,Not detected,Evidence score: 0.083
+ai_023_replay_laptop_mobile.wav,ai_replayed,023,Replay evidence,Detected,Evidence score: 0.999
+ai_023_replay_laptop_mobile.wav,ai_replayed,023,Channel/mixer evidence,Not detected,Evidence score: 0.052
+ai_023_replay_laptop_mobile.wav,ai_replayed,023,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_001_clean.wav,human_clean,001,AI-origin evidence,Not detected,Evidence score: 0.000
+human_001_clean.wav,human_clean,001,Replay evidence,Not detected,Evidence score: 0.116
+human_001_clean.wav,human_clean,001,Channel/mixer evidence,Not detected,Evidence score: 0.145
+human_001_clean.wav,human_clean,001,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_002_clean.wav,human_clean,002,AI-origin evidence,Not detected,Evidence score: 0.001
+human_002_clean.wav,human_clean,002,Replay evidence,Not detected,Evidence score: 0.079
+human_002_clean.wav,human_clean,002,Channel/mixer evidence,Not detected,Evidence score: 0.145
+human_002_clean.wav,human_clean,002,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_003_clean.wav,human_clean,003,AI-origin evidence,Not detected,Evidence score: 0.042
+human_003_clean.wav,human_clean,003,Replay evidence,Not detected,Evidence score: 0.000
+human_003_clean.wav,human_clean,003,Channel/mixer evidence,Not detected,Evidence score: 0.000
+human_003_clean.wav,human_clean,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_004_clean.wav,human_clean,004,AI-origin evidence,Not detected,Evidence score: 0.004
+human_004_clean.wav,human_clean,004,Replay evidence,Not detected,Evidence score: 0.077
+human_004_clean.wav,human_clean,004,Channel/mixer evidence,Not detected,Evidence score: 0.149
+human_004_clean.wav,human_clean,004,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_005_clean.wav,human_clean,005,AI-origin evidence,Not detected,Evidence score: 0.000
+human_005_clean.wav,human_clean,005,Replay evidence,Not detected,Evidence score: 0.000
+human_005_clean.wav,human_clean,005,Channel/mixer evidence,Not detected,Evidence score: 0.007
+human_005_clean.wav,human_clean,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_006_clean.wav,human_clean,006,AI-origin evidence,Not detected,Evidence score: 0.008
+human_006_clean.wav,human_clean,006,Replay evidence,Not detected,Evidence score: 0.003
+human_006_clean.wav,human_clean,006,Channel/mixer evidence,Not detected,Evidence score: 0.005
+human_006_clean.wav,human_clean,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_007_clean.wav,human_clean,007,AI-origin evidence,Not detected,Evidence score: 0.005
+human_007_clean.wav,human_clean,007,Replay evidence,Not detected,Evidence score: 0.000
+human_007_clean.wav,human_clean,007,Channel/mixer evidence,Not detected,Evidence score: 0.010
+human_007_clean.wav,human_clean,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_008_clean.wav,human_clean,008,AI-origin evidence,Not detected,Evidence score: 0.009
+human_008_clean.wav,human_clean,008,Replay evidence,Not detected,Evidence score: 0.000
+human_008_clean.wav,human_clean,008,Channel/mixer evidence,Not detected,Evidence score: 0.006
+human_008_clean.wav,human_clean,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_009_clean.wav,human_clean,009,AI-origin evidence,Not detected,Evidence score: 0.008
+human_009_clean.wav,human_clean,009,Replay evidence,Not detected,Evidence score: 0.002
+human_009_clean.wav,human_clean,009,Channel/mixer evidence,Not detected,Evidence score: 0.005
+human_009_clean.wav,human_clean,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_010_clean.wav,human_clean,010,AI-origin evidence,Not detected,Evidence score: 0.003
+human_010_clean.wav,human_clean,010,Replay evidence,Not detected,Evidence score: 0.006
+human_010_clean.wav,human_clean,010,Channel/mixer evidence,Not detected,Evidence score: 0.006
+human_010_clean.wav,human_clean,010,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_011_clean.wav,human_clean,011,AI-origin evidence,Not detected,Evidence score: 0.009
+human_011_clean.wav,human_clean,011,Replay evidence,Not detected,Evidence score: 0.007
+human_011_clean.wav,human_clean,011,Channel/mixer evidence,Not detected,Evidence score: 0.045
+human_011_clean.wav,human_clean,011,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_012_clean.wav,human_clean,012,AI-origin evidence,Not detected,Evidence score: 0.039
+human_012_clean.wav,human_clean,012,Replay evidence,Not detected,Evidence score: 0.019
+human_012_clean.wav,human_clean,012,Channel/mixer evidence,Not detected,Evidence score: 0.016
+human_012_clean.wav,human_clean,012,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_013_clean.wav,human_clean,013,AI-origin evidence,Not detected,Evidence score: 0.003
+human_013_clean.wav,human_clean,013,Replay evidence,Not detected,Evidence score: 0.000
+human_013_clean.wav,human_clean,013,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_013_clean.wav,human_clean,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_014_clean.wav,human_clean,014,AI-origin evidence,Not detected,Evidence score: 0.006
+human_014_clean.wav,human_clean,014,Replay evidence,Not detected,Evidence score: 0.002
+human_014_clean.wav,human_clean,014,Channel/mixer evidence,Not detected,Evidence score: 0.053
+human_014_clean.wav,human_clean,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_015_clean.wav,human_clean,015,AI-origin evidence,Not detected,Evidence score: 0.001
+human_015_clean.wav,human_clean,015,Replay evidence,Not detected,Evidence score: 0.040
+human_015_clean.wav,human_clean,015,Channel/mixer evidence,Not detected,Evidence score: 0.087
+human_015_clean.wav,human_clean,015,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_016_clean.wav,human_clean,016,AI-origin evidence,Not detected,Evidence score: 0.002
+human_016_clean.wav,human_clean,016,Replay evidence,Not detected,Evidence score: 0.009
+human_016_clean.wav,human_clean,016,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_016_clean.wav,human_clean,016,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_017_clean.wav,human_clean,017,AI-origin evidence,Not detected,Evidence score: 0.001
+human_017_clean.wav,human_clean,017,Replay evidence,Not detected,Evidence score: 0.011
+human_017_clean.wav,human_clean,017,Channel/mixer evidence,Not detected,Evidence score: 0.071
+human_017_clean.wav,human_clean,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_018_clean.wav,human_clean,018,AI-origin evidence,Not detected,Evidence score: 0.000
+human_018_clean.wav,human_clean,018,Replay evidence,Not detected,Evidence score: 0.006
+human_018_clean.wav,human_clean,018,Channel/mixer evidence,Not detected,Evidence score: 0.043
+human_018_clean.wav,human_clean,018,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_019_clean.wav,human_clean,019,AI-origin evidence,Not detected,Evidence score: 0.003
+human_019_clean.wav,human_clean,019,Replay evidence,Not detected,Evidence score: 0.001
+human_019_clean.wav,human_clean,019,Channel/mixer evidence,Not detected,Evidence score: 0.087
+human_019_clean.wav,human_clean,019,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_020_clean.wav,human_clean,020,AI-origin evidence,Not detected,Evidence score: 0.001
+human_020_clean.wav,human_clean,020,Replay evidence,Not detected,Evidence score: 0.055
+human_020_clean.wav,human_clean,020,Channel/mixer evidence,Not detected,Evidence score: 0.014
+human_020_clean.wav,human_clean,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_021_clean.wav,human_clean,021,AI-origin evidence,Not detected,Evidence score: 0.000
+human_021_clean.wav,human_clean,021,Replay evidence,Not detected,Evidence score: 0.175
+human_021_clean.wav,human_clean,021,Channel/mixer evidence,Not detected,Evidence score: 0.061
+human_021_clean.wav,human_clean,021,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_022_clean.wav,human_clean,022,AI-origin evidence,Not detected,Evidence score: 0.000
+human_022_clean.wav,human_clean,022,Replay evidence,Not detected,Evidence score: 0.208
+human_022_clean.wav,human_clean,022,Channel/mixer evidence,Not detected,Evidence score: 0.081
+human_022_clean.wav,human_clean,022,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_023_clean.wav,human_clean,023,AI-origin evidence,Not detected,Evidence score: 0.004
+human_023_clean.wav,human_clean,023,Replay evidence,Not detected,Evidence score: 0.000
+human_023_clean.wav,human_clean,023,Channel/mixer evidence,Not detected,Evidence score: 0.000
+human_023_clean.wav,human_clean,023,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_001_fabricated.wav,human_fabricated,001,AI-origin evidence,Not detected,Evidence score: 0.001
+human_001_fabricated.wav,human_fabricated,001,Replay evidence,Not detected,Evidence score: 0.038
+human_001_fabricated.wav,human_fabricated,001,Channel/mixer evidence,Not detected,Evidence score: 0.053
+human_001_fabricated.wav,human_fabricated,001,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_002_fabricated.wav,human_fabricated,002,AI-origin evidence,Not detected,Evidence score: 0.008
+human_002_fabricated.wav,human_fabricated,002,Replay evidence,Not detected,Evidence score: 0.027
+human_002_fabricated.wav,human_fabricated,002,Channel/mixer evidence,Not detected,Evidence score: 0.046
+human_002_fabricated.wav,human_fabricated,002,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_003_fabricated.wav,human_fabricated,003,AI-origin evidence,Not detected,Evidence score: 0.062
+human_003_fabricated.wav,human_fabricated,003,Replay evidence,Not detected,Evidence score: 0.000
+human_003_fabricated.wav,human_fabricated,003,Channel/mixer evidence,Not detected,Evidence score: 0.000
+human_003_fabricated.wav,human_fabricated,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_004_fabricated.wav,human_fabricated,004,AI-origin evidence,Not detected,Evidence score: 0.005
+human_004_fabricated.wav,human_fabricated,004,Replay evidence,Not detected,Evidence score: 0.035
+human_004_fabricated.wav,human_fabricated,004,Channel/mixer evidence,Not detected,Evidence score: 0.041
+human_004_fabricated.wav,human_fabricated,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_005_fabricated.wav,human_fabricated,005,AI-origin evidence,Not detected,Evidence score: 0.001
+human_005_fabricated.wav,human_fabricated,005,Replay evidence,Not detected,Evidence score: 0.000
+human_005_fabricated.wav,human_fabricated,005,Channel/mixer evidence,Not detected,Evidence score: 0.003
+human_005_fabricated.wav,human_fabricated,005,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_006_fabricated.wav,human_fabricated,006,AI-origin evidence,Not detected,Evidence score: 0.015
+human_006_fabricated.wav,human_fabricated,006,Replay evidence,Not detected,Evidence score: 0.001
+human_006_fabricated.wav,human_fabricated,006,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_006_fabricated.wav,human_fabricated,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_007_fabricated.wav,human_fabricated,007,AI-origin evidence,Not detected,Evidence score: 0.022
+human_007_fabricated.wav,human_fabricated,007,Replay evidence,Not detected,Evidence score: 0.000
+human_007_fabricated.wav,human_fabricated,007,Channel/mixer evidence,Not detected,Evidence score: 0.003
+human_007_fabricated.wav,human_fabricated,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_008_fabricated.wav,human_fabricated,008,AI-origin evidence,Not detected,Evidence score: 0.075
+human_008_fabricated.wav,human_fabricated,008,Replay evidence,Not detected,Evidence score: 0.000
+human_008_fabricated.wav,human_fabricated,008,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_008_fabricated.wav,human_fabricated,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_009_fabricated.wav,human_fabricated,009,AI-origin evidence,Not detected,Evidence score: 0.018
+human_009_fabricated.wav,human_fabricated,009,Replay evidence,Not detected,Evidence score: 0.001
+human_009_fabricated.wav,human_fabricated,009,Channel/mixer evidence,Not detected,Evidence score: 0.004
+human_009_fabricated.wav,human_fabricated,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_010_fabricated.wav,human_fabricated,010,AI-origin evidence,Not detected,Evidence score: 0.016
+human_010_fabricated.wav,human_fabricated,010,Replay evidence,Not detected,Evidence score: 0.003
+human_010_fabricated.wav,human_fabricated,010,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_010_fabricated.wav,human_fabricated,010,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_011_fabricated.wav,human_fabricated,011,AI-origin evidence,Not detected,Evidence score: 0.020
+human_011_fabricated.wav,human_fabricated,011,Replay evidence,Not detected,Evidence score: 0.002
+human_011_fabricated.wav,human_fabricated,011,Channel/mixer evidence,Not detected,Evidence score: 0.013
+human_011_fabricated.wav,human_fabricated,011,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_012_fabricated.wav,human_fabricated,012,AI-origin evidence,Not detected,Evidence score: 0.092
+human_012_fabricated.wav,human_fabricated,012,Replay evidence,Not detected,Evidence score: 0.012
+human_012_fabricated.wav,human_fabricated,012,Channel/mixer evidence,Not detected,Evidence score: 0.013
+human_012_fabricated.wav,human_fabricated,012,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_013_fabricated.wav,human_fabricated,013,AI-origin evidence,Not detected,Evidence score: 0.011
+human_013_fabricated.wav,human_fabricated,013,Replay evidence,Not detected,Evidence score: 0.000
+human_013_fabricated.wav,human_fabricated,013,Channel/mixer evidence,Not detected,Evidence score: 0.002
+human_013_fabricated.wav,human_fabricated,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_014_fabricated.wav,human_fabricated,014,AI-origin evidence,Not detected,Evidence score: 0.016
+human_014_fabricated.wav,human_fabricated,014,Replay evidence,Not detected,Evidence score: 0.002
+human_014_fabricated.wav,human_fabricated,014,Channel/mixer evidence,Not detected,Evidence score: 0.025
+human_014_fabricated.wav,human_fabricated,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_015_fabricated.wav,human_fabricated,015,AI-origin evidence,Not detected,Evidence score: 0.006
+human_015_fabricated.wav,human_fabricated,015,Replay evidence,Not detected,Evidence score: 0.010
+human_015_fabricated.wav,human_fabricated,015,Channel/mixer evidence,Not detected,Evidence score: 0.011
+human_015_fabricated.wav,human_fabricated,015,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_016_fabricated.wav,human_fabricated,016,AI-origin evidence,Not detected,Evidence score: 0.005
+human_016_fabricated.wav,human_fabricated,016,Replay evidence,Not detected,Evidence score: 0.005
+human_016_fabricated.wav,human_fabricated,016,Channel/mixer evidence,Not detected,Evidence score: 0.004
+human_016_fabricated.wav,human_fabricated,016,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_017_fabricated.wav,human_fabricated,017,AI-origin evidence,Not detected,Evidence score: 0.012
+human_017_fabricated.wav,human_fabricated,017,Replay evidence,Not detected,Evidence score: 0.008
+human_017_fabricated.wav,human_fabricated,017,Channel/mixer evidence,Not detected,Evidence score: 0.057
+human_017_fabricated.wav,human_fabricated,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_018_fabricated.wav,human_fabricated,018,AI-origin evidence,Not detected,Evidence score: 0.003
+human_018_fabricated.wav,human_fabricated,018,Replay evidence,Not detected,Evidence score: 0.003
+human_018_fabricated.wav,human_fabricated,018,Channel/mixer evidence,Not detected,Evidence score: 0.016
+human_018_fabricated.wav,human_fabricated,018,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_019_fabricated.wav,human_fabricated,019,AI-origin evidence,Not detected,Evidence score: 0.015
+human_019_fabricated.wav,human_fabricated,019,Replay evidence,Not detected,Evidence score: 0.001
+human_019_fabricated.wav,human_fabricated,019,Channel/mixer evidence,Not detected,Evidence score: 0.034
+human_019_fabricated.wav,human_fabricated,019,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_020_fabricated.wav,human_fabricated,020,AI-origin evidence,Not detected,Evidence score: 0.002
+human_020_fabricated.wav,human_fabricated,020,Replay evidence,Not detected,Evidence score: 0.024
+human_020_fabricated.wav,human_fabricated,020,Channel/mixer evidence,Not detected,Evidence score: 0.200
+human_020_fabricated.wav,human_fabricated,020,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_021_fabricated.wav,human_fabricated,021,AI-origin evidence,Not detected,Evidence score: 0.001
+human_021_fabricated.wav,human_fabricated,021,Replay evidence,Not detected,Evidence score: 0.032
+human_021_fabricated.wav,human_fabricated,021,Channel/mixer evidence,Not detected,Evidence score: 0.027
+human_021_fabricated.wav,human_fabricated,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_022_fabricated.wav,human_fabricated,022,AI-origin evidence,Not detected,Evidence score: 0.001
+human_022_fabricated.wav,human_fabricated,022,Replay evidence,Not detected,Evidence score: 0.070
+human_022_fabricated.wav,human_fabricated,022,Channel/mixer evidence,Not detected,Evidence score: 0.010
+human_022_fabricated.wav,human_fabricated,022,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_023_fabricated.wav,human_fabricated,023,AI-origin evidence,Not detected,Evidence score: 0.018
+human_023_fabricated.wav,human_fabricated,023,Replay evidence,Not detected,Evidence score: 0.000
+human_023_fabricated.wav,human_fabricated,023,Channel/mixer evidence,Not detected,Evidence score: 0.000
+human_023_fabricated.wav,human_fabricated,023,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_001_mixer_processed.wav,human_mixer,001,AI-origin evidence,Not detected,Evidence score: 0.000
+human_001_mixer_processed.wav,human_mixer,001,Replay evidence,Possible overlap,Evidence score: 0.962
+human_001_mixer_processed.wav,human_mixer,001,Channel/mixer evidence,Possible overlap,Evidence score: 1.000
+human_001_mixer_processed.wav,human_mixer,001,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_002_mixer_processed.wav,human_mixer,002,AI-origin evidence,Not detected,Evidence score: 0.000
+human_002_mixer_processed.wav,human_mixer,002,Replay evidence,Possible overlap,Evidence score: 0.832
+human_002_mixer_processed.wav,human_mixer,002,Channel/mixer evidence,Possible overlap,Evidence score: 0.999
+human_002_mixer_processed.wav,human_mixer,002,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_003_mixer_processed.wav,human_mixer,003,AI-origin evidence,Not detected,Evidence score: 0.001
+human_003_mixer_processed.wav,human_mixer,003,Replay evidence,Not detected,Evidence score: 0.569
+human_003_mixer_processed.wav,human_mixer,003,Channel/mixer evidence,Detected,Evidence score: 0.995
+human_003_mixer_processed.wav,human_mixer,003,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_004_mixer_processed.wav,human_mixer,004,AI-origin evidence,Not detected,Evidence score: 0.001
+human_004_mixer_processed.wav,human_mixer,004,Replay evidence,Possible overlap,Evidence score: 0.674
+human_004_mixer_processed.wav,human_mixer,004,Channel/mixer evidence,Possible overlap,Evidence score: 0.994
+human_004_mixer_processed.wav,human_mixer,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_005_mixer_processed.wav,human_mixer,005,AI-origin evidence,Not detected,Evidence score: 0.000
+human_005_mixer_processed.wav,human_mixer,005,Replay evidence,Not detected,Evidence score: 0.408
+human_005_mixer_processed.wav,human_mixer,005,Channel/mixer evidence,Detected,Evidence score: 0.997
+human_005_mixer_processed.wav,human_mixer,005,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_006_mixer_processed.wav,human_mixer,006,AI-origin evidence,Not detected,Evidence score: 0.002
+human_006_mixer_processed.wav,human_mixer,006,Replay evidence,Not detected,Evidence score: 0.262
+human_006_mixer_processed.wav,human_mixer,006,Channel/mixer evidence,Detected,Evidence score: 0.992
+human_006_mixer_processed.wav,human_mixer,006,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_007_mixer_processed.wav,human_mixer,007,AI-origin evidence,Not detected,Evidence score: 0.001
+human_007_mixer_processed.wav,human_mixer,007,Replay evidence,Possible overlap,Evidence score: 0.689
+human_007_mixer_processed.wav,human_mixer,007,Channel/mixer evidence,Possible overlap,Evidence score: 0.996
+human_007_mixer_processed.wav,human_mixer,007,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_008_mixer_processed.wav,human_mixer,008,AI-origin evidence,Not detected,Evidence score: 0.002
+human_008_mixer_processed.wav,human_mixer,008,Replay evidence,Not detected,Evidence score: 0.633
+human_008_mixer_processed.wav,human_mixer,008,Channel/mixer evidence,Detected,Evidence score: 0.996
+human_008_mixer_processed.wav,human_mixer,008,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_009_mixer_processed.wav,human_mixer,009,AI-origin evidence,Not detected,Evidence score: 0.004
+human_009_mixer_processed.wav,human_mixer,009,Replay evidence,Not detected,Evidence score: 0.204
+human_009_mixer_processed.wav,human_mixer,009,Channel/mixer evidence,Detected,Evidence score: 0.980
+human_009_mixer_processed.wav,human_mixer,009,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_010_mixer_processed.wav,human_mixer,010,AI-origin evidence,Not detected,Evidence score: 0.001
+human_010_mixer_processed.wav,human_mixer,010,Replay evidence,Not detected,Evidence score: 0.619
+human_010_mixer_processed.wav,human_mixer,010,Channel/mixer evidence,Detected,Evidence score: 0.998
+human_010_mixer_processed.wav,human_mixer,010,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_011_mixer_processed.wav,human_mixer,011,AI-origin evidence,Not detected,Evidence score: 0.005
+human_011_mixer_processed.wav,human_mixer,011,Replay evidence,Not detected,Evidence score: 0.334
+human_011_mixer_processed.wav,human_mixer,011,Channel/mixer evidence,Detected,Evidence score: 0.997
+human_011_mixer_processed.wav,human_mixer,011,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_012_mixer_processed.wav,human_mixer,012,AI-origin evidence,Not detected,Evidence score: 0.002
+human_012_mixer_processed.wav,human_mixer,012,Replay evidence,Possible overlap,Evidence score: 0.725
+human_012_mixer_processed.wav,human_mixer,012,Channel/mixer evidence,Possible overlap,Evidence score: 0.998
+human_012_mixer_processed.wav,human_mixer,012,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_013_mixer_processed.wav,human_mixer,013,AI-origin evidence,Not detected,Evidence score: 0.000
+human_013_mixer_processed.wav,human_mixer,013,Replay evidence,Not detected,Evidence score: 0.377
+human_013_mixer_processed.wav,human_mixer,013,Channel/mixer evidence,Detected,Evidence score: 0.983
+human_013_mixer_processed.wav,human_mixer,013,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_014_mixer_processed.wav,human_mixer,014,AI-origin evidence,Not detected,Evidence score: 0.001
+human_014_mixer_processed.wav,human_mixer,014,Replay evidence,Not detected,Evidence score: 0.258
+human_014_mixer_processed.wav,human_mixer,014,Channel/mixer evidence,Detected,Evidence score: 0.994
+human_014_mixer_processed.wav,human_mixer,014,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_015_mixer_processed.wav,human_mixer,015,AI-origin evidence,Not detected,Evidence score: 0.000
+human_015_mixer_processed.wav,human_mixer,015,Replay evidence,Not detected,Evidence score: 0.530
+human_015_mixer_processed.wav,human_mixer,015,Channel/mixer evidence,Detected,Evidence score: 0.985
+human_015_mixer_processed.wav,human_mixer,015,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_016_mixer_processed.wav,human_mixer,016,AI-origin evidence,Not detected,Evidence score: 0.000
+human_016_mixer_processed.wav,human_mixer,016,Replay evidence,Not detected,Evidence score: 0.343
+human_016_mixer_processed.wav,human_mixer,016,Channel/mixer evidence,Detected,Evidence score: 0.975
+human_016_mixer_processed.wav,human_mixer,016,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_017_mixer_processed.wav,human_mixer,017,AI-origin evidence,Not detected,Evidence score: 0.000
+human_017_mixer_processed.wav,human_mixer,017,Replay evidence,Not detected,Evidence score: 0.641
+human_017_mixer_processed.wav,human_mixer,017,Channel/mixer evidence,Detected,Evidence score: 0.992
+human_017_mixer_processed.wav,human_mixer,017,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_018_mixer_processed.wav,human_mixer,018,AI-origin evidence,Not detected,Evidence score: 0.000
+human_018_mixer_processed.wav,human_mixer,018,Replay evidence,Not detected,Evidence score: 0.197
+human_018_mixer_processed.wav,human_mixer,018,Channel/mixer evidence,Detected,Evidence score: 0.997
+human_018_mixer_processed.wav,human_mixer,018,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_019_mixer_processed.wav,human_mixer,019,AI-origin evidence,Not detected,Evidence score: 0.000
+human_019_mixer_processed.wav,human_mixer,019,Replay evidence,Not detected,Evidence score: 0.555
+human_019_mixer_processed.wav,human_mixer,019,Channel/mixer evidence,Detected,Evidence score: 0.999
+human_019_mixer_processed.wav,human_mixer,019,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_020_mixer_processed.wav,human_mixer,020,AI-origin evidence,Not detected,Evidence score: 0.000
+human_020_mixer_processed.wav,human_mixer,020,Replay evidence,Not detected,Evidence score: 0.631
+human_020_mixer_processed.wav,human_mixer,020,Channel/mixer evidence,Detected,Evidence score: 0.991
+human_020_mixer_processed.wav,human_mixer,020,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_021_mixer_processed.wav,human_mixer,021,AI-origin evidence,Not detected,Evidence score: 0.001
+human_021_mixer_processed.wav,human_mixer,021,Replay evidence,Possible overlap,Evidence score: 0.913
+human_021_mixer_processed.wav,human_mixer,021,Channel/mixer evidence,Possible overlap,Evidence score: 0.987
+human_021_mixer_processed.wav,human_mixer,021,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_022_mixer_processed.wav,human_mixer,022,AI-origin evidence,Not detected,Evidence score: 0.000
+human_022_mixer_processed.wav,human_mixer,022,Replay evidence,Possible overlap,Evidence score: 0.897
+human_022_mixer_processed.wav,human_mixer,022,Channel/mixer evidence,Possible overlap,Evidence score: 0.947
+human_022_mixer_processed.wav,human_mixer,022,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_023_mixer_processed.wav,human_mixer,023,AI-origin evidence,Not detected,Evidence score: 0.000
+human_023_mixer_processed.wav,human_mixer,023,Replay evidence,Not detected,Evidence score: 0.555
+human_023_mixer_processed.wav,human_mixer,023,Channel/mixer evidence,Detected,Evidence score: 0.992
+human_023_mixer_processed.wav,human_mixer,023,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_001_replay_laptop_mobile.wav,human_replayed,001,AI-origin evidence,Not detected,Evidence score: 0.000
+human_001_replay_laptop_mobile.wav,human_replayed,001,Replay evidence,Detected,Evidence score: 0.996
+human_001_replay_laptop_mobile.wav,human_replayed,001,Channel/mixer evidence,Not detected,Evidence score: 0.146
+human_001_replay_laptop_mobile.wav,human_replayed,001,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_002_replay_laptop_mobile.wav,human_replayed,002,AI-origin evidence,Not detected,Evidence score: 0.000
+human_002_replay_laptop_mobile.wav,human_replayed,002,Replay evidence,Detected,Evidence score: 0.994
+human_002_replay_laptop_mobile.wav,human_replayed,002,Channel/mixer evidence,Not detected,Evidence score: 0.153
+human_002_replay_laptop_mobile.wav,human_replayed,002,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_003_replay_laptop_mobile.wav,human_replayed,003,AI-origin evidence,Not detected,Evidence score: 0.000
+human_003_replay_laptop_mobile.wav,human_replayed,003,Replay evidence,Detected,Evidence score: 0.986
+human_003_replay_laptop_mobile.wav,human_replayed,003,Channel/mixer evidence,Not detected,Evidence score: 0.284
+human_003_replay_laptop_mobile.wav,human_replayed,003,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_004_replay_laptop_mobile.wav,human_replayed,004,AI-origin evidence,Not detected,Evidence score: 0.000
+human_004_replay_laptop_mobile.wav,human_replayed,004,Replay evidence,Detected,Evidence score: 0.966
+human_004_replay_laptop_mobile.wav,human_replayed,004,Channel/mixer evidence,Not detected,Evidence score: 0.335
+human_004_replay_laptop_mobile.wav,human_replayed,004,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_005_replay_laptop_mobile.wav,human_replayed,005,AI-origin evidence,Not detected,Evidence score: 0.000
+human_005_replay_laptop_mobile.wav,human_replayed,005,Replay evidence,Detected,Evidence score: 0.987
+human_005_replay_laptop_mobile.wav,human_replayed,005,Channel/mixer evidence,Not detected,Evidence score: 0.115
+human_005_replay_laptop_mobile.wav,human_replayed,005,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_006_replay_laptop_mobile.wav,human_replayed,006,AI-origin evidence,Not detected,Evidence score: 0.000
+human_006_replay_laptop_mobile.wav,human_replayed,006,Replay evidence,Detected,Evidence score: 0.986
+human_006_replay_laptop_mobile.wav,human_replayed,006,Channel/mixer evidence,Not detected,Evidence score: 0.212
+human_006_replay_laptop_mobile.wav,human_replayed,006,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_007_replay_laptop_mobile.wav,human_replayed,007,AI-origin evidence,Not detected,Evidence score: 0.000
+human_007_replay_laptop_mobile.wav,human_replayed,007,Replay evidence,Detected,Evidence score: 0.988
+human_007_replay_laptop_mobile.wav,human_replayed,007,Channel/mixer evidence,Not detected,Evidence score: 0.420
+human_007_replay_laptop_mobile.wav,human_replayed,007,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_008_replay_laptop_mobile.wav,human_replayed,008,AI-origin evidence,Not detected,Evidence score: 0.000
+human_008_replay_laptop_mobile.wav,human_replayed,008,Replay evidence,Detected,Evidence score: 0.989
+human_008_replay_laptop_mobile.wav,human_replayed,008,Channel/mixer evidence,Not detected,Evidence score: 0.336
+human_008_replay_laptop_mobile.wav,human_replayed,008,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_009_replay_laptop_mobile.wav,human_replayed,009,AI-origin evidence,Not detected,Evidence score: 0.000
+human_009_replay_laptop_mobile.wav,human_replayed,009,Replay evidence,Detected,Evidence score: 0.992
+human_009_replay_laptop_mobile.wav,human_replayed,009,Channel/mixer evidence,Not detected,Evidence score: 0.065
+human_009_replay_laptop_mobile.wav,human_replayed,009,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_010_replay_laptop_mobile.wav,human_replayed,010,AI-origin evidence,Not detected,Evidence score: 0.000
+human_010_replay_laptop_mobile.wav,human_replayed,010,Replay evidence,Detected,Evidence score: 0.995
+human_010_replay_laptop_mobile.wav,human_replayed,010,Channel/mixer evidence,Not detected,Evidence score: 0.123
+human_010_replay_laptop_mobile.wav,human_replayed,010,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_011_replay_laptop_mobile.wav,human_replayed,011,AI-origin evidence,Not detected,Evidence score: 0.007
+human_011_replay_laptop_mobile.wav,human_replayed,011,Replay evidence,Detected,Evidence score: 0.997
+human_011_replay_laptop_mobile.wav,human_replayed,011,Channel/mixer evidence,Not detected,Evidence score: 0.137
+human_011_replay_laptop_mobile.wav,human_replayed,011,Partial replacement evidence,Review candidate,Candidate segment score: 0.818
+human_012_replay_laptop_mobile.wav,human_replayed,012,AI-origin evidence,Not detected,Evidence score: 0.000
+human_012_replay_laptop_mobile.wav,human_replayed,012,Replay evidence,Detected,Evidence score: 0.997
+human_012_replay_laptop_mobile.wav,human_replayed,012,Channel/mixer evidence,Not detected,Evidence score: 0.556
+human_012_replay_laptop_mobile.wav,human_replayed,012,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_013_replay_laptop_mobile.wav,human_replayed,013,AI-origin evidence,Not detected,Evidence score: 0.000
+human_013_replay_laptop_mobile.wav,human_replayed,013,Replay evidence,Detected,Evidence score: 0.995
+human_013_replay_laptop_mobile.wav,human_replayed,013,Channel/mixer evidence,Not detected,Evidence score: 0.023
+human_013_replay_laptop_mobile.wav,human_replayed,013,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_014_replay_laptop_mobile.wav,human_replayed,014,AI-origin evidence,Not detected,Evidence score: 0.000
+human_014_replay_laptop_mobile.wav,human_replayed,014,Replay evidence,Detected,Evidence score: 0.994
+human_014_replay_laptop_mobile.wav,human_replayed,014,Channel/mixer evidence,Not detected,Evidence score: 0.341
+human_014_replay_laptop_mobile.wav,human_replayed,014,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_015_replay_laptop_mobile.wav,human_replayed,015,AI-origin evidence,Not detected,Evidence score: 0.000
+human_015_replay_laptop_mobile.wav,human_replayed,015,Replay evidence,Detected,Evidence score: 1.000
+human_015_replay_laptop_mobile.wav,human_replayed,015,Channel/mixer evidence,Not detected,Evidence score: 0.113
+human_015_replay_laptop_mobile.wav,human_replayed,015,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_016_replay_laptop_mobile.wav,human_replayed,016,AI-origin evidence,Not detected,Evidence score: 0.000
+human_016_replay_laptop_mobile.wav,human_replayed,016,Replay evidence,Detected,Evidence score: 0.999
+human_016_replay_laptop_mobile.wav,human_replayed,016,Channel/mixer evidence,Not detected,Evidence score: 0.217
+human_016_replay_laptop_mobile.wav,human_replayed,016,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_017_replay_laptop_mobile.wav,human_replayed,017,AI-origin evidence,Not detected,Evidence score: 0.001
+human_017_replay_laptop_mobile.wav,human_replayed,017,Replay evidence,Detected,Evidence score: 0.987
+human_017_replay_laptop_mobile.wav,human_replayed,017,Channel/mixer evidence,Not detected,Evidence score: 0.179
+human_017_replay_laptop_mobile.wav,human_replayed,017,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_018_replay_laptop_mobile.wav,human_replayed,018,AI-origin evidence,Not detected,Evidence score: 0.000
+human_018_replay_laptop_mobile.wav,human_replayed,018,Replay evidence,Detected,Evidence score: 0.990
+human_018_replay_laptop_mobile.wav,human_replayed,018,Channel/mixer evidence,Not detected,Evidence score: 0.320
+human_018_replay_laptop_mobile.wav,human_replayed,018,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_019_replay_laptop_mobile.wav,human_replayed,019,AI-origin evidence,Not detected,Evidence score: 0.000
+human_019_replay_laptop_mobile.wav,human_replayed,019,Replay evidence,Detected,Evidence score: 0.954
+human_019_replay_laptop_mobile.wav,human_replayed,019,Channel/mixer evidence,Not detected,Evidence score: 0.215
+human_019_replay_laptop_mobile.wav,human_replayed,019,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_020_replay_laptop_mobile.wav,human_replayed,020,AI-origin evidence,Not detected,Evidence score: 0.000
+human_020_replay_laptop_mobile.wav,human_replayed,020,Replay evidence,Detected,Evidence score: 0.966
+human_020_replay_laptop_mobile.wav,human_replayed,020,Channel/mixer evidence,Not detected,Evidence score: 0.528
+human_020_replay_laptop_mobile.wav,human_replayed,020,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_021_replay_laptop_mobile.wav,human_replayed,021,AI-origin evidence,Not detected,Evidence score: 0.000
+human_021_replay_laptop_mobile.wav,human_replayed,021,Replay evidence,Detected,Evidence score: 0.993
+human_021_replay_laptop_mobile.wav,human_replayed,021,Channel/mixer evidence,Not detected,Evidence score: 0.662
+human_021_replay_laptop_mobile.wav,human_replayed,021,Partial replacement evidence,Not detected,Max segment score: 1.000
+human_022_replay_laptop_mobile.wav,human_replayed,022,AI-origin evidence,Not detected,Evidence score: 0.000
+human_022_replay_laptop_mobile.wav,human_replayed,022,Replay evidence,Possible overlap,Evidence score: 0.735
+human_022_replay_laptop_mobile.wav,human_replayed,022,Channel/mixer evidence,Possible overlap,Evidence score: 0.998
+human_022_replay_laptop_mobile.wav,human_replayed,022,Partial replacement evidence,Review candidate,Candidate segment score: 1.000
+human_023_replay_laptop_mobile.wav,human_replayed,023,AI-origin evidence,Not detected,Evidence score: 0.001
+human_023_replay_laptop_mobile.wav,human_replayed,023,Replay evidence,Possible overlap,Evidence score: 0.910
+human_023_replay_laptop_mobile.wav,human_replayed,023,Channel/mixer evidence,Possible overlap,Evidence score: 0.995
+human_023_replay_laptop_mobile.wav,human_replayed,023,Partial replacement evidence,Review candidate,Candidate segment score: 1.000

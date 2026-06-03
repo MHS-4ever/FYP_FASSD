@@ -28,6 +28,23 @@ def _import_phase8c():
         ) from exc
 
 
+def safe_nanmean(values: Any, default: float = 0.0) -> float:
+    """Row-safe nanmean without RuntimeWarning on empty/all-NaN slices."""
+    arr = np.asarray(values, dtype=np.float64)
+    if arr.size == 0:
+        return float(default)
+    with np.errstate(all="ignore"):
+        mean = np.nanmean(arr)
+    if np.isnan(mean):
+        return float(default)
+    return float(mean)
+
+
+def _row_nanmean_from_frame(row: pd.Series, cols: list[str], default: float = 0.0) -> float:
+    vals = [row[c] for c in cols if c in row.index]
+    return safe_nanmean(vals, default=default)
+
+
 def extract_file_acoustic_features(y: np.ndarray, sr: int) -> dict[str, float]:
     p8c = _import_phase8c()
     seg, err = p8c.safe_audio_slice(y, sr, 0.0, len(y) / float(sr))
@@ -131,7 +148,7 @@ def compute_live_localization_features(seg_df: pd.DataFrame) -> pd.DataFrame:
         arr = np.asarray(vals, dtype=float)
         if not np.isfinite(arr).any():
             return float("nan")
-        return float(np.nanmean(np.abs(arr)))
+        return safe_nanmean(np.abs(arr)) if len(arr) else 0.0
 
     if ac_cols:
         ac_median = out[ac_cols].median(numeric_only=True)
@@ -165,8 +182,11 @@ def compute_live_localization_features(seg_df: pd.DataFrame) -> pd.DataFrame:
         out["ssl_deviation_percentile_within_file"] = np.nan
         out["within_file_ssl_deviation_score"] = np.nan
 
-    out["combined_within_file_deviation_score"] = np.nanmean(
-        out[["within_file_acoustic_deviation_score", "within_file_ssl_deviation_score"]],
+    out["combined_within_file_deviation_score"] = out.apply(
+        lambda r: _row_nanmean_from_frame(
+            r,
+            ["within_file_acoustic_deviation_score", "within_file_ssl_deviation_score"],
+        ),
         axis=1,
     )
 
@@ -179,8 +199,11 @@ def compute_live_localization_features(seg_df: pd.DataFrame) -> pd.DataFrame:
         ssl_trans.append(_row_distance(cur, prev, ssl_cols) if ssl_cols else np.nan)
     out["neighbor_acoustic_transition_score"] = ac_trans
     out["neighbor_ssl_transition_score"] = ssl_trans
-    out["combined_neighbor_transition_score"] = np.nanmean(
-        out[["neighbor_acoustic_transition_score", "neighbor_ssl_transition_score"]],
+    out["combined_neighbor_transition_score"] = out.apply(
+        lambda r: _row_nanmean_from_frame(
+            r,
+            ["neighbor_acoustic_transition_score", "neighbor_ssl_transition_score"],
+        ),
         axis=1,
     )
     return out

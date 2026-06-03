@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -187,7 +188,9 @@ def load_model_artifact(model_key: str):
     return joblib.load(artifact), meta
 
 
+@lru_cache(maxsize=1)
 def load_all_active_models() -> dict[str, dict[str, Any]]:
+    """Load active joblib models once per process (release app cache)."""
     out: dict[str, dict[str, Any]] = {}
     for key in ACTIVE_KEYS:
         model, meta = load_model_artifact(key)
@@ -199,3 +202,8 @@ def load_all_active_models() -> dict[str, dict[str, Any]]:
             "input_feature_names_resolved": get_model_input_feature_names(model, meta),
         }
     return out
+
+
+def clear_active_model_cache() -> None:
+    """Test/diagnostic hook — normally not needed in release app."""
+    load_all_active_models.cache_clear()

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/><title>Deepfake Audio Detector — Local Demo Report</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 2rem; color: #1e293b; }
+h1 { font-size: 1.4rem; } .muted { color: #64748b; font-size: 0.9rem; }
+.box { border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin: 12px 0; }
+table { border-collapse: collapse; width: 100%; } th, td { border: 1px solid #e2e8f0; padding: 6px; }
+</style></head><body>
+<h1>Deepfake Audio Detector — Local Demo</h1>
+<p class="muted">Research project: Forensic Acoustic for Synthetic Speech Detection</p>
+<div class="box">
+<p><b>Case ID:</b> P3-ai_clean-ai_014_direct</p>
+<p><b>File:</b> ai_014_direct.wav</p>
+<p><b>Duration:</b> 46.0539 s</p>
+<p><b>Generated:</b> 2026-06-03T19:50:54.631618+00:00</p>
+</div>
+<div class="box">
+<h2>Main result</h2>
+<p><b>Voice origin: Likely AI-generated</b></p>
+<p>AI-origin detected</p>
+<p>Highlighted evidence region: 00:06 – 00:10</p>
+<p><b>Recommendation (review_recommended):</b> Manual review recommended.</p>
+</div>
+<div class="box"><h2>Evidence axes</h2><ul><li><b>AI-origin evidence</b>: Detected — Experimental indicators were observed on this axis. This is not conclusive proof; manual review is recommended.</li><li><b>Replay evidence</b>: Not detected — No strong experimental indicators were highlighted on this axis. This does not prove authenticity.</li><li><b>Channel/mixer evidence</b>: Not detected — No strong experimental indicators were highlighted on this axis. This does not prove authenticity.</li><li><b>Partial replacement evidence</b>: Not detected — No partial-fabrication evidence was detected by the experimental partial module. This does not prove the audio is authentic; subtle or unseen partial manipulations may still be missed.</li></ul></div>
+<div class="box"><h2>Visual evidence</h2><img src="waveform_e33e18fe4027.png" alt="Waveform" style="max-width:100%;"/></div>
+<div class="box"><h2>Suspicious segments for review</h2>
+<table><tr><th>Rank</th><th>Time range</th><th>Evidence score</th><th>Review recommendation</th></tr>
+<tr><td>1</td><td>00:06 – 00:10</td><td>1.000</td><td>Recommended</td></tr><tr><td>2</td><td>00:36 – 00:40</td><td>1.000</td><td>Recommended</td></tr><tr><td>3</td><td>00:24 – 00:28</td><td>1.000</td><td>Recommended</td></tr><tr><td>4</td><td>00:20 – 00:24</td><td>1.000</td><td>Recommended</td></tr><tr><td>5</td><td>00:16 – 00:20</td><td>1.000</td><td>Recommended</td></tr></table></div>
+<div class="box"><h2>Technical details</h2>
+<p>The current release app maps the Phase 9C segment partial axis into the P6 report contract. The full P5B file-gate cascade is not used in this app path yet.</p>
+<p>Partial module status: experimental_manual_review_only</p>
+<p>Segment candidate only: False</p>
+<ul><li>file_gate_threshold: 0.5</li><li>segment_threshold: 0.9</li><li>contrast_threshold: 0.25</li><li>broad_limit: 0.45</li></ul>
+<p>Package: partial_fabrication_experimental_p5b (experimental_manual_review_only)</p>
+<ul><li>experimental_forensic_prototype</li><li>multi-axis evidence only; no single binary authenticity score</li><li>AASIST/HybridResNet reference models inactive</li><li>manual review recommended for elevated or mixed indicators</li></ul></div>
+<div class="box"><p><b>Safety note:</b> Experimental evidence indicators only. Manual forensic review is recommended.
+Conclusive authenticity decision: no.</p></div>
+</body></html>

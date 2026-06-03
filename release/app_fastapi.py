@@ -3,6 +3,13 @@
 from __future__ import annotations
 
 import shutil
+import warnings
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"Support for mismatched key_padding_mask and attn_mask is deprecated.*",
+    category=UserWarning,
+)
 import tempfile
 from pathlib import Path
 from typing import Any

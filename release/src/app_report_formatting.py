@@ -33,7 +33,7 @@ from phase9d_p6_partial_report_contract import (  # noqa: E402
     format_partial_evidence_contract,
 )
 
-APP_PHASE = "Phase 9E-P2-P1"
+APP_PHASE = "Phase 9E-P4B"
 
 # Dark-theme HTML card palette (explicit contrast for Gradio dark UI)
 _CARD_BG = "#1f2937"
@@ -271,7 +271,11 @@ def build_partial_fabrication_section(
     section["source_mode"] = "phase9c_segment_axis_mapped_to_p6_contract"
     section["file_gate_available"] = fgp is not None
     section["full_p5b_cascade_available"] = False
-    section["segment_candidate_only"] = bool(section.get("evidence_detected") is True and fgp is None)
+    section["segment_candidate_only"] = _partial_segment_candidate_only(section)
+    section["partial_module_mode"] = (
+        "segment_candidate_only" if section["segment_candidate_only"] else "mapped_contract"
+    )
+    section["full_partial_cascade_available"] = False
 
     return section
 
@@ -305,7 +309,7 @@ def enrich_phase9c_response(
     file_name: str = "",
     return_top_segments: bool = True,
 ) -> dict[str, Any]:
-    """Add P6 partial_fabrication section and app fields to Phase 9C pipeline output."""
+    """Add P6 partial_fabrication section and P3-P1 app fields to Phase 9C pipeline output."""
     partial_section = build_partial_fabrication_section(
         phase9c_result, return_top_segments=return_top_segments
     )
@@ -318,6 +322,20 @@ def enrich_phase9c_response(
     out = dict(phase9c_result)
     out["partial_fabrication"] = partial_section
     out["evidence_summary"] = build_evidence_summary(phase9c_result, partial_section)
+    try:
+        from src.origin_support_models import audit_reference_models, compact_origin_support_audit
+
+        audit = audit_reference_models()
+        out["origin_support_models"] = {
+            **audit,
+            **compact_origin_support_audit(audit),
+        }
+    except Exception:
+        out["origin_support_models"] = {
+            "audit_status": "reference origin model unavailable",
+            "aasist": {"available": False, "runnable": False, "status": "audit_only"},
+            "hybrid_resnet": {"available": False, "runnable": False, "status": "audit_only"},
+        }
     out["manual_review_required"] = True
     out["conclusive_authenticity_decision"] = False
     out["app_phase"] = APP_PHASE
@@ -326,6 +344,20 @@ def enrich_phase9c_response(
     out["request_id"] = str(uuid.uuid4())
     out["generated_at"] = out.get("generated_at") or _now_iso()
     out["safety"] = safety_banner()
+
+    voice = build_voice_origin_result(out)
+    cards = build_evidence_axis_cards(out)
+    summary = build_user_result_summary(out)
+    axis_interp = build_axis_interpretation(out, cards)
+    out["voice_origin_result"] = voice
+    out["forensic_indicator_summary"] = summary.get("forensic_indicator_summary", "")
+    out["recommendation"] = summary.get("recommendation_text", "")
+    out["recommendation_level"] = summary.get("recommendation_level", "none")
+    out["evidence_axis_cards"] = cards
+    out["axis_interpretation"] = axis_interp
+    out["partial_module_mode"] = partial_section.get("partial_module_mode", "segment_candidate_only")
+    out["release_correctness_notes"] = summary.get("release_correctness_notes", [])
+    out["user_summary"] = summary
     return out
 
 
@@ -348,6 +380,7 @@ def build_api_analyze_response(
 
     user_summary = build_user_result_summary(enriched)
     evidence_cards = build_evidence_axis_cards(enriched)
+    voice_origin = build_voice_origin_result(enriched)
 
     return {
         "request_id": enriched.get("request_id"),
@@ -367,6 +400,16 @@ def build_api_analyze_response(
         "safety": safety_banner(),
         "saved_report_path": save_report_path,
         "user_summary": user_summary,
+        "voice_origin_result": voice_origin,
+        "forensic_indicator_summary": user_summary.get("forensic_indicator_summary", ""),
+        "recommendation": user_summary.get("recommendation_text", ""),
+        "recommendation_level": user_summary.get("recommendation_level", "none"),
+        "axis_interpretation": build_axis_interpretation(enriched, evidence_cards),
+        "origin_support_models": enriched.get("origin_support_models"),
+        "partial_module_mode": (enriched.get("partial_fabrication") or {}).get(
+            "partial_module_mode", "segment_candidate_only"
+        ),
+        "release_correctness_notes": user_summary.get("release_correctness_notes", []),
         "evidence_axis_cards": evidence_cards,
         "visual_summary_available": True,
         "report_download_hint": "Use Gradio download buttons or save_report=true for JSON path.",
@@ -481,20 +524,382 @@ def _axis_card_from_evidence(
 
 def build_evidence_axis_cards(response: dict[str, Any]) -> list[dict[str, Any]]:
     pf = response.get("partial_fabrication") or {}
-    return [
+    cards = [
         _axis_card_from_evidence("AI-origin evidence", response.get("origin_evidence") or {}),
         _axis_card_from_evidence("Replay evidence", response.get("replay_evidence") or {}),
         _axis_card_from_evidence("Channel/mixer evidence", response.get("mixer_channel_evidence") or {}),
         _axis_card_from_evidence(
-            "Partial-fabrication evidence",
+            "Partial replacement evidence",
             {},
             partial_section=pf,
         ),
     ]
+    return _apply_replay_mixer_overlap(cards)
+
+
+def _card_by_name(cards: list[dict[str, Any]], needle: str) -> dict[str, Any] | None:
+    for card in cards:
+        if needle.lower() in str(card.get("axis_name", "")).lower():
+            return card
+    return None
+
+
+def _apply_replay_mixer_overlap(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    replay = _card_by_name(cards, "Replay")
+    mixer = _card_by_name(cards, "Channel")
+    if not replay or not mixer:
+        return cards
+    replay_high = replay.get("status") == "Detected"
+    mixer_high = mixer.get("status") == "Detected"
+    if replay_high and mixer_high:
+        replay_new = dict(replay)
+        replay_new["status"] = "Possible overlap"
+        replay_new["user_text"] = (
+            "Replay-like/channel artifact overlap observed. "
+            "Mixer/channel processing should be reviewed as the dominant indicator."
+        )
+        mixer_new = dict(mixer)
+        mixer_new["status"] = "Possible overlap"
+        mixer_new["user_text"] = (
+            "Mixer/channel processing evidence is dominant; replay-like artifacts may overlap."
+        )
+        out: list[dict[str, Any]] = []
+        for card in cards:
+            if "Replay" in str(card.get("axis_name", "")):
+                out.append(replay_new)
+            elif "Channel" in str(card.get("axis_name", "")) or "Mixer" in str(
+                card.get("axis_name", "")
+            ):
+                out.append(mixer_new)
+            else:
+                out.append(card)
+        return out
+    if replay_high and not mixer_high:
+        replay_new = dict(replay)
+        replay_new["user_text"] = "Replay/rerecording evidence was detected."
+        return [
+            replay_new if "Replay" in str(c.get("axis_name", "")) else c for c in cards
+        ]
+    if mixer_high:
+        mixer_new = dict(mixer)
+        mixer_new["user_text"] = "Channel or post-processing evidence was detected."
+        return [
+            mixer_new if "Channel" in str(c.get("axis_name", "")) or "Mixer" in str(c.get("axis_name", "")) else c
+            for c in cards
+        ]
+    return cards
+
+
+def _axis_card_detected(card: dict[str, Any] | None) -> bool:
+    return bool(card and card.get("status") == "Detected")
+
+
+def _axis_card_elevated(card: dict[str, Any] | None) -> bool:
+    return bool(card and card.get("status") in ("Detected", "Possible overlap"))
+
+
+def _is_clean_human_segment_candidate_only(
+    voice: dict[str, Any],
+    cards: list[dict[str, Any]],
+    pf: dict[str, Any],
+) -> bool:
+    if voice.get("origin_label") not in ("likely_human", "inconclusive", "inconclusive_under_processing"):
+        return False
+    if _axis_card_detected(_card_by_name(cards, "AI-origin")):
+        return False
+    if _axis_card_elevated(_card_by_name(cards, "Replay")):
+        return False
+    if _axis_card_elevated(_card_by_name(cards, "Channel")):
+        return False
+    partial = _card_by_name(cards, "Partial")
+    if not partial or partial.get("status") != "Review candidate":
+        return False
+    if not (_partial_segment_candidate_only(pf) or pf.get("partial_module_mode") == "segment_candidate_only"):
+        return False
+    return _has_candidate_segment(pf) or _partial_full_cascade_detected(pf) is False
+
+
+def _origin_axis_detected(origin: dict[str, Any]) -> bool:
+    if not origin.get("prediction_success"):
+        return False
+    label = str(origin.get("evidence_label") or origin.get("label", "")).lower()
+    strength = str(origin.get("evidence_strength", "")).lower()
+    return (
+        "elevated" in label
+        or strength in _ELEVATED
+        or label in ("elevated_indicator",)
+    )
+
+
+def build_voice_origin_result(response: dict[str, Any]) -> dict[str, Any]:
+    """Voice origin from origin_evidence; replay/mixer affect reliability wording only."""
+    origin = response.get("origin_evidence") or {}
+    cards = build_evidence_axis_cards(response)
+    replay_card = _card_by_name(cards, "Replay")
+    mixer_card = _card_by_name(cards, "Channel")
+    replay_high = _axis_card_elevated(replay_card)
+    mixer_high = _axis_card_elevated(mixer_card)
+    processing_high = replay_high or mixer_high
+
+    prob = origin.get("probability")
+    th = float(origin.get("threshold_candidate", 0.5) or 0.5)
+    pred_ok = bool(origin.get("prediction_success"))
+    ssl_detected = _origin_axis_detected(origin)
+
+    support = response.get("origin_support_models") or {}
+    evidence_sources: list[str] = []
+    if pred_ok:
+        evidence_sources.append("ssl_origin_model")
+    for m in support.get("models") or []:
+        if m.get("status") == "shadow_runnable":
+            key = str(m.get("model_name", "")).lower()
+            if "aasist" in key:
+                evidence_sources.append("aasist_shadow")
+            if "hybrid" in key or "resnet" in key:
+                evidence_sources.append("hybrid_resnet_shadow")
+
+    if len(evidence_sources) > 1:
+        evidence_source = "ensemble_if_available"
+    elif evidence_sources:
+        evidence_source = evidence_sources[0]
+    else:
+        evidence_source = "ssl_origin_model"
+
+    base_unavail = {
+        "origin_label": "inconclusive",
+        "display_text": "Voice origin: Inconclusive",
+        "confidence_text": "Origin model unavailable for this file.",
+        "evidence_source": evidence_source,
+        "evidence_sources": evidence_sources,
+        "explanation": "Voice origin could not be determined reliably from the active origin model.",
+        "ssl_origin_detected": False,
+    }
+    if not pred_ok:
+        return base_unavail
+
+    prob_txt = f"Origin evidence score: {float(prob):.3f}" if isinstance(prob, (int, float)) else ""
+
+    if ssl_detected and processing_high:
+        return {
+            "origin_label": "likely_ai_generated_with_processing",
+            "display_text": "Voice origin: Likely AI-generated with processing indicators",
+            "confidence_text": prob_txt,
+            "evidence_source": evidence_source,
+            "evidence_sources": evidence_sources,
+            "explanation": (
+                "AI-origin evidence is present, with additional replay/channel processing indicators."
+            ),
+            "ssl_origin_detected": True,
+        }
+
+    if ssl_detected:
+        return {
+            "origin_label": "likely_ai_generated",
+            "display_text": "Voice origin: Likely AI-generated",
+            "confidence_text": prob_txt,
+            "evidence_source": evidence_source,
+            "evidence_sources": evidence_sources,
+            "explanation": (
+                "The active SSL origin model shows elevated AI-origin indicators. "
+                "This is experimental evidence only, not a conclusive authenticity decision."
+            ),
+            "ssl_origin_detected": True,
+        }
+
+    origin_low = isinstance(prob, (int, float)) and float(prob) < th - 0.10
+    if processing_high and origin_low:
+        return {
+            "origin_label": "inconclusive_under_processing",
+            "display_text": "Voice origin: Inconclusive under replay/channel processing",
+            "confidence_text": prob_txt,
+            "evidence_source": evidence_source,
+            "evidence_sources": evidence_sources,
+            "explanation": (
+                "Replay or channel processing can reduce reliability of AI-vs-human origin cues."
+            ),
+            "ssl_origin_detected": False,
+        }
+
+    if origin_low and not processing_high:
+        return {
+            "origin_label": "likely_human",
+            "display_text": "Voice origin: Likely human",
+            "confidence_text": prob_txt,
+            "evidence_source": evidence_source,
+            "evidence_sources": evidence_sources,
+            "explanation": (
+                "The active SSL origin model does not show strong AI-origin indicators. "
+                "This does not prove authenticity."
+            ),
+            "ssl_origin_detected": False,
+        }
+
+    if processing_high:
+        return {
+            "origin_label": "inconclusive_under_processing",
+            "display_text": "Voice origin: Inconclusive under replay/channel processing",
+            "confidence_text": prob_txt,
+            "evidence_source": evidence_source,
+            "evidence_sources": evidence_sources,
+            "explanation": (
+                "Replay or channel processing can reduce reliability of AI-vs-human origin cues."
+            ),
+            "ssl_origin_detected": False,
+        }
+
+    return {
+        "origin_label": "inconclusive",
+        "display_text": "Voice origin: Inconclusive",
+        "confidence_text": prob_txt,
+        "evidence_source": evidence_source,
+        "evidence_sources": evidence_sources,
+        "explanation": "Origin evidence is borderline or mixed. Manual review may still be needed.",
+        "ssl_origin_detected": False,
+    }
+
+
+def build_forensic_indicator_summary(response: dict[str, Any], cards: list[dict[str, Any]]) -> str:
+    pf = response.get("partial_fabrication") or {}
+    voice = build_voice_origin_result(response)
+    if _is_clean_human_segment_candidate_only(voice, cards, pf):
+        return "Segment-level candidate available for optional review."
+    parts: list[str] = []
+    for card in cards:
+        name = str(card.get("axis_name", ""))
+        status = card.get("status")
+        if status == "Detected":
+            short = name.replace(" evidence", "").replace("Partial replacement", "Partial replacement")
+            parts.append(f"{short} detected")
+        elif status == "Review candidate":
+            parts.append("Partial replacement candidate for optional review")
+        elif status == "Possible overlap":
+            parts.append("Replay-like/channel artifact overlap observed")
+
+    if not parts:
+        if _partial_segment_candidate_only(pf) and _has_candidate_segment(pf):
+            return (
+                "Segment-level candidate available for optional review "
+                "(full P5B cascade not active in release app)."
+            )
+        return "No strong manipulation indicators detected"
+    return "; ".join(dict.fromkeys(parts))
+
+
+def build_recommendation_level(
+    response: dict[str, Any],
+    voice: dict[str, Any],
+    cards: list[dict[str, Any]],
+) -> str:
+    status = str(response.get("status", ""))
+    if (
+        status == "error"
+        or response.get("processing_status") == "error"
+        or bool(response.get("error_message"))
+    ):
+        return "unavailable"
+    pf = response.get("partial_fabrication") or {}
+    if _is_clean_human_segment_candidate_only(voice, cards, pf):
+        return "optional_review"
+    if _strong_forensic_evidence(cards, pf, response):
+        return "review_recommended"
+    if voice.get("origin_label") in ("likely_ai_generated", "likely_ai_generated_with_processing"):
+        return "review_recommended"
+    if _partial_segment_candidate_only(pf) and _has_candidate_segment(pf):
+        return "optional_review"
+    return "none"
+
+
+def build_recommendation_text(
+    response: dict[str, Any],
+    voice: dict[str, Any],
+    cards: list[dict[str, Any]],
+) -> str:
+    pf = response.get("partial_fabrication") or {}
+    level = build_recommendation_level(response, voice, cards)
+    if level == "unavailable":
+        return "Try another supported file or perform manual review"
+    if level == "optional_review":
+        return "Optional review of the candidate segment may be useful for sensitive cases."
+    if level == "review_recommended":
+        return "Manual review recommended."
+    return "No highlighted evidence region; manual review may still be needed for sensitive cases."
+
+
+def _strong_forensic_evidence(
+    cards: list[dict[str, Any]],
+    pf: dict[str, Any],
+    response: dict[str, Any],
+) -> bool:
+    forensic_detected = any(
+        c.get("status") in ("Detected", "Possible overlap")
+        for c in cards
+        if not str(c.get("axis_name", "")).startswith("AI-origin")
+    ) or _partial_full_cascade_detected(pf)
+    if forensic_detected:
+        return True
+    if _partial_segment_candidate_only(pf) and _has_candidate_segment(pf):
+        return False
+    return _is_fusion_strongly_elevated(response)
+
+
+def build_axis_interpretation(
+    response: dict[str, Any], cards: list[dict[str, Any]]
+) -> dict[str, Any]:
+    pf = response.get("partial_fabrication") or {}
+    voice = build_voice_origin_result(response)
+    ai_card = _card_by_name(cards, "AI-origin")
+    replay_card = _card_by_name(cards, "Replay")
+    mixer_card = _card_by_name(cards, "Channel")
+    partial_card = _card_by_name(cards, "Partial")
+
+    overlap = bool(
+        replay_card
+        and mixer_card
+        and replay_card.get("status") in ("Detected", "Possible overlap")
+        and mixer_card.get("status") in ("Detected", "Possible overlap")
+    )
+    overlap_notes: list[str] = []
+    if overlap:
+        overlap_notes.append(
+            "Replay-like artifacts overlap with channel/mixer processing evidence. "
+            "Mixer/channel processing should be reviewed as the dominant indicator."
+        )
+        overlap_notes.append(
+            "Mixer/channel processing evidence is dominant; replay-like artifacts may overlap."
+        )
+
+    partial_interp = "Not detected"
+    if partial_card:
+        if partial_card.get("status") == "Review candidate":
+            partial_interp = (
+                "Segment-level candidate available for optional review "
+                "(not strong suspicious evidence in this app path)."
+            )
+        elif partial_card.get("status") == "Detected":
+            partial_interp = "Partial replacement evidence detected."
+        else:
+            partial_interp = str(partial_card.get("user_text", partial_card.get("status", "")))
+
+    ai_interp = str(ai_card.get("user_text", "")) if ai_card else "Unavailable"
+    replay_interp = str(replay_card.get("user_text", "")) if replay_card else "Unavailable"
+    mixer_interp = str(mixer_card.get("user_text", "")) if mixer_card else "Unavailable"
+
+    return {
+        "ai_origin_interpretation": ai_interp,
+        "replay_interpretation": replay_interp,
+        "mixer_channel_interpretation": mixer_interp,
+        "partial_interpretation": partial_interp,
+        "overlap_notes": overlap_notes,
+        "voice_origin": voice,
+        "forensic_cards": cards,
+        "partial_module_mode": pf.get("partial_module_mode", "segment_candidate_only"),
+        "full_partial_cascade_available": pf.get("full_partial_cascade_available", False),
+        "replay_mixer_overlap": overlap,
+    }
 
 
 def _highlight_segment_text(
-    response: dict[str, Any], *, candidate_only: bool = False
+    response: dict[str, Any], *, candidate_only: bool = False, recommendation_level: str = "none"
 ) -> tuple[str, float | None, float | None]:
     from src.app_visualization import format_time_mmss
 
@@ -502,30 +907,27 @@ def _highlight_segment_text(
     cand = pf.get("candidate_segment") or {}
     start = cand.get("start_sec")
     end = cand.get("end_sec")
+    if recommendation_level == "review_recommended":
+        prefix = "Highlighted evidence region"
+    elif recommendation_level == "optional_review" or candidate_only:
+        prefix = "Candidate region for optional review"
+    else:
+        prefix = "Highlighted evidence region"
     if start is not None and end is not None:
-        prefix = (
-            "Candidate segment available for review"
-            if candidate_only
-            else "Highlighted segment"
-        )
         return (
             f"{prefix}: {format_time_mmss(start)} – {format_time_mmss(end)}",
             float(start),
             float(end),
         )
-    if candidate_only and _has_candidate_segment(pf):
-        return "Candidate segment available for review: see table below", None, None
-    if not candidate_only and any(
-        c.get("status") == "Detected"
-        for c in build_evidence_axis_cards(response)
-        if c.get("axis_name") != "Partial-fabrication evidence"
-    ):
-        return "Highlighted segment: see segments table", None, None
-    return "Highlighted segment: none", None, None
+    if (candidate_only or recommendation_level == "optional_review") and _has_candidate_segment(pf):
+        return "Candidate region for optional review: see table below", None, None
+    if recommendation_level == "review_recommended":
+        return "Highlighted evidence region: see segments table", None, None
+    return "No highlighted evidence region", None, None
 
 
 def build_user_result_summary(response: dict[str, Any]) -> dict[str, Any]:
-    """Concise user-facing result lines for dashboard and PDF."""
+    """Voice origin first, then forensic indicators, then recommendation."""
     status = str(response.get("status", ""))
     processing_error = (
         status == "error"
@@ -533,88 +935,88 @@ def build_user_result_summary(response: dict[str, Any]) -> dict[str, Any]:
         or bool(response.get("error_message"))
     )
 
+    voice = build_voice_origin_result(response)
     pf = response.get("partial_fabrication") or {}
     cards = build_evidence_axis_cards(response)
     segment_candidate_only = _partial_segment_candidate_only(pf)
-    strong_evidence_detected = any(
-        c.get("status") == "Detected"
-        for c in cards
-        if c.get("axis_name") != "Partial-fabrication evidence"
-    ) or _partial_full_cascade_detected(pf)
-    if _is_fusion_strongly_elevated(response):
-        strong_evidence_detected = True
+    clean_candidate_only = _is_clean_human_segment_candidate_only(voice, cards, pf)
+    strong_forensic = _strong_forensic_evidence(cards, pf, response)
+    forensic_summary = build_forensic_indicator_summary(response, cards)
+    recommendation = build_recommendation_text(response, voice, cards)
+    recommendation_level = build_recommendation_level(response, voice, cards)
+    notes: list[str] = []
+    if pf.get("partial_module_mode") == "segment_candidate_only" or segment_candidate_only:
+        notes.append("Partial module in segment_candidate_only mode in release app path.")
+
+    if clean_candidate_only:
+        finding_title = "No strong manipulation indicators detected"
+    else:
+        finding_title = voice.get("display_text", "")
 
     base_unavailable = {
         "status_title": "Analysis incomplete",
-        "finding_title": "Analysis unavailable",
-        "highlighted_segment_text": "Highlighted segment: unavailable",
+        "voice_origin_text": "Voice origin: Inconclusive",
+        "finding_title": "Voice origin: Inconclusive",
+        "forensic_indicator_summary": "Forensic indicators: unavailable",
+        "highlighted_segment_text": "No highlighted evidence region",
         "recommendation_text": "Try another supported file or perform manual review",
-        "plain_language_explanation": (
-            "The system could not produce a reliable analysis output."
-        ),
+        "recommendation_level": "unavailable",
+        "plain_language_explanation": voice.get("explanation", ""),
         "severity_level": "unavailable",
         "evidence_detected_any": False,
         "strong_evidence_detected": False,
+        "strong_forensic_detected": False,
         "segment_candidate_only": False,
+        "voice_origin_result": voice,
+        "release_correctness_notes": notes,
     }
 
     if processing_error:
         return base_unavailable
 
-    if strong_evidence_detected:
-        highlight_text, _, _ = _highlight_segment_text(response, candidate_only=False)
-        return {
-            "status_title": "Analysis completed",
-            "finding_title": "Suspicious audio indicators found",
-            "highlighted_segment_text": highlight_text,
-            "recommendation_text": "Manual review recommended",
-            "plain_language_explanation": (
-                "A section of the audio was highlighted for closer review."
-            ),
-            "severity_level": "review",
-            "evidence_detected_any": True,
-            "strong_evidence_detected": True,
-            "segment_candidate_only": False,
-        }
+    if recommendation_level == "optional_review" or (segment_candidate_only and _has_candidate_segment(pf)):
+        highlight_text, _, _ = _highlight_segment_text(
+            response, candidate_only=True, recommendation_level=recommendation_level
+        )
+        severity = "clear_candidate"
+    elif strong_forensic or recommendation_level == "review_recommended":
+        highlight_text, _, _ = _highlight_segment_text(
+            response, candidate_only=False, recommendation_level=recommendation_level
+        )
+        severity = "review"
+    else:
+        highlight_text, _, _ = _highlight_segment_text(
+            response, candidate_only=False, recommendation_level=recommendation_level
+        )
+        severity = "clear"
 
-    if segment_candidate_only and _has_candidate_segment(pf):
-        highlight_text, _, _ = _highlight_segment_text(response, candidate_only=True)
-        return {
-            "status_title": "Analysis completed",
-            "finding_title": "No strong manipulation indicators detected",
-            "highlighted_segment_text": highlight_text,
-            "recommendation_text": "Manual review optional for the highlighted segment",
-            "plain_language_explanation": (
-                "A segment-level candidate was highlighted, but this alone is not enough "
-                "to flag the full audio."
-            ),
-            "severity_level": "clear_candidate",
-            "evidence_detected_any": False,
-            "strong_evidence_detected": False,
-            "segment_candidate_only": True,
-        }
-
-    highlight_text, _, _ = _highlight_segment_text(response, candidate_only=False)
     return {
         "status_title": "Analysis completed",
-        "finding_title": "No strong manipulation indicators detected",
+        "voice_origin_text": voice.get("display_text", ""),
+        "finding_title": finding_title,
+        "forensic_indicator_summary": forensic_summary,
         "highlighted_segment_text": highlight_text,
-        "recommendation_text": "Manual review may still be needed for sensitive cases",
-        "plain_language_explanation": (
-            "The system did not highlight a strong suspicious region."
-        ),
-        "severity_level": "clear",
-        "evidence_detected_any": False,
-        "strong_evidence_detected": False,
-        "segment_candidate_only": False,
+        "recommendation_text": recommendation,
+        "recommendation_level": recommendation_level,
+        "plain_language_explanation": voice.get("explanation", ""),
+        "confidence_text": voice.get("confidence_text", ""),
+        "severity_level": severity,
+        "evidence_detected_any": strong_forensic,
+        "strong_evidence_detected": strong_forensic,
+        "strong_forensic_detected": strong_forensic,
+        "segment_candidate_only": segment_candidate_only and _has_candidate_segment(pf),
+        "voice_origin_result": voice,
+        "release_correctness_notes": notes,
     }
 
 
 def gradio_segments_table_title(response: dict[str, Any]) -> str:
     summary = build_user_result_summary(response)
-    if summary.get("strong_evidence_detected") or summary.get("severity_level") == "review":
+    if summary.get("recommendation_level") == "review_recommended" or summary.get(
+        "strong_forensic_detected"
+    ):
         return "Suspicious segments for review"
-    return "Candidate segments for review"
+    return "Candidate segments for optional review"
 
 
 def gradio_segments_section_heading(response: dict[str, Any]) -> str:
@@ -652,6 +1054,7 @@ def _card_status_border(status: str) -> str:
     return {
         "Detected": _BORDER_DETECTED,
         "Review candidate": _BORDER_CANDIDATE,
+        "Possible overlap": _BORDER_CANDIDATE,
         "Not detected": _BORDER_CLEAR,
         "Unavailable": _BORDER_UNAVAILABLE,
     }.get(status, _CARD_BORDER_DEFAULT)
@@ -663,10 +1066,11 @@ def render_main_result_card(summary: dict[str, Any]) -> str:
     return f"""
 <div style="border-left:4px solid {border};padding:12px 16px;background:{_CARD_BG};border-radius:8px;color:{_TEXT_PRIMARY};">
   <div style="font-size:0.85rem;color:{_TEXT_MUTED};">{_html_escape(summary.get('status_title',''))}</div>
-  <div style="font-size:1.25rem;font-weight:600;margin:6px 0;color:{_TEXT_PRIMARY};">{_html_escape(summary.get('finding_title',''))}</div>
+  <div style="font-size:1.35rem;font-weight:700;margin:8px 0;color:{_TEXT_PRIMARY};">{_html_escape(summary.get('voice_origin_text') or summary.get('finding_title',''))}</div>
+  <div style="font-size:0.95rem;color:{_TEXT_SECONDARY};margin:6px 0;">{_html_escape(summary.get('forensic_indicator_summary',''))}</div>
   <div style="margin:4px 0;color:{_TEXT_SECONDARY};">{_html_escape(summary.get('highlighted_segment_text',''))}</div>
-  <div style="margin:4px 0;color:{_TEXT_SECONDARY};">{_html_escape(summary.get('recommendation_text',''))}</div>
-  <div style="font-size:0.9rem;color:{_TEXT_MUTED};margin-top:8px;">{_html_escape(summary.get('plain_language_explanation',''))}</div>
+  <div style="margin:6px 0;color:{_TEXT_PRIMARY};"><b>Recommendation:</b> {_html_escape(summary.get('recommendation_text',''))}</div>
+  <div style="font-size:0.85rem;color:{_TEXT_MUTED};margin-top:8px;">{_html_escape(summary.get('confidence_text') or summary.get('plain_language_explanation',''))}</div>
 </div>
 """
 

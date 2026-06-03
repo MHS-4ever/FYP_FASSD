@@ -2,11 +2,21 @@
 
 | Field | Value |
 |-------|--------|
-| Phase | 9E-P2-P1 — UI/report polish + segment-candidate interpretation fix |
-| Status | **Release app updated** — run `validate_phase9e_p2_ui_report.py` |
-| Prior UI | 9E-P2 dashboard, waveform, PDF/JSON export |
-| Prior integration | 9E-P1-P1 release app + `validate_phase9e_release_apps.py` |
-| Prior | Phase 9D-P6-P1 PASS — `partial_fabrication_experimental_p5b` packaged |
+| Phase | **9E-P4B** — Demo freeze (accepted) |
+| Product | **Deepfake Audio Detector — Local Demo** |
+| Research / FYP | **Forensic Acoustic for Synthetic Speech Detection** |
+| Next | **Phase 9F** (may start after P4B validator PASS) |
+
+## Phase acceptance timeline
+
+| Sub-phase | Status | Summary |
+|-----------|--------|---------|
+| 9E-P1 / P1-P1 | Accepted | Release app + P6 partial contract integration |
+| 9E-P2 / P2-P1 | Accepted | UI redesign, waveform, PDF/JSON, clean-human wording fix |
+| 9E-P3 | **PASS** | Voice-origin-first hierarchy; 184-file regression |
+| 9E-P3-P1 | **PASS** | Optional review wording; JSON completeness; terminal audit |
+| 9E-P4A | **PASS** | AASIST/HybridResNet shadow eval; both **reject_for_now** |
+| 9E-P4B | **PASS** | Demo freeze — naming, docs, samples, validator |
 
 ## Primary app path
 
@@ -14,45 +24,59 @@
 
 | Component | Path |
 |-----------|------|
-| FastAPI | `release/app_fastapi.py` |
-| Gradio | `release/app_gradio.py` |
+| Gradio | `release/app_gradio.py` / `run_gradio.bat` |
+| FastAPI | `release/app_fastapi.py` / `run_fastapi.bat` |
 | Formatting | `release/src/app_report_formatting.py` |
 | Inference | `release/src/inference_pipeline.py` |
 | P6 package | `release/models/partial_fabrication_experimental_p5b/` |
-| Validator (P2) | `code/phase9/partial_redesign/validate_phase9e_p2_ui_report.py` |
-| Validator (P1) | `code/phase9/partial_redesign/validate_phase9e_release_apps.py` |
+| P3 validator | `code/phase9/partial_redesign/validate_phase9e_p3_release_correctness.py` |
+| P4A validator | `code/phase9/partial_redesign/validate_phase9e_p4a_origin_support.py` |
+| P4B validator | `code/phase9/partial_redesign/validate_phase9e_p4b_demo_freeze.py` |
 
-Legacy skeleton (`code/phase9/app/`) remains for reference only.
+## Run demo
 
-## P1-P1 deliverables
+```bat
+cd /d E:\FYP\release
+conda activate fassd
+python app_gradio.py
+```
 
-- [x] `release/src/app_report_formatting.py`
-- [x] `release/app_fastapi.py` — P6 partial section, `/analyze-audio`
-- [x] `release/app_gradio.py` — partial panel + segment table
-- [x] `code/phase9/partial_redesign/validate_phase9e_release_apps.py`
-- [x] `reports/phase9/app/phase9e_p1_app_design.md` (release-primary)
+## Active vs reference models
 
-## Behavior
+**Active (voice origin + forensic axes):**
 
-- Calls Phase 9C `analyze_audio_file()` (no retrain, no threshold changes).
-- Maps output to P6 `partial_fabrication` contract via `app_report_formatting.py`.
-- `manual_review_required` always true; `conclusive_authenticity_decision`: no.
-- Old partial segment model not active for Phase 9E demo (inventory check).
+- SSL `origin_file_model` — voice origin decision
+- `replay_file_model`, `mixer_file_model`
+- `partial_fabrication_experimental_p5b` — segment candidate / experimental manual review only
 
-## P2-P1 behavior (interpretation only)
+**Reference (inactive):**
 
-- Segment-only partial candidates → **Review candidate** card, not main “suspicious” finding.
-- Full suspicious result requires stronger multi-axis or fusion elevation (no threshold/model changes).
+- AASIST — P4A **reject_for_now**
+- HybridResNet — P4A **reject_for_now**
 
-## User next steps
+## Regression baseline
 
-1. `py_compile` release app files + `validate_phase9e_p2_ui_report.py`
-2. `python code/phase9/partial_redesign/validate_phase9e_p2_ui_report.py`
-3. Manually run `release/run_gradio.bat` and re-test clean human audio
+- P3 full: 184/184 files, 0 failures, `human_clean_false_suspicious_rate = 0.0`
+- P4A full: 184/184 shadow eval, SSL remains baseline
 
-## Out of scope
+## P4B deliverables
+
+- `reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_demo_freeze_report.md`
+- `reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_demo_checklist.md`
+- `reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_final_demo_samples.csv`
+- `reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_known_limitations.md`
+- `reports/phase9/validation/phase9e_p4b_demo_freeze_validation_report.md`
+
+## Out of scope (frozen)
 
 - Retraining or threshold changes
-- Writing to `models_saved/active`
+- AASIST/ResNet activation
+- Writing to `models_saved/active` or overwriting `release/models`
 - Operational or legal-evidence claims
-- Phase 9F / 9G
+- Phase 9F/9G implementation inside P4B
+
+## Validate freeze
+
+```bat
+python code\phase9\partial_redesign\validate_phase9e_p4b_demo_freeze.py
+```

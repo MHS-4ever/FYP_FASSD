@@ -1,0 +1,384 @@
+{
+  "release_name": "phase9g_deepfake_audio_detector_demo_handoff",
+  "product_name": "Deepfake Audio Detector \u2014 Local Demo",
+  "research_project_name": "Forensic Acoustic for Synthetic Speech Detection",
+  "generated_at": "2026-06-03T21:14:59.110+00:00",
+  "file_count": 75,
+  "files": [
+    {
+      "relative_path": "release/app_fastapi.py",
+      "size_bytes": 7529,
+      "sha256": "cfe6fb7311cd305bdce2d0ecf768261cc225a047771ceda6b4f4654461053c18"
+    },
+    {
+      "relative_path": "release/app_gradio.py",
+      "size_bytes": 6685,
+      "sha256": "ceb59e3fd4eaf66c9a7674aa8fb6a64290986bd4d4cab23372389443c9cfead3"
+    },
+    {
+      "relative_path": "release/config/fusion_thresholds.yaml",
+      "size_bytes": 387,
+      "sha256": "3c9749823ee58cffbbda134a1a41dbfbd547cb8b31b54f78b0226c9045f230ad"
+    },
+    {
+      "relative_path": "release/config/label_schema.yaml",
+      "size_bytes": 359,
+      "sha256": "5a4ad1e431386137ade40dc1238947b257b4f69346c86649c5e866af97b1b11e"
+    },
+    {
+      "relative_path": "release/config/model_paths.yaml",
+      "size_bytes": 334,
+      "sha256": "459ebf5110616b56d5e78fdb2fc26748830e27e6585fb0c3257900b68802454b"
+    },
+    {
+      "relative_path": "release/config/runtime_config.yaml",
+      "size_bytes": 131,
+      "sha256": "8777c3e5e6c58fd52f41e1caa168b55cf1cfdbeb9e6519eb9316fbf66deea336"
+    },
+    {
+      "relative_path": "release/models/mixer/mixer_file_model__acoustic__experimental.joblib",
+      "size_bytes": 7053,
+      "sha256": "9745c3b34390f47b35d224c96f6ec4e03146046df30806a921e96f17fd671d2e"
+    },
+    {
+      "relative_path": "release/models/mixer/mixer_file_model__acoustic__metadata.json",
+      "size_bytes": 4953,
+      "sha256": "8204979d1f6147d861cd0472877baa259155dd5ad63e171588992a12250a97f8"
+    },
+    {
+      "relative_path": "release/models/mixer/mixer_file_model__acoustic__model_card.md",
+      "size_bytes": 742,
+      "sha256": "ec737adc41246940d5d8169d3cbe798d69c1003376c7923f871cf292b66d341f"
+    },
+    {
+      "relative_path": "release/models/model_inventory.json",
+      "size_bytes": 2282,
+      "sha256": "a67a82d5d3eba880cf4923248163db48daab8968f97e39a02926110420a5e6d1"
+    },
+    {
+      "relative_path": "release/models/origin/origin_file_model__ssl__experimental.joblib",
+      "size_bytes": 56477,
+      "sha256": "f9ef07746a4325135f11be86e0f82d94c1e0f3a2e26834d06571d5eed86b5780"
+    },
+    {
+      "relative_path": "release/models/origin/origin_file_model__ssl__metadata.json",
+      "size_bytes": 4431,
+      "sha256": "11d739ef301182fcf247b5b1371cd01a09967cf9902b7b1a01fe96118432a65f"
+    },
+    {
+      "relative_path": "release/models/origin/origin_file_model__ssl__model_card.md",
+      "size_bytes": 578,
+      "sha256": "49b9db1992b2ed243ae8691ae26e87a3e7a262d9492c89ab36702709d240654b"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_cascade_config__p5b_experimental_candidate.json",
+      "size_bytes": 510,
+      "sha256": "2bcc8631ed87ae1f00e4fcb0632f422413902625d95bb44a8578ef844902230a"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_file_gate__ssl__p5b_experimental_candidate.joblib",
+      "size_bytes": 67548,
+      "sha256": "3b558b657758888ee74d87a7747fb0a3d9e1aa588712fd365c4fe1bc3f7e3601"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_module_metadata.json",
+      "size_bytes": 2395,
+      "sha256": "e792044f5f32c72f8aa46fb78c3b5fb77c3a34aaaba10198952c3f4eff4d2cf3"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_report_contract.json",
+      "size_bytes": 1598,
+      "sha256": "a6930c3e559b931404234dde3486fbc06444717d81cba05fc2d0d4c86db22b03"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_segment_localizer_v2__combined__p5b_experimental_candidate.joblib",
+      "size_bytes": 70791,
+      "sha256": "00b79f9cfd42c72fbccf55aeb7157867199be416a1cccfb0ed47759e181699df"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/partial_validation_summary.json",
+      "size_bytes": 671,
+      "sha256": "4f9fa4176273d5c8203eadf129c4df0633cc9b50e038ff6034f93e06269eb6e9"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/README_partial_fabrication_experimental.md",
+      "size_bytes": 1806,
+      "sha256": "5e484a898945e3eb7cefa1e4250371663077c5cd75de47315de840a3a85d3b74"
+    },
+    {
+      "relative_path": "release/models/partial_fabrication_experimental_p5b/SHA256SUMS.txt",
+      "size_bytes": 790,
+      "sha256": "1bb18f682cb8d07e292086e837f253d4aa03a8948a771329d267e927b681bdd5"
+    },
+    {
+      "relative_path": "release/models/partial_segment/partial_segment_model__combined__experimental.joblib",
+      "size_bytes": 59005,
+      "sha256": "97cfbb8a0d280891039102641273852b70bb1316208232640d1474860a537d20"
+    },
+    {
+      "relative_path": "release/models/partial_segment/partial_segment_model__combined__metadata.json",
+      "size_bytes": 7063,
+      "sha256": "c1fa184c7b47ec8e5ca14f29731b17088aa71c7b798bd21072eb98a0c8e5cead"
+    },
+    {
+      "relative_path": "release/models/partial_segment/partial_segment_model__combined__model_card.md",
+      "size_bytes": 698,
+      "sha256": "8bc60a460a016655c96edd92ce7253dbfe6d3aeb2c3539c60dcaa87e074aa754"
+    },
+    {
+      "relative_path": "release/models/reference/aasist/aasist_l_official_pretrained_reference.pth",
+      "size_bytes": 426428,
+      "sha256": "814331d088032bb4c3fa61cc014789eadeed464209dd094ab3a2dd6ffbdce27a"
+    },
+    {
+      "relative_path": "release/models/reference/aasist/aasist_official_pretrained_reference.pth",
+      "size_bytes": 1281532,
+      "sha256": "51d2d9cf0738172f61e2a384ec50a54a55363240f67c971ed55a92435bc1a1c0"
+    },
+    {
+      "relative_path": "release/models/reference/aasist/metadata.json",
+      "size_bytes": 1649,
+      "sha256": "62cf87ad43df3ec0b9adf4cce2762aa308d1f24833ca0cd83e3b7627c51e1d2f"
+    },
+    {
+      "relative_path": "release/models/reference/hybrid_resnet/hybrid_resnet_environmental_best.pth",
+      "size_bytes": 34980034,
+      "sha256": "52dcf67f5e20137e5fb13b08329fb53b6533e01d119364deda686fa0b03774cc"
+    },
+    {
+      "relative_path": "release/models/reference/hybrid_resnet/metadata.json",
+      "size_bytes": 1365,
+      "sha256": "739bd17f7ebbd0c9b2aa25ed5c53e0f99a708becd5d0b87ee0b09efb5663ebef"
+    },
+    {
+      "relative_path": "release/models/reference/README_REFERENCE_MODELS.md",
+      "size_bytes": 1061,
+      "sha256": "abc39247edc4ca6a2b05086e3934132884e1beb043da9d131798b3aa2fdc495a"
+    },
+    {
+      "relative_path": "release/models/reference/reference_model_inventory.json",
+      "size_bytes": 1181,
+      "sha256": "2de75e065ab4ab45d65159942bd6a71fc93c7a289870c4846ca35e62d38ccd0e"
+    },
+    {
+      "relative_path": "release/models/replay/replay_file_model__acoustic__experimental.joblib",
+      "size_bytes": 7053,
+      "sha256": "2f3bb4661b840aed0562dcbf8bd7c0714078727425e844adb39918e17a20f7c3"
+    },
+    {
+      "relative_path": "release/models/replay/replay_file_model__acoustic__metadata.json",
+      "size_bytes": 4952,
+      "sha256": "d783b50e1950a04c796f04202a98824758eab45f577597ba8a6917b36815b9cd"
+    },
+    {
+      "relative_path": "release/models/replay/replay_file_model__acoustic__model_card.md",
+      "size_bytes": 709,
+      "sha256": "ce5b1db5c47d22696aee4163b9a1a3cb86e9d820f8e2fc7d07abd10dfcec4f3f"
+    },
+    {
+      "relative_path": "release/README.md",
+      "size_bytes": 2612,
+      "sha256": "8b19cea6748404399d43467e1982a724f4dcbedb82480fc171225954fa792178"
+    },
+    {
+      "relative_path": "release/README_RELEASE.md",
+      "size_bytes": 1189,
+      "sha256": "e44b8991955e57a1dee835e1fb88f310c8758aac502aea8d8ed330bdfcc59c21"
+    },
+    {
+      "relative_path": "release/requirements_release.txt",
+      "size_bytes": 182,
+      "sha256": "6ec4e51fe37a90dbdcfffbbb8b1940f77f77129d81ae97ab7d3be7140370acb6"
+    },
+    {
+      "relative_path": "release/run_fastapi.bat",
+      "size_bytes": 77,
+      "sha256": "a5a429d68608177645c129cf1a9ab5b9c7261fb73dafc6dbcb61aaa47cd9a0a8"
+    },
+    {
+      "relative_path": "release/run_gradio.bat",
+      "size_bytes": 35,
+      "sha256": "a9078eb3e264a821e6bab1b37d4af65bcb9c51de3b95ffed788753996336db8f"
+    },
+    {
+      "relative_path": "release/sample_audio/.gitkeep",
+      "size_bytes": 2,
+      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "relative_path": "release/src/__init__.py",
+      "size_bytes": 53,
+      "sha256": "97e6ad82b318926ed2664b5b05081e1f6a6d9a9988080eed58bfef03ff2a8147"
+    },
+    {
+      "relative_path": "release/src/app_report_formatting.py",
+      "size_bytes": 49674,
+      "sha256": "46ff2abf5133c3058b2359ec6ce92988a2ba8346497a72400bfc07e4bb6bc1a9"
+    },
+    {
+      "relative_path": "release/src/app_visualization.py",
+      "size_bytes": 8651,
+      "sha256": "9488a899396ea753089d4bd9330581347de5d3b4c400730571cf4522f724d7eb"
+    },
+    {
+      "relative_path": "release/src/audio_io.py",
+      "size_bytes": 3801,
+      "sha256": "ced895a0e7f6207ccba76e769a8ef175aad2a18fc5cd6fae35f078440cd0b0b3"
+    },
+    {
+      "relative_path": "release/src/feature_extraction.py",
+      "size_bytes": 7379,
+      "sha256": "e69b545ba20940fa10f11e1959fcd38b36207bb1d531f32f7f7cce5ddda2ff44"
+    },
+    {
+      "relative_path": "release/src/fusion_rules.py",
+      "size_bytes": 11942,
+      "sha256": "066817bb9c5aaa982470e7de60b57b3839e211de7a875d457d78848b3437fe2a"
+    },
+    {
+      "relative_path": "release/src/inference_pipeline.py",
+      "size_bytes": 27266,
+      "sha256": "147b21a5db57e4f429bd16212c1e35ba67bf3ff3e7d38cf95baa9fad0aca6896"
+    },
+    {
+      "relative_path": "release/src/model_loader.py",
+      "size_bytes": 8181,
+      "sha256": "27284a42703f388a501709eeae9e3b4ee2b6e4ace24e1263f8514cd04bf47e74"
+    },
+    {
+      "relative_path": "release/src/origin_support_models.py",
+      "size_bytes": 22413,
+      "sha256": "f5899a7f60779568924bcc4d1ae702cedb92f0d35fa4988490fb5023654e5db9"
+    },
+    {
+      "relative_path": "release/src/pdf_report_generator.py",
+      "size_bytes": 11232,
+      "sha256": "e8db072dee80d20a3ad4d9d4f1c000f4c2938403ddbaeebeb8fec0abbc5f7763"
+    },
+    {
+      "relative_path": "release/src/report_generator.py",
+      "size_bytes": 6100,
+      "sha256": "b2d798170ccd4e833eb64dbddef7f09b4d387f018bb2afad21752d1de243de9a"
+    },
+    {
+      "relative_path": "release/src/schemas.py",
+      "size_bytes": 1804,
+      "sha256": "27c57df0522d9d3670dc7ec1a0b912c40129a7cc3f8677f2bc0159b088e42dcf"
+    },
+    {
+      "relative_path": "release/src/segmentation.py",
+      "size_bytes": 2381,
+      "sha256": "c05083ec88814d6bdf464275acb418fed08e7b948b0bb8733442903a08b0dbff"
+    },
+    {
+      "relative_path": "release/src/ssl_embeddings.py",
+      "size_bytes": 2946,
+      "sha256": "65232e2f8ff965d9877ee12a8aa210d1c0a350979f5f5dbc26a8e24cf9b142ef"
+    },
+    {
+      "relative_path": "release/src/utils.py",
+      "size_bytes": 1377,
+      "sha256": "7a4d1adc58bb1340eca5a9d2823dc1b4e3d11e3cac6cac6b542a4fe09ef1e2a6"
+    },
+    {
+      "relative_path": "reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_demo_checklist.md",
+      "size_bytes": 2473,
+      "sha256": "6b725efda9507155b9c93b4c59700c3c325a2312fd86fd50e583a41fe1d549cc"
+    },
+    {
+      "relative_path": "reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_demo_freeze_report.md",
+      "size_bytes": 3747,
+      "sha256": "26051287e64711476532f57d56c3ec278ecaf8887aa4711958ea80eb459a2786"
+    },
+    {
+      "relative_path": "reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_final_demo_samples.csv",
+      "size_bytes": 5730,
+      "sha256": "fa74ad8a1cf9c639df725199503dc27d4c8a1208cc1c7adf7293a07ab2177234"
+    },
+    {
+      "relative_path": "reports/phase9/app/phase9e_p4b_demo_freeze/phase9e_p4b_known_limitations.md",
+      "size_bytes": 2295,
+      "sha256": "051305aa9e5357152c73ba5f4076b00d194e676e25f1121ef81b4777aa919411"
+    },
+    {
+      "relative_path": "reports/phase9/final_release/phase9g_final_checksums_sha256.txt",
+      "size_bytes": 8802,
+      "sha256": "c77e1f441c417c5d11ed0c2c7b23bb5e5d9d9d3b7115608bacb99062f67d58dd"
+    },
+    {
+      "relative_path": "reports/phase9/final_release/phase9g_final_release_manifest.csv",
+      "size_bytes": 9120,
+      "sha256": "254d207b01997881f32a25908cb7d277b695b59d03f9749416ff51be89f8aac3"
+    },
+    {
+      "relative_path": "reports/phase9/final_release/phase9g_final_release_manifest.json",
+      "size_bytes": 15299,
+      "sha256": "fcf10c6a4325d8f030490b858bb62d3737aded70d2df458e0abfc0063a2e8e01"
+    },
+    {
+      "relative_path": "reports/phase9/final_release/phase9g_final_release_report.md",
+      "size_bytes": 2237,
+      "sha256": "e926e8aff96c0680d65147d6dc1f52f4e5e2b6255f0f86920b13bef178321bc8"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_api_contract.md",
+      "size_bytes": 6049,
+      "sha256": "713733eefc0dbf1def786391d5ed24c14548828303f8ddced19e1006ceb92218"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_integration_examples.md",
+      "size_bytes": 5501,
+      "sha256": "14174865364b1f4d196f48f9ae50e61ede3f73069ed6a5259f4a3ca0c63bd3b6"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_known_limitations.md",
+      "size_bytes": 3259,
+      "sha256": "377cd7c23422a0826ff29c09c21d5bcacd28e70bd917ad00448ffb4cd3854eca"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_local_demo_runbook.md",
+      "size_bytes": 3946,
+      "sha256": "5f1b6d11c586b24d8f75ce8fc8ea58b1615a90c72c6c30c102ee0e35992cc490"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_model_registry_guide.md",
+      "size_bytes": 4670,
+      "sha256": "4372c723ee27b6cfa41d244409cdfae8736a4101076dc8024fa2d9d6f024dec5"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_release_file_map.md",
+      "size_bytes": 4757,
+      "sha256": "eb4a4ef9881f4318b232aa977b2628b22f9816601046706500e96fcc143b6bea"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_report_wording_guide.md",
+      "size_bytes": 3909,
+      "sha256": "d8b2f81b89c657de8dd3fb9bc7399c85b8e6c126a7c5641fa85d2b91844520cf"
+    },
+    {
+      "relative_path": "reports/phase9/integration_docs/phase9f_teammate_handoff.md",
+      "size_bytes": 6515,
+      "sha256": "1def71a76e2a77f73d77a19fb51b10a74894dd88313fc7a5a10ebfd947e93329"
+    },
+    {
+      "relative_path": "reports/phase9/validation/phase9e_p3_release_correctness_validation_report.md",
+      "size_bytes": 4520,
+      "sha256": "b6d0b0990c4a12fa6d1bc2e355cf367c8588f1ace134dd4f79a14791e9492dea"
+    },
+    {
+      "relative_path": "reports/phase9/validation/phase9e_p4a_origin_support_validation_report.md",
+      "size_bytes": 1782,
+      "sha256": "552ea8b57e817242f3a05ef110ef48a77604a51dc66f64011d8365a3c700f375"
+    },
+    {
+      "relative_path": "reports/phase9/validation/phase9e_p4b_demo_freeze_validation_report.md",
+      "size_bytes": 3168,
+      "sha256": "c208df52d4f0fdef7b0dbd046b36c8da701053d48f38b36d355799d452fbef6d"
+    },
+    {
+      "relative_path": "reports/phase9/validation/phase9f_integration_docs_validation_report.md",
+      "size_bytes": 5897,
+      "sha256": "2059b50fe8dcb637e0903c1bb88bb0e2f2efd9345ce9cd0367accf997dc33df0"
+    }
+  ]
+}

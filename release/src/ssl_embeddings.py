@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from functools import lru_cache
 from typing import Any
 
 import numpy as np
@@ -30,11 +31,17 @@ def _import_phase8d():
         ) from exc
 
 
+@lru_cache(maxsize=2)
 def load_ssl_extractor(model_name: str = DEFAULT_MODEL_NAME, device: str = "auto"):
+    """Load WavLM once per process (model_name, device) — avoids repeated weight loading."""
     p8d = _import_phase8d()
     dev = p8d.get_device(device)
     model, processor = p8d.load_ssl_model_and_processor(model_name, dev, use_safetensors=True)
     return model, processor, dev
+
+
+def clear_ssl_extractor_cache() -> None:
+    load_ssl_extractor.cache_clear()
 
 
 def _embedding_to_dict(emb: np.ndarray) -> dict[str, float]:

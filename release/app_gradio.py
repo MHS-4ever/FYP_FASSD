@@ -37,7 +37,7 @@ def _empty_outputs() -> tuple[Any, ...]:
         "",
         "",
         "",
-        "### Candidate segments for review",
+        "### Candidate segments for optional review",
         None,
         [],
         None,
@@ -201,6 +201,13 @@ def build_demo() -> Any:
 
 
 if __name__ == "__main__":
+    import warnings
+
+    warnings.filterwarnings(
+        "ignore",
+        message=r"Support for mismatched key_padding_mask and attn_mask is deprecated.*",
+        category=UserWarning,
+    )
     demo_app = build_demo()
     demo_app.launch(
         server_name="127.0.0.1",

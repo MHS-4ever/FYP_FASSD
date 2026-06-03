@@ -1,0 +1,3 @@
+Voice origin: Inconclusive under replay/channel processing
+Replay-like/channel artifact overlap observed
+Recommendation: Manual review recommended.
