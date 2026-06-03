@@ -12,14 +12,17 @@ from fastapi import FastAPI, File, Form, Query, UploadFile
 from src.app_report_formatting import (
     APP_NAME,
     APP_PHASE,
+    RESEARCH_PROJECT_NAME,
     build_api_analyze_response,
     check_phase9c_models_available,
+    enrich_phase9c_response,
     load_model_inventory,
     load_partial_module_metadata,
     load_partial_validation_summary,
     release_root,
     repo_root,
     safety_banner,
+    save_json_report,
 )
 from src.inference_pipeline import analyze_audio_file
 
@@ -45,10 +48,11 @@ def _ensure_models_checked() -> None:
 def root() -> dict[str, Any]:
     return {
         "app_name": APP_NAME,
+        "research_project": RESEARCH_PROJECT_NAME,
         "phase": APP_PHASE,
         "status": "experimental_forensic_demo",
         "message": "Phase 9C/9E release forensic prototype API",
-        "endpoints": ["/", "/health", "/model-info", "/analyze-audio"],
+        "endpoints": ["/", "/health", "/model-info", "/analyze-audio", "/analyze"],
         "safety": safety_banner(),
         "primary_app_path": "release/",
     }
@@ -106,6 +110,8 @@ async def analyze_audio(
     case_id: str | None = Form(default=None),
     return_top_segments: bool = Query(default=True),
     save_report: bool = Query(default=False),
+    generate_report: bool = Query(default=False),
+    generate_visual: bool = Query(default=False),
 ) -> dict[str, Any]:
     _ensure_models_checked()
     if not _models_ok:
@@ -134,6 +140,7 @@ async def analyze_audio(
         output_dir = repo_root() / "reports" / "phase9" / "app" / "sample_outputs"
         output_dir.mkdir(parents=True, exist_ok=True)
 
+    file_label = audio_file.filename or tmp_path.name
     try:
         phase9c = analyze_audio_file(
             audio_path=str(tmp_path),
@@ -144,18 +151,52 @@ async def analyze_audio(
         )
         if save_report and output_dir and phase9c.get("case_id"):
             save_path = str(output_dir / f"{phase9c['case_id']}_analysis.json")
+
+        payload = build_api_analyze_response(
+            file_name=file_label,
+            phase9c_result=phase9c,
+            return_top_segments=return_top_segments,
+            save_report_path=save_path,
+        )
+
+        if generate_report or save_report or generate_visual:
+            enriched = enrich_phase9c_response(
+                phase9c,
+                file_name=file_label,
+                return_top_segments=return_top_segments,
+            )
+            if save_report and not save_path:
+                save_path = save_json_report(enriched)
+                payload["saved_report_path"] = save_path
+
+            waveform_path: str | None = None
+            if generate_visual:
+                try:
+                    from src.app_visualization import generate_waveform_highlight
+
+                    waveform_path = generate_waveform_highlight(str(tmp_path), enriched)
+                    payload["waveform_image_path"] = waveform_path
+                except Exception as exc:
+                    payload["waveform_image_path"] = None
+                    payload["waveform_error"] = str(exc)
+
+            if generate_report:
+                try:
+                    from src.pdf_report_generator import generate_pdf_report
+
+                    payload["pdf_report_path"] = generate_pdf_report(
+                        enriched, waveform_image_path=waveform_path
+                    )
+                except Exception as exc:
+                    payload["pdf_report_path"] = None
+                    payload["pdf_report_error"] = str(exc)
     finally:
         try:
             tmp_path.unlink(missing_ok=True)
         except OSError:
             pass
 
-    return build_api_analyze_response(
-        file_name=audio_file.filename or tmp_path.name,
-        phase9c_result=phase9c,
-        return_top_segments=return_top_segments,
-        save_report_path=save_path,
-    )
+    return payload
 
 
 # Backward-compatible alias used by older clients/tests.
