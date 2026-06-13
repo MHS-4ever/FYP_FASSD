@@ -1,0 +1,22 @@
+{
+  "created_at": "2026-06-13T10:01:14.754790+00:00",
+  "status": "experimental_forensic_prototype",
+  "active_production_model": false,
+  "not_final_forensic_decision": true,
+  "stage1_threshold": 0.45,
+  "stage2_min_confidence": 0.7,
+  "stage2_classes": [
+    "mixer_channel",
+    "partial_insert",
+    "replay",
+    "unknown_channel_artifact"
+  ],
+  "proxy_rows": 200,
+  "training_source": "E:\\FYP\\reports\\release_audit\\leakage_safe_eval_2026-06-13\\leakage_safe_file_manifest.csv",
+  "testing_source": "E:\\FYP\\reports\\phase7\\phase7_forensic_tests\\forensic_test_manifest_backup_before_T4_3_timestamp.csv",
+  "notes": [
+    "Experimental two-stage v2 only.",
+    "testing_audios is evaluation-only.",
+    "unknown_channel_artifact proxy rows are generated from Phase 7 train files only."
+  ]
+}

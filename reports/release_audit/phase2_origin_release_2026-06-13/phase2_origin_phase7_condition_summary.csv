@@ -1,0 +1,9 @@
+audit_condition,n,target_ai,mean_probability,detected_rate,threshold
+ai_clean_direct,23,1,0.9995117229918106,1.0,0.92
+ai_fabricated_partial,23,1,0.9976813769010372,1.0,0.92
+ai_mixer_processed,23,1,0.9962259141468549,1.0,0.92
+ai_replayed,23,1,0.9797322373375468,0.9130434782608695,0.92
+human_clean,23,0,0.08068868426684088,0.0,0.92
+human_fabricated_partial,23,0,0.2251363135499463,0.0,0.92
+human_mixer_processed,23,0,0.00748375130864273,0.0,0.92
+human_replayed,23,0,0.00593551106886476,0.0,0.92

@@ -1,0 +1,26 @@
+variant,test_id,audio_path,manipulation_type,target,leakage_safe_split,eval_status,probability
+ssl_chain_22_05k_16k,T1.1,testing_audios/T1/T1.1.mp3,clean_direct,0,all,ok,0.004547908583087402
+ssl_chain_22_05k_16k,T1.2,testing_audios/T1/T1.2.mp3,clean_direct,0,all,ok,0.9917946332907162
+ssl_chain_22_05k_16k,T1.3,testing_audios/T1/T1.3.mp3,clean_direct,1,all,ok,0.9949223758418768
+ssl_chain_22_05k_16k,T1.4,testing_audios/T1/T1.4.mp3,clean_direct,1,all,ok,0.9410692707349619
+ssl_chain_22_05k_16k,T1.5,testing_audios/T1/T1.5.wav,clean_direct,1,all,ok,0.9949250673526934
+ssl_chain_22_05k_16k,T2.1,testing_audios/T2/T2.1.mp3,human_replay,0,all,ok,0.036325546254149965
+ssl_chain_22_05k_16k,T2.2,testing_audios/T2/T2.2.mp3,mixer_processed,0,all,ok,0.11388936846096662
+ssl_chain_22_05k_16k,T2.3,testing_audios/T2/T2.3.mp3,human_replay,0,all,ok,0.06780540275541835
+ssl_chain_22_05k_16k,T2.4,testing_audios/T2/T2.4.mp4,human_replay,0,all,ok,0.005056618346109778
+ssl_chain_22_05k_16k,T2.5,testing_audios/T2/T2.5.mp3,human_replay,0,all,ok,0.0023190898931249155
+ssl_chain_22_05k_16k,T3.1,testing_audios/T3/T3.1.mp3,clean_direct,1,all,ok,0.9949223758418768
+ssl_chain_22_05k_16k,T3.2,testing_audios/T3/T3.2.mp3,ai_replay,1,all,ok,0.9941225353072937
+ssl_chain_22_05k_16k,T3.3,testing_audios/T3/T3.3.mp4,ai_replay,1,all,ok,0.9929764429043051
+ssl_chain_22_05k_16k,T3.4,testing_audios/T3/T3.4.mp3,mixer_processed,1,all,ok,0.9655034535417553
+ssl_chain_22_05k_16k,T3.5,testing_audios/T3/T3.5.mp3,ai_replay,1,all,ok,0.9363647035928012
+ssl_chain_22_05k_16k,T4.1,testing_audios/T4/T4.1.mp3,clean_direct,0,all,"ssl_error: CUDA out of memory. Tried to allocate 3.88 GiB. GPU 0 has a total capacity of 6.00 GiB of which 0 bytes is free. Of the allocated memory 12.18 GiB is allocated by PyTorch, and 197.16 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+ssl_chain_22_05k_16k,T4.2,testing_audios/T4/T4.2.mp3,clean_direct,1,all,ok,0.9410692707349619
+ssl_chain_22_05k_16k,T4.3,testing_audios/T4/T4.3.mp3,partial_ai_insert,0,all,ok,0.9918352208762703
+ssl_chain_22_05k_16k,T4.5,testing_audios/T4/T4.5.mp3,whatsapp_compressed,1,all,ok,0.08170503461015556
+ssl_chain_22_05k_16k,T5.1,testing_audios/T5/T5.1.mp3,edited_spliced,0,all,ok,0.0022505743301208707
+ssl_chain_22_05k_16k,T5.2,testing_audios/T5/T5.2.mp3,edited_spliced,0,all,ok,0.005085571951995688
+ssl_chain_22_05k_16k,T5.3,testing_audios/T5/T5.3.mp3,edited_spliced,0,all,ok,0.005770181972227367
+ssl_chain_22_05k_16k,T5.4,testing_audios/T5/T5.4.mp3,edited_spliced,0,all,ok,0.03822197486454346
+ssl_chain_22_05k_16k,T5.5,testing_audios/T5/T5.5.mp3,edited_spliced,0,all,ok,0.00039268037127859344
+ssl_chain_22_05k_16k,T5_FAB_001,testing_audios/fabricated/fabricated.mp3,partial_ai_insert,0,all,ok,0.060949164652611965

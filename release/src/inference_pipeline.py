@@ -377,7 +377,7 @@ def _apply_replay_mixer_partial_arbitration(
     replay_evidence: dict[str, Any],
     mixer_channel_evidence: dict[str, Any],
 ) -> dict[str, Any]:
-    """Replay/mixer context arbitration (Phase 9C-P3-FIX rule D)."""
+    """Replay/mixer context arbitration — Phase 4: do not hide localized partial."""
     out = dict(partial)
     replay_strength = _file_axis_strength(replay_evidence)
     mixer_strength = _file_axis_strength(mixer_channel_evidence)
@@ -388,12 +388,24 @@ def _apply_replay_mixer_partial_arbitration(
     hsf = float(out.get("high_segment_fraction", 1.0) or 1.0)
     topk_mr = float(out.get("topk_minus_rest_probability", 0.0) or 0.0)
     pstd = float(out.get("probability_std", 0.0) or 0.0)
-    strict_ok = (
-        gate == "localized_pattern_supported"
-        and hsf <= 0.35
-        and topk_mr >= 0.35
-        and pstd >= 0.25
-    )
+    localized = gate == "localized_pattern_supported" and hsf <= 0.35 and topk_mr >= 0.20
+
+    if localized:
+        coexist_note = (
+            "Localized partial segment pattern coexists with replay/mixer/channel context; "
+            "segment candidates remain visible for review."
+        )
+        if out.get("partial_fusion_eligible") is not True:
+            out["partial_fusion_eligible"] = True
+        strength = str(out.get("partial_evidence_strength_for_fusion", "not_evaluated"))
+        if strength in {"", "not_evaluated", "low"}:
+            out["partial_evidence_strength_for_fusion"] = "borderline"
+        out["partial_fusion_block_reason"] = "coexists_with_replay_or_mixer_context"
+        out["partial_arbitration_note"] = coexist_note
+        out["gating_note"] = "; ".join([s for s in [str(out.get("gating_note", "")), coexist_note] if s])
+        return out
+
+    strict_ok = localized and topk_mr >= 0.35 and pstd >= 0.25
     if strict_ok:
         return out
 

@@ -1,0 +1,12 @@
+{
+  "started_at": "2026-06-13T11:04:32.020602+00:00",
+  "finished_at": "2026-06-13T11:05:49.807962+00:00",
+  "aggregators": [
+    "file_mean_ssl",
+    "segment_max_prob",
+    "segment_top3_mean_prob",
+    "segment_noisy_or_max"
+  ],
+  "top_k": 3,
+  "segment_ssl": "E:\\FYP\\reports\\phase8\\embeddings\\phase8d_segment_ssl_embeddings.csv"
+}

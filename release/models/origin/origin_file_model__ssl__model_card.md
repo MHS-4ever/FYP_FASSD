@@ -3,9 +3,12 @@
 - status: experimental_forensic_prototype
 - evidence_axis: origin_evidence
 - feature_set: ssl
-- threshold_candidate: 0.2
-- rows packaged: 46
+- threshold_candidate: 0.92
+- threshold_source: leakage-safe dev split only; `testing_audios` evaluation-only
+- rows packaged: 156 fit rows (78 original train rows + 78 train-only augmented rows)
 - selected features: 50
+- training positives: `ai_clean_direct`, `ai_mixer_processed`, `ai_replayed`
+- training negatives: `human_clean`, `human_mixer_processed`, `human_replayed`
 
 ## Allowed use
 origin evidence indicator for experimental review workflow
@@ -17,4 +20,5 @@ final fake/real decision; court-ready proof; production deployment without valid
 - experimental prototype only
 - manual review required
 - not final forensic proof
-- small accepted Phase 8 dataset
+- small FYP corpus with only 13 base groups in train split
+- external mixer/platform/edited manipulation cases remain documented limitations

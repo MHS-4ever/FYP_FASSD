@@ -3,13 +3,13 @@
 **Project:** FASSD - Forensic Acoustics for Synthetic Speech Detection  
 **Product-facing name at release:** Deepfake Audio Detector - Local Demo  
 **Document purpose:** Complete story of the project evolution, scope changes, datasets, architectures, results, limitations, and final forensic product direction.  
-**Status at the end of the project:** Phase 9G local demo/handoff package passed. The project is complete as an experimental forensic decision-support prototype, not a court-ready proof system.
+**Status at the end of the project:** Phase 9G local demo/handoff package passed, then a release-audit cycle (Phases 0–7) repaired the origin axis, promoted the Phase 5 partial localizer, added Phase 6 evidence-band wording, and produced the final Phase 7 release matrix. The project is complete as an experimental forensic decision-support prototype, not a court-ready proof system.
 
 ---
 
 ## 1. The Whole Story in One Paragraph
 
-This project started as a deepfake audio detection model. At the beginning, the work followed the usual anti-spoofing path: extract LFCC and MFCC/log-mel spectrogram-style features from ASVspoof audio, train CNN models, compare EER values, and improve the architecture. That produced strong numbers, especially after moving to a ResNet-style CNN. But that success exposed a deeper problem: the original point of the project was not only to detect synthetic artifacts; it was to use environmental and acoustic evidence as well. ASVspoof alone could not represent broadcast, YouTube, replay, mixer, phone, and real-world conditions, so the project expanded into custom real-world data and a hybrid ResNet + environmental-feature model. That model improved the project scientifically, but then the product goal changed again: the final system could not be just a binary real/fake classifier. It had to behave like a forensic tool that explains origin, replay, mixer/channel effects, partial fabrication, suspicious segments, and limitations. HybridResNet fine-tuning and AASIST were both tested and both showed the same core limitation: binary anti-spoof models cannot represent forensic authenticity. The final architecture therefore became a multi-axis forensic audio intelligence system with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, report, and UI layers. The only major unresolved limitation at the end is partial fabrication, which remains experimental and manual-review only.
+This project started as a deepfake audio detection model. At the beginning, the work followed the usual anti-spoofing path: extract LFCC and MFCC/log-mel spectrogram-style features from ASVspoof audio, train CNN models, compare EER values, and improve the architecture. That produced strong numbers, especially after moving to a ResNet-style CNN. But that success exposed a deeper problem: the original point of the project was not only to detect synthetic artifacts; it was to use environmental and acoustic evidence as well. ASVspoof alone could not represent broadcast, YouTube, replay, mixer, phone, and real-world conditions, so the project expanded into custom real-world data and a hybrid ResNet + environmental-feature model. That model improved the project scientifically, but then the product goal changed again: the final system could not be just a binary real/fake classifier. It had to behave like a forensic tool that explains origin, replay, mixer/channel effects, partial fabrication, suspicious segments, and limitations. HybridResNet fine-tuning and AASIST were both tested and both showed the same core limitation: binary anti-spoof models cannot represent forensic authenticity. The final architecture therefore became a multi-axis forensic audio intelligence system with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, report, and UI layers. The release-audit cycle then repaired the most serious shipped failure: origin was retrained with processed-AI positives and train-only augmentation, partial fabrication was redesigned without F9 within-file percentile/max-normalized features, and Gradio/PDF/JSON wording was changed from raw scores to evidence bands. The main remaining limitations are external replay/mixer generalization, WhatsApp/platform-compressed AI, and the fact that all axes remain experimental manual-review evidence rather than legal proof.
 
 ---
 
@@ -1200,6 +1200,30 @@ Phase 8 froze the architecture around parallel origin, manipulation, and segment
 
 Phase 9 packaged the system into a Gradio/FastAPI local demo with active origin, replay, mixer/channel, and experimental partial modules. Phase 9G passed and produced the final handoff package.
 
+### Stage 14: Release-audit repair cycle
+
+After Phase 9G, a release audit found that the demo was honest structurally but weak on several real-world `testing_audios` cases. The audit therefore froze the baseline, repaired the origin model, tested resampling/window/dual-resolution hypotheses, attempted but rejected a unified manipulation classifier, redesigned the partial axis, and added final evidence-band wording.
+
+Key release-audit decisions:
+
+| Audit phase | Decision |
+|---|---|
+| Phase 2 origin | Promoted processed-AI augmented origin model at threshold 0.92 |
+| Phase 3 resampling/window/dual-resolution | Closed; no alternative beat the selected baselines honestly |
+| Phase 4 manipulation v3 | Stopped; manipulated `testing_audios` Stage-1 recall was 20% |
+| Phase 5 partial | Promoted no-F9 partial segment localizer at threshold 0.95 |
+| Phase 6 calibration/wording | Added Low/Medium/High evidence bands and explicit inconclusive states |
+| Phase 7 final packaging | Packaged final models/configs and ran the 25-file `testing_audios` matrix |
+
+Final `testing_audios` axis matrix:
+
+| Axis | Balanced accuracy | Recall | Main remaining failures |
+|---|---:|---:|---|
+| Origin | 0.8250 | 0.9000 | T1.2/T4.1 false positives; T4.5 compressed-AI miss |
+| Replay | 0.7738 | 0.7143 | T3.2/T3.3 misses; T2.2/T3.4/T4.1 false positives |
+| Mixer | 0.4783 | 0.0000 | T2.2/T3.4 mixer misses; T2.4 false positive |
+| Partial | 1.0000 | 1.0000 | No final gated failures on the 25-file matrix |
+
 ---
 
 ## 32. What Was Learned
@@ -1238,20 +1262,19 @@ The correct output is not "definitely real" or "definitely fake." The correct ou
 
 The final project is complete, but it has explicit limitations.
 
-1. **Partial fabrication is experimental.**
-   - fabricated_20pct recall is 0.70.
-   - Known false negatives remain.
-   - Known false positives remain.
-   - Candidate regions require manual review.
+1. **All axes are experimental evidence indicators.**
+   - No axis is a conclusive fake/real decision.
+   - Every elevated or mixed result still requires manual review.
 
 2. **The system is not court-ready.**
    - It is a decision-support prototype, not legal proof.
 
 3. **Real-world generalization is not guaranteed.**
-   - Broader external testing is still needed.
+   - Broader external testing is still needed, especially across unseen replay chains, platforms, speakers, codecs, and languages.
 
 4. **Replay and mixer/channel effects reduce origin reliability.**
    - The system therefore uses cautious wording such as "inconclusive under replay/channel processing."
+   - The final release matrix still misses some replay cases (T3.2/T3.3) and mixer/channel cases (T2.2/T3.4).
 
 5. **AASIST and HybridResNet are not active final decision models.**
    - They are reference/shadow artifacts only.
@@ -1262,13 +1285,22 @@ The final project is complete, but it has explicit limitations.
 7. **Small accepted Phase 8/9 model datasets limit claims.**
    - Active release model cards explicitly mark the models as experimental prototypes.
 
+8. **Partial fabrication improved but remains manual-review evidence.**
+   - Phase 5 fixed the broad-activation failure by removing F9 features.
+   - The final matrix detected T4.3 and T5_FAB_001 and produced no final gated partial false positives on the 25-file matrix.
+   - It still highlights candidate regions rather than proving fabrication.
+
+9. **Phase 4 unified manipulation was not shipped.**
+   - The attempted two-stage manipulation v3 reached only 20% manipulated recall on `testing_audios`.
+   - Final manipulation evidence therefore remains separated across origin, replay, mixer/channel, and partial axes.
+
 ---
 
 ## 34. Final Answer to the Project Question
 
 The final answer is:
 
-FASSD started as a CNN-based synthetic speech detector using LFCC and log-mel/MFCC-style spectrogram features. It achieved strong ASVspoof-domain performance, especially with a ResNet CNN. But the project goal required environmental and forensic audio evidence, so the dataset and architecture expanded. The system then added real-world broadcast/YouTube/social/podcast data, ASVspoof PA replay coverage, environmental features, and a HybridResNetEnvironmental model. That hybrid model improved the research pipeline but still behaved like a binary model and could not fully represent forensic cases. Controlled forensic testing, HybridResNet fine-tuning, and AASIST experiments proved that a single anti-spoof model was not enough. The final architecture became a multi-axis forensic audio intelligence prototype with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, and report layers. The final Phase 9G release is a local Gradio/FastAPI forensic decision-support demo with JSON/PDF/waveform outputs and strict safety wording. The main remaining limitation is partial fabrication, which is implemented only as an experimental manual-review candidate module.
+FASSD started as a CNN-based synthetic speech detector using LFCC and log-mel/MFCC-style spectrogram features. It achieved strong ASVspoof-domain performance, especially with a ResNet CNN. But the project goal required environmental and forensic audio evidence, so the dataset and architecture expanded. The system then added real-world broadcast/YouTube/social/podcast data, ASVspoof PA replay coverage, environmental features, and a HybridResNetEnvironmental model. That hybrid model improved the research pipeline but still behaved like a binary model and could not fully represent forensic cases. Controlled forensic testing, HybridResNet fine-tuning, and AASIST experiments proved that a single anti-spoof model was not enough. The final architecture became a multi-axis forensic audio intelligence prototype with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, and report layers. The Phase 9G release delivered the local Gradio/FastAPI demo, and the later release-audit cycle repaired the largest shipped weaknesses: origin was retrained for processed AI, partial localization was redesigned without F9 features, and the UI now uses evidence bands instead of raw confidence-like scores. The final release remains an experimental decision-support demo; its clearest remaining limitations are external replay/mixer generalization, platform-compressed AI, and the need for manual review of all elevated evidence.
 
 ---
 
@@ -1305,6 +1337,14 @@ Important project documents and outputs used to reconstruct this story:
 - `release/models/replay/replay_file_model__acoustic__model_card.md`
 - `release/models/mixer/mixer_file_model__acoustic__model_card.md`
 - `release/models/partial_fabrication_experimental_p5b/partial_report_contract.json`
+- `reports/release_audit/phase2_origin_release_2026-06-13/phase2_origin_release_report.md`
+- `reports/release_audit/phase3_controlled_experiments_2026-06-13/phase3_controlled_experiments_decision.md`
+- `reports/release_audit/phase4_two_stage_manipulation_v3_2026-06-13/phase4_two_stage_manipulation_v3_decision.md`
+- `reports/release_audit/phase5_partial_redesign_2026-06-13/phase5_partial_redesign_decision.md`
+- `reports/release_audit/phase6_calibration_2026-06-13/phase6_consistency_report.md`
+- `reports/release_audit/phase7_final_release_2026-06-13/phase7_final_release_report.md`
+- `release/MODEL_REGISTRY.md`
+- `release/config/evidence_calibration.json`
 
 ---
 

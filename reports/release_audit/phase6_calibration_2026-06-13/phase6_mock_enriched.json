@@ -1,0 +1,324 @@
+{
+  "status": "experimental_forensic_prototype",
+  "case_id": "PHASE6-MOCK",
+  "origin_evidence": {
+    "prediction_success": true,
+    "probability": 0.97,
+    "threshold_candidate": 0.92,
+    "label": "elevated_indicator",
+    "evidence_label": "elevated_indicator",
+    "evidence_strength": "pending_fusion"
+  },
+  "replay_evidence": {
+    "prediction_success": true,
+    "probability": 0.12,
+    "threshold_candidate": 0.65,
+    "label": "low_indicator",
+    "evidence_label": "low_indicator"
+  },
+  "mixer_channel_evidence": {
+    "prediction_success": false,
+    "probability": null,
+    "threshold_candidate": 0.75
+  },
+  "partial_fabrication_evidence": {
+    "prediction_success": true,
+    "max_segment_probability": 0.88,
+    "threshold_candidate": 0.95,
+    "partial_localization_gate": "localized_pattern_supported",
+    "partial_fusion_eligible": true,
+    "partial_evidence_strength_for_fusion": "high",
+    "high_segment_fraction": 0.1,
+    "topk_minus_rest_probability": 0.35,
+    "evidence_label": "localized_pattern_supported"
+  },
+  "segment_candidates": [
+    {
+      "start_sec": 10.0,
+      "end_sec": 14.0,
+      "partial_probability": 0.88,
+      "candidate_rank": 1,
+      "above_threshold": false
+    }
+  ],
+  "limitations": [
+    "experimental_forensic_prototype"
+  ],
+  "partial_fabrication": {
+    "module_status": "experimental_manual_review_only",
+    "evidence_detected": true,
+    "evidence_label": "partial_fabrication_evidence_detected",
+    "file_gate_probability": null,
+    "max_segment_probability": 0.88,
+    "high_segment_fraction": 0.1,
+    "topk_minus_rest_probability": 0.35,
+    "broad_activation_flag": null,
+    "candidate_segment": {
+      "start_sec": 10.0,
+      "end_sec": 14.0,
+      "probability": 0.88,
+      "rank": 1
+    },
+    "top_segments": [
+      {
+        "rank": 1,
+        "start_sec": 10.0,
+        "end_sec": 14.0,
+        "probability": 0.88,
+        "manual_review_recommended": true
+      }
+    ],
+    "thresholds": {
+      "file_gate_threshold": 0.5,
+      "segment_threshold": 0.9,
+      "contrast_threshold": 0.25,
+      "broad_limit": 0.45
+    },
+    "limitations": [
+      "3/10 new fabricated_20pct false negatives remain (P5F-P1 holdout).",
+      "2 non-partial false positives remain on direct-labelled testing audio (P5F-P2).",
+      "fabricated_20pct_recall = 0.70 on expanded P5F holdout.",
+      "broad_activation_rate_when_positive = 0.0 in P5F metrics.",
+      "Not optimized or tuned on the current 10 fabricated_20pct examples.",
+      "This module provides an experimental evidence indicator only.",
+      "Manual forensic review is recommended for any candidate segment.",
+      "Top-k localization on detected timestamp-labelled positives is useful but not conclusive proof.",
+      "Experimental partial-fabrication evidence indicator only.",
+      "Conclusive authenticity decision: no.",
+      "Manual forensic review is recommended.",
+      "Known false negatives and false positives remain in held-out testing.",
+      "Phase 9C release pipeline segment partial axis mapped to P6 contract."
+    ],
+    "user_facing_summary_detected": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+    "user_facing_summary_not_detected": "No partial-fabrication evidence was detected by the experimental partial module. This does not prove the audio is authentic; subtle or unseen partial manipulations may still be missed.",
+    "user_facing_summary_unavailable": "Partial-fabrication analysis was unavailable for this file. Manual forensic review is recommended if partial manipulation is suspected.",
+    "user_facing_message": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+    "source_mode": "phase9c_segment_axis_mapped_to_p6_contract",
+    "file_gate_available": false,
+    "full_p5b_cascade_available": false,
+    "segment_candidate_only": true,
+    "partial_module_mode": "segment_candidate_only",
+    "full_partial_cascade_available": false,
+    "ui_state": "detected",
+    "show_segments_table": true,
+    "segment_recommendation_label": "Recommended",
+    "axis_status": "Detected",
+    "axis_user_text": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+    "axis_score_text": "Evidence strength: High evidence",
+    "suppress_saturated_segment_scores": false
+  },
+  "evidence_summary": "Fusion status (experimental): not_evaluated Partial-fabrication: segment-level candidate highlighted for optional review (not strong suspicious evidence in this app path). Conclusive authenticity decision: no.",
+  "origin_support_models": {
+    "audit_status": "one or more reference origin-support models runnable for shadow eval",
+    "reference_root": "E:\\FYP\\release\\models\\reference",
+    "used_as_active_decision": false,
+    "policy": "shadow_support_only_unless_validation_proves_improvement",
+    "aasist": {
+      "available": true,
+      "runnable": true,
+      "status": "shadow_runnable"
+    },
+    "hybrid_resnet": {
+      "available": true,
+      "runnable": true,
+      "status": "shadow_runnable"
+    },
+    "models": [
+      {
+        "model_name": "aasist",
+        "status": "shadow_runnable",
+        "metadata_path": "E:\\FYP\\release\\models\\reference\\aasist\\metadata.json",
+        "weight_files": [
+          "E:\\FYP\\release\\models\\reference\\aasist\\aasist_l_official_pretrained_reference.pth"
+        ],
+        "active_in_fusion": false,
+        "safe_wrapper_available": true
+      },
+      {
+        "model_name": "hybrid_resnet",
+        "status": "shadow_runnable",
+        "metadata_path": "E:\\FYP\\release\\models\\reference\\hybrid_resnet\\metadata.json",
+        "weight_files": [
+          "E:\\FYP\\release\\models\\reference\\hybrid_resnet\\hybrid_resnet_environmental_best.pth"
+        ],
+        "active_in_fusion": false,
+        "safe_wrapper_available": true
+      }
+    ],
+    "model_details": {
+      "aasist": {
+        "model_name": "aasist",
+        "package_path": "E:\\FYP\\release\\models\\reference\\aasist",
+        "weights_found": true,
+        "config_found": true,
+        "inference_code_found": true,
+        "expected_input_format": "mono float32 waveform @16kHz, fixed-length windows (nb_samp from AASIST-L config)",
+        "runnable_in_release": true,
+        "reason_if_not_runnable": "",
+        "estimated_runtime_risk": "medium (sliding windows on long files)",
+        "gpu_memory_risk": "medium (windowed inference; batch size 1 default)",
+        "action": "runnable_shadow_eval",
+        "weight_path": "E:\\FYP\\release\\models\\reference\\aasist\\aasist_l_official_pretrained_reference.pth"
+      },
+      "hybrid_resnet": {
+        "model_name": "hybrid_resnet",
+        "package_path": "E:\\FYP\\release\\models\\reference\\hybrid_resnet",
+        "weights_found": true,
+        "config_found": true,
+        "inference_code_found": true,
+        "expected_input_format": "mono @16kHz \u2192 log-mel [64x400] + 12-D environmental features per 4s chunk",
+        "runnable_in_release": true,
+        "reason_if_not_runnable": "",
+        "estimated_runtime_risk": "medium (librosa feature extraction per chunk)",
+        "gpu_memory_risk": "low-medium (chunked 4s windows)",
+        "action": "runnable_shadow_eval",
+        "weight_path": "E:\\FYP\\release\\models\\reference\\hybrid_resnet\\hybrid_resnet_environmental_best.pth"
+      }
+    },
+    "inventory_present": true
+  },
+  "manual_review_required": true,
+  "conclusive_authenticity_decision": false,
+  "app_phase": "Phase 9E-P4B + Phase 6 calibration bands",
+  "file_name": "mock.wav",
+  "request_id": "6b499f3d-798e-414c-9bb2-9c5c2d8ae8ab",
+  "generated_at": "2026-06-13T13:55:10.016+00:00",
+  "safety": {
+    "app_status": "experimental_forensic_demo",
+    "partial_module_status": "experimental_manual_review_only",
+    "manual_review_required": "true",
+    "conclusive_authenticity_decision": "no",
+    "operational_deployment_claim": "no",
+    "legal_evidence_claim": "no",
+    "wording": "Experimental forensic evidence indicators only. Manual forensic review is recommended. Conclusive authenticity decision: no."
+  },
+  "voice_origin_result": {
+    "origin_label": "likely_ai_generated",
+    "display_text": "Voice origin: Likely AI-generated",
+    "confidence_text": "Evidence strength: High evidence",
+    "evidence_source": "ssl_origin_model",
+    "evidence_sources": [
+      "ssl_origin_model"
+    ],
+    "explanation": "The active SSL origin model shows elevated AI-origin indicators. This is experimental evidence only, not a conclusive authenticity decision.",
+    "ssl_origin_detected": true
+  },
+  "forensic_indicator_summary": "AI-origin detected; Partial replacement detected",
+  "recommendation": "Manual review recommended.",
+  "recommendation_level": "review_recommended",
+  "evidence_axis_cards": [
+    {
+      "axis_name": "AI-origin evidence",
+      "status": "Detected",
+      "user_text": "Experimental indicators were observed on this axis. This is not conclusive proof; manual review is recommended.",
+      "score_text": "Evidence strength: High evidence",
+      "severity": "review"
+    },
+    {
+      "axis_name": "Replay evidence",
+      "status": "Not detected",
+      "user_text": "No strong experimental indicators were highlighted on this axis. This does not prove authenticity.",
+      "score_text": "Evidence strength: Low evidence",
+      "severity": "clear"
+    },
+    {
+      "axis_name": "Channel/mixer evidence",
+      "status": "Inconclusive",
+      "user_text": "Insufficient evidence from this axis for the current file (model unavailable or extraction failed).",
+      "score_text": "Evidence strength: Inconclusive",
+      "severity": "unavailable"
+    },
+    {
+      "axis_name": "Partial replacement evidence",
+      "status": "Detected",
+      "user_text": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+      "score_text": "Evidence strength: High evidence",
+      "severity": "review"
+    }
+  ],
+  "axis_interpretation": {
+    "ai_origin_interpretation": "Experimental indicators were observed on this axis. This is not conclusive proof; manual review is recommended.",
+    "replay_interpretation": "No strong experimental indicators were highlighted on this axis. This does not prove authenticity.",
+    "mixer_channel_interpretation": "Insufficient evidence from this axis for the current file (model unavailable or extraction failed).",
+    "partial_interpretation": "Partial replacement evidence detected.",
+    "overlap_notes": [],
+    "voice_origin": {
+      "origin_label": "likely_ai_generated",
+      "display_text": "Voice origin: Likely AI-generated",
+      "confidence_text": "Evidence strength: High evidence",
+      "evidence_source": "ssl_origin_model",
+      "evidence_sources": [
+        "ssl_origin_model"
+      ],
+      "explanation": "The active SSL origin model shows elevated AI-origin indicators. This is experimental evidence only, not a conclusive authenticity decision.",
+      "ssl_origin_detected": true
+    },
+    "forensic_cards": [
+      {
+        "axis_name": "AI-origin evidence",
+        "status": "Detected",
+        "user_text": "Experimental indicators were observed on this axis. This is not conclusive proof; manual review is recommended.",
+        "score_text": "Evidence strength: High evidence",
+        "severity": "review"
+      },
+      {
+        "axis_name": "Replay evidence",
+        "status": "Not detected",
+        "user_text": "No strong experimental indicators were highlighted on this axis. This does not prove authenticity.",
+        "score_text": "Evidence strength: Low evidence",
+        "severity": "clear"
+      },
+      {
+        "axis_name": "Channel/mixer evidence",
+        "status": "Inconclusive",
+        "user_text": "Insufficient evidence from this axis for the current file (model unavailable or extraction failed).",
+        "score_text": "Evidence strength: Inconclusive",
+        "severity": "unavailable"
+      },
+      {
+        "axis_name": "Partial replacement evidence",
+        "status": "Detected",
+        "user_text": "Experimental partial-fabrication evidence was detected. The highlighted segment is a candidate region for manual forensic review; this is not a conclusive authenticity decision.",
+        "score_text": "Evidence strength: High evidence",
+        "severity": "review"
+      }
+    ],
+    "partial_module_mode": "segment_candidate_only",
+    "full_partial_cascade_available": false,
+    "replay_mixer_overlap": false
+  },
+  "partial_module_mode": "segment_candidate_only",
+  "release_correctness_notes": [
+    "Partial module in segment_candidate_only mode in release app path."
+  ],
+  "user_summary": {
+    "status_title": "Analysis completed",
+    "voice_origin_text": "Voice origin: Likely AI-generated",
+    "finding_title": "Voice origin: Likely AI-generated",
+    "forensic_indicator_summary": "AI-origin detected; Partial replacement detected",
+    "highlighted_segment_text": "Highlighted evidence region: 00:10 \u2013 00:14",
+    "recommendation_text": "Manual review recommended.",
+    "recommendation_level": "review_recommended",
+    "plain_language_explanation": "The active SSL origin model shows elevated AI-origin indicators. This is experimental evidence only, not a conclusive authenticity decision.",
+    "confidence_text": "Evidence strength: High evidence",
+    "severity_level": "clear_candidate",
+    "evidence_detected_any": true,
+    "strong_evidence_detected": true,
+    "strong_forensic_detected": true,
+    "segment_candidate_only": true,
+    "voice_origin_result": {
+      "origin_label": "likely_ai_generated",
+      "display_text": "Voice origin: Likely AI-generated",
+      "confidence_text": "Evidence strength: High evidence",
+      "evidence_source": "ssl_origin_model",
+      "evidence_sources": [
+        "ssl_origin_model"
+      ],
+      "explanation": "The active SSL origin model shows elevated AI-origin indicators. This is experimental evidence only, not a conclusive authenticity decision.",
+      "ssl_origin_detected": true
+    },
+    "release_correctness_notes": [
+      "Partial module in segment_candidate_only mode in release app path."
+    ]
+  }
+}

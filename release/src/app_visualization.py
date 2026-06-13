@@ -31,8 +31,10 @@ def _default_visual_output_dir() -> Path:
 
 
 def extract_candidate_segments(response: dict[str, Any]) -> list[dict[str, Any]]:
-    segments: list[dict[str, Any]] = []
     pf = response.get("partial_fabrication") or {}
+    if pf.get("show_segments_table") is False:
+        return []
+    segments: list[dict[str, Any]] = []
     cand = pf.get("candidate_segment") or {}
     if cand.get("start_sec") is not None and cand.get("end_sec") is not None:
         segments.append(

@@ -33,7 +33,11 @@ from phase9d_p6_partial_report_contract import (  # noqa: E402
     format_partial_evidence_contract,
 )
 
-APP_PHASE = "Phase 9E-P4B"
+from src.evidence_calibration import (  # noqa: E402
+    format_evidence_band_text,
+    format_technical_raw_score,
+    enrich_axis_evidence_display,
+)
 
 # Dark-theme HTML card palette (explicit contrast for Gradio dark UI)
 _CARD_BG = "#1f2937"
@@ -49,6 +53,14 @@ APP_NAME = "Deepfake Audio Detector — Local Demo"
 RESEARCH_PROJECT_NAME = "Forensic Acoustic for Synthetic Speech Detection"
 APP_SUBTITLE = "AI-generated, replayed, and partially manipulated audio evidence review."
 _ELEVATED = frozenset({"moderate", "high", "elevated_partial_fabrication_indicator"})
+APP_PHASE = "Phase 9E-P4B + Phase 6 calibration bands"
+EVIDENCE_STRENGTH_LABEL = "Evidence strength"
+SCORE_LABEL = "Uncalibrated model score"
+_PARTIAL_TABLE_HIDDEN_BLOCKS = frozenset(
+    {
+        "global_activation_not_localized",
+    }
+)
 
 
 def release_root() -> Path:
@@ -166,6 +178,130 @@ def _has_candidate_segment(partial_section: dict[str, Any]) -> bool:
     return bool(partial_section.get("top_segments"))
 
 
+def _format_score_text(
+    value: Any,
+    *,
+    prefix: str = EVIDENCE_STRENGTH_LABEL,
+    axis: str = "origin",
+    prediction_success: bool = True,
+) -> str:
+    if prefix.lower().startswith("uncalibrated"):
+        return format_technical_raw_score(value, label=SCORE_LABEL)
+    return format_evidence_band_text(
+        axis,
+        float(value) if isinstance(value, (int, float)) else None,
+        prediction_success=prediction_success,
+        prefix=prefix,
+    )
+
+
+def resolve_partial_display_state(
+    partial_section: dict[str, Any],
+    partial_axis: dict[str, Any],
+) -> dict[str, Any]:
+    """Single source of truth for partial axis card, segment table, and highlights."""
+    if not partial_axis.get("prediction_success"):
+        return {
+            "ui_state": "unavailable",
+            "show_segments_table": False,
+            "segment_recommendation_label": None,
+            "axis_status": "Unavailable",
+            "axis_user_text": partial_section.get("user_facing_message") or WORDING_UNAVAILABLE,
+            "axis_score_text": "",
+            "suppress_saturated_segment_scores": True,
+        }
+
+    block = str(partial_axis.get("partial_fusion_block_reason") or "none")
+    fusion_eligible = partial_axis.get("partial_fusion_eligible") is True
+
+    if block == "coexists_with_replay_or_mixer_context" and _has_candidate_segment(partial_section):
+        max_seg = partial_section.get("max_segment_probability")
+        note = partial_axis.get("partial_arbitration_note") or (
+            "Localized partial pattern coexists with replay/mixer context; review segment candidates."
+        )
+        return {
+            "ui_state": "coexists_with_channel",
+            "show_segments_table": True,
+            "segment_recommendation_label": "Review with channel context",
+            "axis_status": "Review candidate",
+            "axis_user_text": note,
+            "axis_score_text": _format_score_text(
+                max_seg, prefix=EVIDENCE_STRENGTH_LABEL, axis="partial_segment"
+            ),
+            "suppress_saturated_segment_scores": False,
+            "ui_block_reason": block,
+        }
+
+    if block in _PARTIAL_TABLE_HIDDEN_BLOCKS:
+        return {
+            "ui_state": "not_detected",
+            "show_segments_table": False,
+            "segment_recommendation_label": None,
+            "axis_status": "Not detected",
+            "axis_user_text": partial_section.get("user_facing_message") or WORDING_NOT_DETECTED,
+            "axis_score_text": "",
+            "suppress_saturated_segment_scores": True,
+            "ui_block_reason": block,
+        }
+
+    if fusion_eligible and partial_section.get("evidence_detected") is True:
+        max_seg = partial_section.get("max_segment_probability")
+        return {
+            "ui_state": "detected",
+            "show_segments_table": True,
+            "segment_recommendation_label": "Recommended",
+            "axis_status": "Detected",
+            "axis_user_text": partial_section.get("user_facing_message") or WORDING_DETECTED,
+            "axis_score_text": _format_score_text(
+                max_seg, prefix=EVIDENCE_STRENGTH_LABEL, axis="partial_segment"
+            ),
+            "suppress_saturated_segment_scores": False,
+        }
+
+    if _partial_segment_candidate_only(partial_section) and _has_candidate_segment(partial_section):
+        max_seg = partial_section.get("max_segment_probability")
+        return {
+            "ui_state": "optional_candidate",
+            "show_segments_table": True,
+            "segment_recommendation_label": "Optional",
+            "axis_status": "Review candidate",
+            "axis_user_text": (
+                "A segment-level candidate was highlighted by the experimental partial module. "
+                "This alone is not enough to mark the full audio as suspicious."
+            ),
+            "axis_score_text": _format_score_text(
+                max_seg, prefix=EVIDENCE_STRENGTH_LABEL, axis="partial_segment"
+            ),
+            "suppress_saturated_segment_scores": False,
+        }
+
+    return {
+        "ui_state": "not_detected",
+        "show_segments_table": False,
+        "segment_recommendation_label": None,
+        "axis_status": "Not detected",
+        "axis_user_text": partial_section.get("user_facing_message") or WORDING_NOT_DETECTED,
+        "axis_score_text": "",
+        "suppress_saturated_segment_scores": True,
+        "ui_block_reason": block if block != "none" else "partial_evidence_not_elevated",
+    }
+
+
+def apply_partial_display_state(
+    partial_section: dict[str, Any],
+    partial_axis: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply consistent partial UI fields and hide contradictory segment tables."""
+    state = resolve_partial_display_state(partial_section, partial_axis)
+    partial_section.update(state)
+    if not state["show_segments_table"]:
+        partial_section["top_segments"] = []
+        partial_section["candidate_segment"] = None
+        if state["suppress_saturated_segment_scores"]:
+            partial_section["display_max_segment_probability"] = None
+    return partial_section
+
+
 def _partial_evidence_detected_from_phase9c(partial_axis: dict[str, Any]) -> bool:
     if not partial_axis.get("prediction_success"):
         return False
@@ -277,6 +413,7 @@ def build_partial_fabrication_section(
     )
     section["full_partial_cascade_available"] = False
 
+    apply_partial_display_state(section, partial_axis)
     return section
 
 
@@ -420,6 +557,19 @@ def gradio_segment_table(response: dict[str, Any]) -> list[list[Any]]:
     return gradio_suspicious_segments_table(response)
 
 
+def _axis_key_from_name(axis_name: str) -> str:
+    name = axis_name.lower()
+    if "origin" in name or "ai-origin" in name:
+        return "origin"
+    if "replay" in name:
+        return "replay"
+    if "channel" in name or "mixer" in name:
+        return "mixer"
+    if "partial" in name:
+        return "partial_segment"
+    return "origin"
+
+
 def _axis_card_from_evidence(
     axis_name: str,
     evidence: dict[str, Any],
@@ -427,74 +577,63 @@ def _axis_card_from_evidence(
     partial_section: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if partial_section is not None:
-        if (
-            partial_section.get("evidence_detected") is None
-            or partial_section.get("evidence_label") == EVIDENCE_LABEL_UNAVAILABLE
-        ):
+        ui_state = str(partial_section.get("ui_state") or "")
+        if ui_state == "unavailable" or partial_section.get("evidence_label") == EVIDENCE_LABEL_UNAVAILABLE:
             return {
                 "axis_name": axis_name,
                 "status": "Unavailable",
-                "user_text": partial_section.get("user_facing_message") or WORDING_UNAVAILABLE,
+                "user_text": partial_section.get("axis_user_text")
+                or partial_section.get("user_facing_message")
+                or WORDING_UNAVAILABLE,
                 "score_text": "",
                 "severity": "unavailable",
             }
-        if _partial_full_cascade_detected(partial_section):
-            max_seg = partial_section.get("max_segment_probability")
-            score_text = (
-                f"Max segment score: {max_seg:.3f}" if isinstance(max_seg, (int, float)) else ""
-            )
+        if ui_state == "detected" or _partial_full_cascade_detected(partial_section):
             return {
                 "axis_name": axis_name,
-                "status": "Detected",
-                "user_text": partial_section.get("user_facing_message") or WORDING_DETECTED,
-                "score_text": score_text,
+                "status": partial_section.get("axis_status", "Detected"),
+                "user_text": partial_section.get("axis_user_text")
+                or partial_section.get("user_facing_message")
+                or WORDING_DETECTED,
+                "score_text": partial_section.get("axis_score_text", ""),
                 "severity": "review",
             }
-        if _partial_segment_candidate_only(partial_section):
-            max_seg = partial_section.get("max_segment_probability")
-            score_text = (
-                f"Candidate segment score: {max_seg:.3f}" if isinstance(max_seg, (int, float)) else ""
-            )
+        if ui_state == "optional_candidate" or _partial_segment_candidate_only(partial_section):
             return {
                 "axis_name": axis_name,
-                "status": "Review candidate",
-                "user_text": (
+                "status": partial_section.get("axis_status", "Review candidate"),
+                "user_text": partial_section.get("axis_user_text")
+                or (
                     "A segment-level candidate was highlighted by the experimental partial module. "
                     "This alone is not enough to mark the full audio as suspicious."
                 ),
-                "score_text": score_text,
+                "score_text": partial_section.get("axis_score_text", ""),
                 "severity": "candidate",
             }
-        detected = partial_section.get("evidence_detected")
-        if detected is False:
-            status, severity = "Not detected", "clear"
-            user_text = partial_section.get("user_facing_message") or WORDING_NOT_DETECTED
-        else:
-            status, severity = "Unavailable", "unavailable"
-            user_text = partial_section.get("user_facing_message") or WORDING_UNAVAILABLE
-        max_seg = partial_section.get("max_segment_probability")
-        score_text = f"Max segment score: {max_seg:.3f}" if isinstance(max_seg, (int, float)) else ""
         return {
             "axis_name": axis_name,
-            "status": status,
-            "user_text": user_text,
-            "score_text": score_text,
-            "severity": severity,
+            "status": partial_section.get("axis_status", "Not detected"),
+            "user_text": partial_section.get("axis_user_text")
+            or partial_section.get("user_facing_message")
+            or WORDING_NOT_DETECTED,
+            "score_text": partial_section.get("axis_score_text", ""),
+            "severity": "clear",
         }
 
     if not evidence.get("prediction_success"):
         return {
             "axis_name": axis_name,
-            "status": "Unavailable",
-            "user_text": "This evidence axis was not available in the current analysis output.",
-            "score_text": "",
+            "status": "Inconclusive",
+            "user_text": "Insufficient evidence from this axis for the current file (model unavailable or extraction failed).",
+            "score_text": _format_score_text(None, axis=_axis_key_from_name(axis_name), prediction_success=False),
             "severity": "unavailable",
         }
 
     label = str(evidence.get("evidence_label") or evidence.get("label", "")).lower()
     strength = str(evidence.get("evidence_strength", "")).lower()
     prob = evidence.get("probability")
-    score_text = f"Evidence score: {prob:.3f}" if isinstance(prob, (int, float)) else ""
+    axis_key = _axis_key_from_name(axis_name)
+    score_text = _format_score_text(prob, axis=axis_key, prediction_success=True) if isinstance(prob, (int, float)) else ""
 
     elevated = (
         "elevated" in label
@@ -646,29 +785,19 @@ def build_voice_origin_result(response: dict[str, Any]) -> dict[str, Any]:
     pred_ok = bool(origin.get("prediction_success"))
     ssl_detected = _origin_axis_detected(origin)
 
-    support = response.get("origin_support_models") or {}
     evidence_sources: list[str] = []
     if pred_ok:
         evidence_sources.append("ssl_origin_model")
-    for m in support.get("models") or []:
-        if m.get("status") == "shadow_runnable":
-            key = str(m.get("model_name", "")).lower()
-            if "aasist" in key:
-                evidence_sources.append("aasist_shadow")
-            if "hybrid" in key or "resnet" in key:
-                evidence_sources.append("hybrid_resnet_shadow")
 
-    if len(evidence_sources) > 1:
-        evidence_source = "ensemble_if_available"
-    elif evidence_sources:
+    if evidence_sources:
         evidence_source = evidence_sources[0]
     else:
-        evidence_source = "ssl_origin_model"
+        evidence_source = "none"
 
     base_unavail = {
         "origin_label": "inconclusive",
         "display_text": "Voice origin: Inconclusive",
-        "confidence_text": "Origin model unavailable for this file.",
+        "confidence_text": format_evidence_band_text("origin", None, prediction_success=False),
         "evidence_source": evidence_source,
         "evidence_sources": evidence_sources,
         "explanation": "Voice origin could not be determined reliably from the active origin model.",
@@ -677,7 +806,8 @@ def build_voice_origin_result(response: dict[str, Any]) -> dict[str, Any]:
     if not pred_ok:
         return base_unavail
 
-    prob_txt = f"Origin evidence score: {float(prob):.3f}" if isinstance(prob, (int, float)) else ""
+    prob_txt = format_evidence_band_text("origin", prob, prediction_success=True)
+    technical_prob = format_technical_raw_score(prob)
 
     if ssl_detected and processing_high:
         return {
@@ -904,6 +1034,11 @@ def _highlight_segment_text(
     from src.app_visualization import format_time_mmss
 
     pf = response.get("partial_fabrication") or {}
+    if pf.get("show_segments_table") is False:
+        if recommendation_level == "review_recommended":
+            return "No highlighted partial region", None, None
+        return "No highlighted evidence region", None, None
+
     cand = pf.get("candidate_segment") or {}
     start = cand.get("start_sec")
     end = cand.get("end_sec")
@@ -1011,6 +1146,9 @@ def build_user_result_summary(response: dict[str, Any]) -> dict[str, Any]:
 
 
 def gradio_segments_table_title(response: dict[str, Any]) -> str:
+    pf = response.get("partial_fabrication") or {}
+    if pf.get("show_segments_table") is False:
+        return "Partial evidence not detected — no segments listed"
     summary = build_user_result_summary(response)
     if summary.get("recommendation_level") == "review_recommended" or summary.get(
         "strong_forensic_detected"
@@ -1147,7 +1285,28 @@ def render_technical_details(response: dict[str, Any]) -> str:
     th = pf.get("thresholds") or meta.get("thresholds", {})
     for k, v in th.items():
         lines.append(f"- {k}: {v}")
-    lines.extend(["", "**Limitations (sample)**", ""])
+    lines.extend(["", "**Uncalibrated model scores (technical only)**", ""])
+    for axis_key, block_key in [
+        ("origin", "origin_evidence"),
+        ("replay", "replay_evidence"),
+        ("mixer", "mixer_channel_evidence"),
+    ]:
+        ev = response.get(block_key) or {}
+        lines.append(f"- {axis_key}: {format_technical_raw_score(ev.get('probability'))}")
+    pf_prob = pf.get("max_segment_probability")
+    lines.append(f"- partial_segment: {format_technical_raw_score(pf_prob)}")
+    lines.extend(
+        [
+            "",
+            "**Phase 6 display policy**",
+            "",
+            "- User-facing cards use Low / Medium / High evidence bands.",
+            "- Inconclusive = model unavailable; Insufficient evidence = invalid score.",
+            "",
+            "**Limitations (sample)**",
+            "",
+        ]
+    )
     for lim in (response.get("limitations") or [])[:8]:
         lines.append(f"- {lim}")
     return "\n".join(lines)
@@ -1157,18 +1316,25 @@ def gradio_suspicious_segments_table(response: dict[str, Any]) -> list[list[Any]
     from src.app_visualization import format_time_mmss
 
     pf = response.get("partial_fabrication") or {}
+    if pf.get("show_segments_table") is False:
+        return []
+    rec_label = pf.get("segment_recommendation_label") or "Optional"
     rows: list[list[Any]] = []
     for seg in pf.get("top_segments") or []:
         start = seg.get("start_sec")
         end = seg.get("end_sec")
         prob = seg.get("probability")
-        prob_txt = f"{prob:.3f}" if isinstance(prob, (int, float)) else "—"
+        prob_txt = (
+            format_evidence_band_text("partial_segment", prob, prediction_success=True)
+            if isinstance(prob, (int, float))
+            else "—"
+        )
         rows.append(
             [
                 seg.get("rank"),
                 f"{format_time_mmss(start)} – {format_time_mmss(end)}",
                 prob_txt,
-                "Recommended" if seg.get("manual_review_recommended", True) else "Optional",
+                rec_label if seg.get("manual_review_recommended", True) else "Optional",
             ]
         )
     return rows

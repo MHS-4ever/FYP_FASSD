@@ -1,0 +1,12 @@
+ground_truth_origin,manipulation_type,language,n,augmented_mean_probability,augmented_detected_rate_050,augmented_detected_rate_092,current_mean_probability,current_detected_rate_020
+ai,ai_replay,english,3,0.9744896538782313,1.0,1.0,0.5388524378900134,0.6666666666666666
+ai,clean_direct,english,5,0.9733711892411702,1.0,1.0,0.8946213784184278,1.0
+ai,mixer_processed,english,1,0.9655193106913538,1.0,1.0,0.1689998058752644,0.0
+ai,whatsapp_compressed,english,1,0.0816601030646627,0.0,0.0,0.1267600839136121,0.0
+human,clean_direct,english,2,0.9958879541707193,1.0,1.0,0.8220165091976861,1.0
+human,clean_direct,urdu,1,0.0045498458381755,0.0,0.0,0.00049042983806,0.0
+human,edited_spliced,urdu,5,0.01034750910275748,0.0,0.0,0.0006250840020874001,0.0
+human,human_replay,urdu,4,0.027881408812270775,0.0,0.0,0.0019096270079781,0.0
+human,mixer_processed,urdu,1,0.1140964183954664,0.0,0.0,0.0603892003602091,0.0
+mixed,partial_ai_insert,english,1,0.991830607259189,1.0,1.0,0.9640122863599724,1.0
+mixed,partial_ai_insert,urdu,1,0.061060324051415,0.0,0.0,0.0133330997153898,0.0

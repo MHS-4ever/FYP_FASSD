@@ -1,0 +1,26 @@
+variant,test_id,audio_path,manipulation_type,target,leakage_safe_split,eval_status,probability
+ssl_roundtrip_16_8_16,T1.1,testing_audios/T1/T1.1.mp3,clean_direct,0,all,ok,0.00023782556428184667
+ssl_roundtrip_16_8_16,T1.2,testing_audios/T1/T1.2.mp3,clean_direct,0,all,ok,0.9949798145312493
+ssl_roundtrip_16_8_16,T1.3,testing_audios/T1/T1.3.mp3,clean_direct,1,all,ok,0.9972985701603928
+ssl_roundtrip_16_8_16,T1.4,testing_audios/T1/T1.4.mp3,clean_direct,1,all,ok,0.9790987828224149
+ssl_roundtrip_16_8_16,T1.5,testing_audios/T1/T1.5.wav,clean_direct,1,all,ok,0.9973159055938695
+ssl_roundtrip_16_8_16,T2.1,testing_audios/T2/T2.1.mp3,human_replay,0,all,ok,0.00036579740908136135
+ssl_roundtrip_16_8_16,T2.2,testing_audios/T2/T2.2.mp3,mixer_processed,0,all,ok,0.0012602533392935848
+ssl_roundtrip_16_8_16,T2.3,testing_audios/T2/T2.3.mp3,human_replay,0,all,ok,0.008022715361968658
+ssl_roundtrip_16_8_16,T2.4,testing_audios/T2/T2.4.mp4,human_replay,0,all,ok,0.00025294912101147437
+ssl_roundtrip_16_8_16,T2.5,testing_audios/T2/T2.5.mp3,human_replay,0,all,ok,0.00028954161470899566
+ssl_roundtrip_16_8_16,T3.1,testing_audios/T3/T3.1.mp3,clean_direct,1,all,ok,0.9972985701603928
+ssl_roundtrip_16_8_16,T3.2,testing_audios/T3/T3.2.mp3,ai_replay,1,all,ok,0.9960140856843661
+ssl_roundtrip_16_8_16,T3.3,testing_audios/T3/T3.3.mp4,ai_replay,1,all,ok,0.9955743198996407
+ssl_roundtrip_16_8_16,T3.4,testing_audios/T3/T3.4.mp3,mixer_processed,1,all,ok,0.9330471142803023
+ssl_roundtrip_16_8_16,T3.5,testing_audios/T3/T3.5.mp3,ai_replay,1,all,ok,0.35665472980363166
+ssl_roundtrip_16_8_16,T4.1,testing_audios/T4/T4.1.mp3,clean_direct,0,all,"ssl_error: CUDA out of memory. Tried to allocate 3.88 GiB. GPU 0 has a total capacity of 6.00 GiB of which 0 bytes is free. Of the allocated memory 12.18 GiB is allocated by PyTorch, and 197.16 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+ssl_roundtrip_16_8_16,T4.2,testing_audios/T4/T4.2.mp3,clean_direct,1,all,ok,0.9790987828224149
+ssl_roundtrip_16_8_16,T4.3,testing_audios/T4/T4.3.mp3,partial_ai_insert,0,all,ok,0.9953390501120546
+ssl_roundtrip_16_8_16,T4.5,testing_audios/T4/T4.5.mp3,whatsapp_compressed,1,all,ok,0.024244022471506494
+ssl_roundtrip_16_8_16,T5.1,testing_audios/T5/T5.1.mp3,edited_spliced,0,all,ok,0.00027396254092485064
+ssl_roundtrip_16_8_16,T5.2,testing_audios/T5/T5.2.mp3,edited_spliced,0,all,ok,0.007852171333207614
+ssl_roundtrip_16_8_16,T5.3,testing_audios/T5/T5.3.mp3,edited_spliced,0,all,ok,0.0004827415345755461
+ssl_roundtrip_16_8_16,T5.4,testing_audios/T5/T5.4.mp3,edited_spliced,0,all,ok,0.01771525566826739
+ssl_roundtrip_16_8_16,T5.5,testing_audios/T5/T5.5.mp3,edited_spliced,0,all,ok,0.0001891228206477106
+ssl_roundtrip_16_8_16,T5_FAB_001,testing_audios/fabricated/fabricated.mp3,partial_ai_insert,0,all,ok,0.07634366819415282

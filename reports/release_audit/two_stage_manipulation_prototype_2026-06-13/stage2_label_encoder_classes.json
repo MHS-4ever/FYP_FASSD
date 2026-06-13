@@ -1,0 +1,7 @@
+{
+  "classes": [
+    "mixer_channel",
+    "partial_insert",
+    "replay"
+  ]
+}

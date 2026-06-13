@@ -1,0 +1,6 @@
+check,pass,detail
+origin_card_uses_band_not_raw,True,Evidence strength: High evidence
+mixer_unavailable_is_inconclusive,True,Evidence strength: Inconclusive
+gradio_table_matches_pdf_segment_rows,True,"gradio=[[1, '00:10 – 00:14', 'Evidence strength: High evidence', 'Recommended']] pdf=[['1', '00:10 – 00:14', 'Evidence strength: High evidence', 'Recommended']]"
+api_and_enriched_same_forensic_summary,True,forensic_indicator_summary
+segment_table_uses_band,True,Evidence strength: High evidence

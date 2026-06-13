@@ -1,0 +1,7 @@
+variant,threshold,phase7_test_balanced_accuracy,phase7_test_recall,phase7_test_fpr,testing_audios_balanced_accuracy,testing_audios_recall,testing_audios_fpr,resumed_from_disk
+ssl_16k_direct,0.92,0.95,0.9,0.0,0.8500000000000001,0.9,0.2,True
+ssl_chain_8k_16k,0.92,0.925,0.85,0.0,0.8285714285714285,0.8,0.14285714285714285,True
+ssl_chain_12k_16k,0.92,0.95,0.9,0.0,0.8285714285714285,0.8,0.14285714285714285,True
+ssl_chain_22_05k_16k,0.92,0.95,0.9,0.0,0.8785714285714286,0.9,0.14285714285714285,True
+ssl_chain_24k_16k,0.92,0.95,0.9,0.0,0.8785714285714286,0.9,0.14285714285714285,True
+ssl_roundtrip_16_8_16,0.92,0.925,0.85,0.0,0.8285714285714285,0.8,0.14285714285714285,True

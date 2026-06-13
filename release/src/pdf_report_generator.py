@@ -10,7 +10,9 @@ from typing import Any
 
 from src.app_report_formatting import (
     APP_NAME,
+    EVIDENCE_STRENGTH_LABEL,
     RESEARCH_PROJECT_NAME,
+    SCORE_LABEL,
     build_evidence_axis_cards,
     build_user_result_summary,
     gradio_segments_table_title,
@@ -99,7 +101,7 @@ table {{ border-collapse: collapse; width: 100%; }} th, td {{ border: 1px solid 
 <div class="box"><h2>Evidence axes</h2><ul>{card_blocks}</ul></div>
 <div class="box"><h2>Visual evidence</h2>{img_block or '<p>Waveform image not available.</p>'}</div>
 <div class="box"><h2>{seg_title}</h2>
-<table><tr><th>Rank</th><th>Time range</th><th>Evidence score</th><th>Review recommendation</th></tr>
+<table><tr><th>Rank</th><th>Time range</th><th>{html.escape(EVIDENCE_STRENGTH_LABEL)}</th><th>Review recommendation</th></tr>
 {seg_rows}</table></div>
 <div class="box"><h2>Technical details</h2>
 <p>{cascade_note}</p>
@@ -183,7 +185,7 @@ def _write_pdf_reportlab(
         story.append(Image(waveform_image_path, width=6.5 * inch, height=2.0 * inch))
         story.append(Spacer(1, 0.15 * inch))
 
-    seg_data = [["Rank", "Time range", "Evidence score", "Review recommendation"]]
+    seg_data = [["Rank", "Time range", EVIDENCE_STRENGTH_LABEL, "Review recommendation"]]
     seg_data.extend(_segments_for_report(app_response))
     if len(seg_data) == 1:
         seg_data.append(["—", "—", "—", "—"])

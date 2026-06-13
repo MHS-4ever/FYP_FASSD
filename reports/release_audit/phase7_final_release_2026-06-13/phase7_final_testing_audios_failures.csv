@@ -1,0 +1,12 @@
+axis,test_id,audio_path,manipulation_type,ground_truth_origin,target,prediction,origin_probability,replay_probability,mixer_probability,partial_max_segment_probability,partial_gate,notes
+origin,T1.2,testing_audios/T1/T1.2.mp3,clean_direct,human,0,1.0,0.9917968919326214,5.367366373434206e-05,1.030395588947829e-05,0.8973890213201274,low_partial_indicator,Clean studio/podcast human voice
+origin,T4.1,testing_audios/T4/T4.1.mp3,clean_direct,human,0,1.0,0.9999802685605571,0.9632358054416859,0.6685431245169886,0.9999999999858398,localized_pattern_supported,Known speaker real reference
+origin,T4.5,testing_audios/T4/T4.5.mp3,whatsapp_compressed,ai,1,0.0,0.08151639711205208,0.003228016887954508,0.00414079913563182,0.01348822742763842,low_partial_indicator,Political/social media clone
+replay,T2.2,testing_audios/T2/T2.2.mp3,mixer_processed,human,0,1.0,0.11373567069636867,0.9778621739604246,0.4510228993023589,0.05080568525937808,low_partial_indicator,Human through laptop + mixer + mobile
+replay,T3.2,testing_audios/T3/T3.2.mp3,ai_replay,ai,1,0.0,0.9941230884959437,0.2185262113886377,0.00020076587959803752,0.03515345418594564,low_partial_indicator,AI played on laptop recorded on mobile
+replay,T3.3,testing_audios/T3/T3.3.mp4,ai_replay,ai,1,0.0,0.9929763245691677,0.6362975195447825,0.2941982381703527,0.5787628613382789,low_partial_indicator,AI through Bluetooth speaker
+replay,T3.4,testing_audios/T3/T3.4.mp3,mixer_processed,ai,0,1.0,0.965490848162912,0.6784304904375547,0.010638854624143382,0.03987889483711827,low_partial_indicator,AI through mixer then mobile
+replay,T4.1,testing_audios/T4/T4.1.mp3,clean_direct,human,0,1.0,0.9999802685605571,0.9632358054416859,0.6685431245169886,0.9999999999858398,localized_pattern_supported,Known speaker real reference
+mixer,T2.2,testing_audios/T2/T2.2.mp3,mixer_processed,human,1,0.0,0.11373567069636867,0.9778621739604246,0.4510228993023589,0.05080568525937808,low_partial_indicator,Human through laptop + mixer + mobile
+mixer,T2.4,testing_audios/T2/T2.4.mp4,human_replay,human,0,1.0,0.005054154091009853,0.9758610385938192,0.9947430853382707,0.12630143837597135,low_partial_indicator,Human Bluetooth speaker replay
+mixer,T3.4,testing_audios/T3/T3.4.mp3,mixer_processed,ai,1,0.0,0.965490848162912,0.6784304904375547,0.010638854624143382,0.03987889483711827,low_partial_indicator,AI through mixer then mobile

@@ -1,0 +1,9 @@
+prediction_scope,sample_id,test_id,audio_path,ground_truth_origin,manipulation_type,language,target_is_replay,replay_probability,replay_prediction,feature_status
+fit_train,human_023_replay_laptop_mobile,,data/phase7c1/raw/human_replay/human_023_replay_laptop_mobile.wav,human,human_replay,unknown,1,0.9157715055599377,0.0,ok
+train_original,human_023_replay_laptop_mobile,,data/phase7c1/raw/human_replay/human_023_replay_laptop_mobile.wav,human,human_replay,unknown,1,0.9157715055599377,0.0,ok
+dev,human_022_replay_laptop_mobile,,data/phase7c1/raw/human_replay/human_022_replay_laptop_mobile.wav,human,human_replay,unknown,1,0.013860824738611985,0.0,ok
+test,human_021_clean,,data/phase7c1/raw/human_clean/human_021_clean.wav,human,clean_direct,unknown,0,0.9896933910892705,1.0,ok
+testing_audios,,T2.2,testing_audios/T2/T2.2.mp3,human,mixer_processed,urdu,0,0.9986190178695387,1.0,ok
+testing_audios,,T3.2,testing_audios/T3/T3.2.mp3,ai,ai_replay,english,1,0.9493575196422877,0.0,ok
+testing_audios,,T3.4,testing_audios/T3/T3.4.mp3,ai,mixer_processed,english,0,0.9964201213466788,1.0,ok
+testing_audios,,T5.5,testing_audios/T5/T5.5.mp3,human,edited_spliced,urdu,0,0.9665786879865593,1.0,ok

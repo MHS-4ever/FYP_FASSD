@@ -1,0 +1,26 @@
+variant,test_id,audio_path,manipulation_type,target,leakage_safe_split,eval_status,probability
+ssl_chain_8k_16k,T1.1,testing_audios/T1/T1.1.mp3,clean_direct,0,all,ok,0.00023793486977428786
+ssl_chain_8k_16k,T1.2,testing_audios/T1/T1.2.mp3,clean_direct,0,all,ok,0.9949761086900337
+ssl_chain_8k_16k,T1.3,testing_audios/T1/T1.3.mp3,clean_direct,1,all,ok,0.9972876148694985
+ssl_chain_8k_16k,T1.4,testing_audios/T1/T1.4.mp3,clean_direct,1,all,ok,0.979047980423729
+ssl_chain_8k_16k,T1.5,testing_audios/T1/T1.5.wav,clean_direct,1,all,ok,0.9973136315709825
+ssl_chain_8k_16k,T2.1,testing_audios/T2/T2.1.mp3,human_replay,0,all,ok,0.0003651690321211572
+ssl_chain_8k_16k,T2.2,testing_audios/T2/T2.2.mp3,mixer_processed,0,all,ok,0.001256732033891737
+ssl_chain_8k_16k,T2.3,testing_audios/T2/T2.3.mp3,human_replay,0,all,ok,0.00805260685893256
+ssl_chain_8k_16k,T2.4,testing_audios/T2/T2.4.mp4,human_replay,0,all,ok,0.00025226831354070413
+ssl_chain_8k_16k,T2.5,testing_audios/T2/T2.5.mp3,human_replay,0,all,ok,0.00028981662893258345
+ssl_chain_8k_16k,T3.1,testing_audios/T3/T3.1.mp3,clean_direct,1,all,ok,0.9972876148694985
+ssl_chain_8k_16k,T3.2,testing_audios/T3/T3.2.mp3,ai_replay,1,all,ok,0.9960114458038095
+ssl_chain_8k_16k,T3.3,testing_audios/T3/T3.3.mp4,ai_replay,1,all,ok,0.9955717918742746
+ssl_chain_8k_16k,T3.4,testing_audios/T3/T3.4.mp3,mixer_processed,1,all,ok,0.9330293113471186
+ssl_chain_8k_16k,T3.5,testing_audios/T3/T3.5.mp3,ai_replay,1,all,ok,0.3564562409158097
+ssl_chain_8k_16k,T4.1,testing_audios/T4/T4.1.mp3,clean_direct,0,all,"ssl_error: CUDA out of memory. Tried to allocate 3.88 GiB. GPU 0 has a total capacity of 6.00 GiB of which 0 bytes is free. Of the allocated memory 12.18 GiB is allocated by PyTorch, and 197.16 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+ssl_chain_8k_16k,T4.2,testing_audios/T4/T4.2.mp3,clean_direct,1,all,ok,0.979047980423729
+ssl_chain_8k_16k,T4.3,testing_audios/T4/T4.3.mp3,partial_ai_insert,0,all,ok,0.9953332879569718
+ssl_chain_8k_16k,T4.5,testing_audios/T4/T4.5.mp3,whatsapp_compressed,1,all,ok,0.02434693156698875
+ssl_chain_8k_16k,T5.1,testing_audios/T5/T5.1.mp3,edited_spliced,0,all,ok,0.00027334439847959623
+ssl_chain_8k_16k,T5.2,testing_audios/T5/T5.2.mp3,edited_spliced,0,all,ok,0.007835490821852663
+ssl_chain_8k_16k,T5.3,testing_audios/T5/T5.3.mp3,edited_spliced,0,all,ok,0.000482092879745644
+ssl_chain_8k_16k,T5.4,testing_audios/T5/T5.4.mp3,edited_spliced,0,all,ok,0.01769071488035038
+ssl_chain_8k_16k,T5.5,testing_audios/T5/T5.5.mp3,edited_spliced,0,all,ok,0.0001901148953360353
+ssl_chain_8k_16k,T5_FAB_001,testing_audios/fabricated/fabricated.mp3,partial_ai_insert,0,all,ok,0.0761448303188656

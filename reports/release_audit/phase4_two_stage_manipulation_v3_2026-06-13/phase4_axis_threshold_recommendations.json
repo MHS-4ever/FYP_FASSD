@@ -1,0 +1,53 @@
+{
+  "created_at": "2026-06-13T13:22:56.085524+00:00",
+  "dev_split": "leakage_safe_dev",
+  "does_not_overwrite_release_models": true,
+  "replay": {
+    "axis": "replay",
+    "release_threshold_candidate": 0.65,
+    "phase4_dev_recommended_threshold": 0.73,
+    "dev_at_recommended": {
+      "n": 30,
+      "tp": 10,
+      "tn": 19,
+      "fp": 1,
+      "fn": 0,
+      "recall": 1.0,
+      "specificity": 0.95
+    },
+    "dev_at_release_threshold": {
+      "n": 30,
+      "tp": 10,
+      "tn": 18,
+      "fp": 2,
+      "fn": 0,
+      "recall": 1.0,
+      "specificity": 0.9
+    },
+    "grid_rows": 91
+  },
+  "mixer": {
+    "axis": "mixer",
+    "release_threshold_candidate": 0.75,
+    "phase4_dev_recommended_threshold": 0.94,
+    "dev_at_recommended": {
+      "n": 30,
+      "tp": 10,
+      "tn": 19,
+      "fp": 1,
+      "fn": 0,
+      "recall": 1.0,
+      "specificity": 0.95
+    },
+    "dev_at_release_threshold": {
+      "n": 30,
+      "tp": 10,
+      "tn": 19,
+      "fp": 1,
+      "fn": 0,
+      "recall": 1.0,
+      "specificity": 0.95
+    },
+    "grid_rows": 91
+  }
+}

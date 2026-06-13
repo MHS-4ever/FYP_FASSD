@@ -1,13 +1,16 @@
 {
   "inventory_schema_version": "phase9b_inventory_v1",
-  "created_at": "2026-05-29T11:54:23.178736+00:00",
+  "created_at": "2026-06-13T10:51:57.965111+00:00",
   "status": "experimental_forensic_prototype",
   "models": [
     {
       "model_name": "origin_file_model",
       "artifact_path": "E:/FYP/release/models/origin/origin_file_model__ssl__experimental.joblib",
       "metadata_path": "E:/FYP/release/models/origin/origin_file_model__ssl__metadata.json",
-      "status": "experimental_forensic_prototype"
+      "status": "experimental_forensic_prototype",
+      "phase_trained": "Release audit Phase 2 origin retrain with processed AI + train-only augmentation",
+      "artifact_sha256": "5396ddc3758e7b2d046843fc25b53b97ddcce90a4e9c1797c8f4f8a51f94190b",
+      "threshold_candidate": 0.92
     },
     {
       "model_name": "replay_file_model",
@@ -25,14 +28,16 @@
       "model_name": "partial_fabrication_segment_model",
       "artifact_path": "E:/FYP/release/models/partial_segment/partial_segment_model__combined__experimental.joblib",
       "metadata_path": "E:/FYP/release/models/partial_segment/partial_segment_model__combined__metadata.json",
-      "status": "experimental_forensic_prototype_legacy",
-      "deprecated_for_p5b_cascade": true,
-      "active_for_phase9e_demo": false
+      "status": "experimental_forensic_prototype",
+      "phase_trained": "Phase 5 partial redesign (F9 features removed)",
+      "artifact_sha256": "101894758d57a3c13f6aef5847c52f3c2a3b5c67ef5369c3d725bf47a434891d",
+      "threshold_candidate": 0.95,
+      "active_for_phase9e_demo": true
     }
   ],
   "missing_artifacts": [],
   "warnings": [
-    "partial_fabrication_experimental_p5b is the P5B/P5F cascade for Phase 9E demo evidence; legacy partial_fabrication_segment_model remains for compatibility but is not the active P5B cascade."
+    "All active models are experimental forensic evidence indicators. They are not final authenticity verdict models."
   ],
   "integration_modules": {
     "partial_fabrication_experimental_p5b": {
@@ -45,5 +50,26 @@
       "source_validation": "phase9d_p5f",
       "packaged_at": "2026-06-02T19:53:03.588+00:00"
     }
+  },
+  "phase2_origin_promotion": {
+    "origin_artifact_sha256": "5396ddc3758e7b2d046843fc25b53b97ddcce90a4e9c1797c8f4f8a51f94190b",
+    "threshold_candidate": 0.92,
+    "backup_dir": "E:\\FYP\\release\\models\\origin\\backup_before_phase2_origin_augmented_2026-06-13"
+  },
+  "phase5_partial_promotion": {
+    "partial_artifact_sha256": "101894758d57a3c13f6aef5847c52f3c2a3b5c67ef5369c3d725bf47a434891d",
+    "threshold_candidate": 0.95,
+    "backup_dir": "E:\\FYP\\release\\models\\partial_segment\\backup_before_phase5_2026-06-13",
+    "f9_features_removed": [
+      "acoustic_deviation_percentile_within_file",
+      "ssl_deviation_percentile_within_file",
+      "within_file_acoustic_deviation_score",
+      "within_file_ssl_deviation_score",
+      "combined_within_file_deviation_score"
+    ]
+  },
+  "phase6_calibration": {
+    "config_path": "E:\\FYP\\release\\config\\evidence_calibration.json",
+    "display_policy": "User-facing Gradio/FastAPI/PDF/JSON outputs show Low/Medium/High evidence bands; raw uncalibrated scores remain in technical details."
   }
 }

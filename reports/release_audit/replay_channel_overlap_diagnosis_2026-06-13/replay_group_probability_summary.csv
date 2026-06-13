@@ -1,0 +1,16 @@
+diagnostic_group,manipulation_type,n,mean_replay_probability,detected_rate
+other,ai_replay,13,0.9999392554868578,1.0
+other,clean_direct,26,0.011583475855565612,0.0
+other,human_replay,13,0.9918632677867165,0.9230769230769231
+other,mixer_processed,26,0.018756943612132503,0.0
+phase7_clean_negative,clean_direct,46,0.05558378952392109,0.021739130434782608
+phase7_mixer_negative,mixer_processed,46,0.058714016814251285,0.0
+phase7_replay_positive,ai_replay,23,0.9999433210270767,1.0
+phase7_replay_positive,human_replay,23,0.9519673837626831,0.9130434782608695
+testing_clean_negative,clean_direct,8,0.2273106047328448,0.0
+testing_edited_negative,edited_spliced,5,0.6989941980188814,0.2
+testing_mixer_negative,mixer_processed,2,0.9975195696081087,1.0
+testing_other,partial_ai_insert,2,0.24807342849591105,0.0
+testing_other,whatsapp_compressed,1,0.0007692434922918,0.0
+testing_replay_positive,ai_replay,2,0.9745081146479742,0.5
+testing_replay_positive,human_replay,3,0.9990177001146495,1.0

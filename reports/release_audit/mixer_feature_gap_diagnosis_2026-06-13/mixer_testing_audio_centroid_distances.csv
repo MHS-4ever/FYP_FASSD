@@ -1,0 +1,17 @@
+test_id,audio_path,ground_truth_origin,manipulation_type,diagnostic_group,mixer_probability,mixer_prediction,distance_to_phase7_mixer_positive,distance_to_phase7_clean_negative,distance_to_phase7_replay_negative,nearest_centroid
+T1.1,testing_audios/T1/T1.1.mp3,human,clean_direct,testing_clean_negative,0.0010221109422634072,0.0,0.8596250433118443,1.247735189340606,1.0113290640777621,phase7_mixer_positive
+T1.2,testing_audios/T1/T1.2.mp3,human,clean_direct,testing_clean_negative,0.00011645566854286353,0.0,1.5173849979739573,0.942983574457885,1.737821548807737,phase7_clean_negative
+T1.3,testing_audios/T1/T1.3.mp3,ai,clean_direct,testing_clean_negative,3.470115073063504e-05,0.0,1.9357540515731406,1.3748379298650264,2.1848244790191425,phase7_clean_negative
+T1.4,testing_audios/T1/T1.4.mp3,ai,clean_direct,testing_clean_negative,0.0003275260108923174,0.0,1.379943404293488,0.9620838384129613,1.6171531313185492,phase7_clean_negative
+T1.5,testing_audios/T1/T1.5.wav,ai,clean_direct,testing_clean_negative,3.492439317892323e-05,0.0,1.9088117269842737,1.340228344975093,2.1610346850975484,phase7_clean_negative
+T2.1,testing_audios/T2/T2.1.mp3,human,human_replay,testing_replay_negative,0.0002483997695042279,0.0,1.206054367498368,1.5017126538334795,0.8685873676610859,phase7_replay_negative
+T2.2,testing_audios/T2/T2.2.mp3,human,mixer_processed,testing_mixer_positive,0.0011606625094412043,0.0,1.4333898079952871,1.8757795250058804,1.31625222787787,phase7_replay_negative
+T2.3,testing_audios/T2/T2.3.mp3,human,human_replay,testing_replay_negative,9.016155726238975e-06,0.0,1.6993108419946672,1.9535354633668867,1.292754736674498,phase7_replay_negative
+T2.5,testing_audios/T2/T2.5.mp3,human,human_replay,testing_replay_negative,0.0002526643084876073,0.0,1.2273383289623554,1.5662499091230144,0.7780919048153128,phase7_replay_negative
+T3.1,testing_audios/T3/T3.1.mp3,ai,clean_direct,testing_clean_negative,3.470115073063504e-05,0.0,1.9357540515731406,1.3748379298650264,2.1848244790191425,phase7_clean_negative
+T3.2,testing_audios/T3/T3.2.mp3,ai,ai_replay,testing_replay_negative,8.666937985438808e-05,0.0,1.3874209020150197,1.168223579065813,1.0741690425405093,phase7_replay_negative
+T3.4,testing_audios/T3/T3.4.mp3,ai,mixer_processed,testing_mixer_positive,8.848897376509723e-05,0.0,1.086956593996048,1.2711097776731433,0.6191833164583287,phase7_replay_negative
+T3.5,testing_audios/T3/T3.5.mp3,ai,ai_replay,testing_replay_negative,7.63851344885618e-06,0.0,1.3158903373665563,1.4445686059236966,0.6185333694702728,phase7_replay_negative
+T4.1,testing_audios/T4/T4.1.mp3,human,clean_direct,testing_clean_negative,0.007033500698615068,0.0,1.4315610868944093,1.4955244283209013,1.4229208196351226,phase7_replay_negative
+T4.2,testing_audios/T4/T4.2.mp3,ai,clean_direct,testing_clean_negative,0.0003275260108923174,0.0,1.379943404293488,0.9620838384129613,1.6171531313185492,phase7_clean_negative
+T4.5,testing_audios/T4/T4.5.mp3,ai,whatsapp_compressed,testing_mixer_positive,0.06937862125264213,0.0,1.5700021157831907,1.3232268104671454,1.9901565556011354,phase7_clean_negative

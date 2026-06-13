@@ -1,0 +1,8 @@
+axis,test_id,ground_truth_origin,manipulation_type,language,target,prediction,probability,expected_forensic_result
+replay,T2.2,human,mixer_processed,urdu,0,1,0.9778621739604246,Avoid false FAKE on processed human
+replay,T3.2,ai,ai_replay,english,1,0,0.2185262113886377,Should detect spoof + replay hints
+replay,T3.4,ai,mixer_processed,english,0,1,0.6784304904375547,Should detect as spoof
+replay,T4.1,human,clean_direct,english,0,1,0.9632358054416859,Should not be called AI fake
+mixer,T2.2,human,mixer_processed,urdu,1,0,0.4510228993023589,Avoid false FAKE on processed human
+mixer,T3.4,ai,mixer_processed,english,1,0,0.010638854624143382,Should detect as spoof
+mixer,T4.5,ai,whatsapp_compressed,english,1,0,0.00414079913563182,Should detect spoof with compression note

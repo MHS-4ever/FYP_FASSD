@@ -1,0 +1,5 @@
+axis,artifact_path,sha256,threshold,classes,n_features_in,feature_set,phase_trained
+origin,E:\FYP\release\models\origin\origin_file_model__ssl__experimental.joblib,f9ef07746a4325135f11be86e0f82d94c1e0f3a2e26834d06571d5eed86b5780,0.2,"[np.int64(0), np.int64(1)]",768,ssl,Phase 8E-1 / 8E-1A
+replay,E:\FYP\release\models\replay\replay_file_model__acoustic__experimental.joblib,2f3bb4661b840aed0562dcbf8bd7c0714078727425e844adb39918e17a20f7c3,0.65,"[np.int64(0), np.int64(1)]",59,acoustic,Phase 8E-1 / 8E-1A
+mixer,E:\FYP\release\models\mixer\mixer_file_model__acoustic__experimental.joblib,9745c3b34390f47b35d224c96f6ec4e03146046df30806a921e96f17fd671d2e,0.75,"[np.int64(0), np.int64(1)]",59,acoustic,Phase 8E-1 / 8E-1A
+partial_segment,E:\FYP\release\models\partial_segment\partial_segment_model__combined__experimental.joblib,97cfbb8a0d280891039102641273852b70bb1316208232640d1474860a537d20,0.5,"[np.int64(0), np.int64(1)]",796,combined,Phase 8E-3

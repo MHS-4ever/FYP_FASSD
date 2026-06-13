@@ -1,6 +1,7 @@
 origin_file_model:
   feature_set: ssl
-  threshold_candidate: 0.20
+  threshold_candidate: 0.92
+  threshold_source: "Phase 2 origin repair: leakage-safe dev split only; testing_audios not used"
 replay_file_model:
   feature_set: acoustic
   threshold_candidate: 0.65

@@ -1,0 +1,18 @@
+{
+  "started_at": "2026-06-13T13:11:00.954701+00:00",
+  "finished_at": "2026-06-13T13:11:01.548647+00:00",
+  "variants": [
+    "ssl_16k_direct",
+    "ssl_chain_8k_16k",
+    "ssl_chain_12k_16k",
+    "ssl_chain_22_05k_16k",
+    "ssl_chain_24k_16k",
+    "ssl_roundtrip_16_8_16"
+  ],
+  "device": "cpu",
+  "origin_threshold": 0.92,
+  "manifests": {
+    "leakage_safe": "E:\\FYP\\reports\\release_audit\\leakage_safe_eval_2026-06-13\\leakage_safe_file_manifest.csv",
+    "testing_audios": "E:\\FYP\\reports\\phase7\\phase7_forensic_tests\\forensic_test_manifest_backup_before_T4_3_timestamp.csv"
+  }
+}

@@ -8,6 +8,7 @@ from typing import Any
 from src.app_report_formatting import (
     APP_NAME,
     APP_SUBTITLE,
+    EVIDENCE_STRENGTH_LABEL,
     RESEARCH_PROJECT_NAME,
     build_evidence_axis_cards,
     build_user_result_summary,
@@ -147,7 +148,7 @@ def build_demo() -> Any:
 
         segments_heading = gr.Markdown("### Candidate segments for review")
         segment_table = gr.Dataframe(
-            headers=["Rank", "Time range", "Evidence score", "Review recommendation"],
+            headers=["Rank", "Time range", EVIDENCE_STRENGTH_LABEL, "Review recommendation"],
             label="Segments for review",
             interactive=False,
         )

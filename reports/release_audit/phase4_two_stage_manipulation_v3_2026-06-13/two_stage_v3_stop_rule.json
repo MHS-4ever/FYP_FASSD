@@ -1,0 +1,7 @@
+{
+  "n_manipulated": 15,
+  "tp": 3,
+  "recall": 0.2,
+  "passes_stop_rule": false,
+  "stop_rule_threshold": 0.7
+}

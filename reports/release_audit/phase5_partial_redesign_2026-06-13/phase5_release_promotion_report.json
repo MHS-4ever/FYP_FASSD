@@ -1,0 +1,15 @@
+{
+  "promoted_at": "2026-06-13T13:54:03.292352+00:00",
+  "threshold": 0.95,
+  "training_input_features": 791,
+  "selected_features": 75,
+  "f9_removed": [
+    "acoustic_deviation_percentile_within_file",
+    "ssl_deviation_percentile_within_file",
+    "within_file_acoustic_deviation_score",
+    "within_file_ssl_deviation_score",
+    "combined_within_file_deviation_score"
+  ],
+  "release_joblib": "E:\\FYP\\release\\models\\partial_segment\\partial_segment_model__combined__experimental.joblib",
+  "backup_dir": "E:\\FYP\\release\\models\\partial_segment\\backup_before_phase5_2026-06-13"
+}

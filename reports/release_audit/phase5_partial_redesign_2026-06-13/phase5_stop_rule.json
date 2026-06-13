@@ -1,0 +1,7 @@
+{
+  "oracle_test_top5_hit_rate": 1.0,
+  "oracle_test_localized_rate": 1.0,
+  "min_required_top5_hit_rate": 0.5,
+  "passes_stop_rule": true,
+  "n_partial_test_files": 10
+}

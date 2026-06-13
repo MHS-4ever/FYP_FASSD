@@ -1,0 +1,59 @@
+{
+  "case_id": "AXIS-T3.3",
+  "status": "error",
+  "audio_metadata": {},
+  "origin_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "replay_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "mixer_channel_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "partial_fabrication_evidence": {
+    "label": "not_evaluated",
+    "evidence_label": "not_evaluated",
+    "evidence_strength": "not_evaluated",
+    "probability": null,
+    "threshold_candidate": null,
+    "model_available": false,
+    "prediction_success": false,
+    "notes": []
+  },
+  "segment_candidates": [],
+  "fusion_status": "not_evaluated",
+  "forensic_risk_level": "inconclusive",
+  "forensic_summary": "Audio load failed: Unsupported extension '.mp4'. Supported: ['.aac', '.flac', '.m4a', '.mp3', '.ogg', '.wav']",
+  "manual_review_required": true,
+  "manual_review_reason": "none",
+  "limitations": [
+    "experimental_forensic_prototype",
+    "evidence indicators only",
+    "Unsupported extension '.mp4'. Supported: ['.aac', '.flac', '.m4a', '.mp3', '.ogg', '.wav']"
+  ],
+  "debug_info": {
+    "steps": []
+  }
+}

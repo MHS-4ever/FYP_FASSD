@@ -88,7 +88,10 @@ def apply_partial_arbitration(
     _ = origin_evidence
     p8f = p8f or _import_phase8f()
     out = ensure_partial_arbitration_fields(partial_fabrication_evidence)
-    if out.get("partial_fusion_block_reason") == "blocked_by_replay_or_mixer_context":
+    if out.get("partial_fusion_block_reason") in {
+        "blocked_by_replay_or_mixer_context",
+        "coexists_with_replay_or_mixer_context",
+    }:
         return out
 
     replay_strength = _classify_axis_strength(p8f, replay_evidence)
@@ -99,13 +102,23 @@ def apply_partial_arbitration(
     gate = str(out.get("partial_localization_gate", ""))
     hsf = float(out.get("high_segment_fraction", 1.0) or 1.0)
     topk_mr = float(out.get("topk_minus_rest_probability", 0.0) or 0.0)
-    pstd = float(out.get("probability_std", 0.0) or 0.0)
-    strict_ok = (
-        gate == "localized_pattern_supported"
-        and hsf <= 0.35
-        and topk_mr >= 0.35
-        and pstd >= 0.25
-    )
+    localized = gate == "localized_pattern_supported" and hsf <= 0.35 and topk_mr >= 0.20
+
+    if localized:
+        coexist_note = (
+            "Localized partial segment pattern coexists with replay/mixer/channel context; "
+            "segment candidates remain visible for review."
+        )
+        if out.get("partial_fusion_eligible") is not True:
+            out["partial_fusion_eligible"] = True
+        strength = str(out.get("partial_evidence_strength_for_fusion", "not_evaluated"))
+        if strength in {"", "not_evaluated", "low"}:
+            out["partial_evidence_strength_for_fusion"] = "borderline"
+        out["partial_fusion_block_reason"] = "coexists_with_replay_or_mixer_context"
+        out["partial_arbitration_note"] = coexist_note
+        return out
+
+    strict_ok = localized and topk_mr >= 0.35 and float(out.get("probability_std", 0.0) or 0.0) >= 0.25
     if strict_ok:
         return out
 

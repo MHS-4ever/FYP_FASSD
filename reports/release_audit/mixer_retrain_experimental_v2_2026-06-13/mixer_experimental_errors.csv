@@ -1,0 +1,8 @@
+prediction_scope,sample_id,test_id,audio_path,ground_truth_origin,manipulation_type,language,target_is_mixer_channel,mixer_probability,mixer_prediction,feature_status
+fit_train,human_011_clean__aug_codec_12k_light,,data/phase7c1/raw/human_clean/human_011_clean.wav,human,clean_direct,unknown,0,0.28488602417029396,1.0,ok
+fit_train,human_023_replay_laptop_mobile__aug_gain_noise,,data/phase7c1/raw/human_replay/human_023_replay_laptop_mobile.wav,human,human_replay,unknown,0,0.4797562001848663,1.0,ok
+dev,human_022_replay_laptop_mobile,,data/phase7c1/raw/human_replay/human_022_replay_laptop_mobile.wav,human,human_replay,unknown,0,0.9952694181411077,1.0,ok
+test,human_021_mixer_processed,,data/phase7c1/raw/human_mixer/human_021_mixer_processed.wav,human,mixer_processed,unknown,1,0.11545828245987194,0.0,ok
+testing_audios,,T2.2,testing_audios/T2/T2.2.mp3,human,mixer_processed,urdu,1,0.0011606625094412043,0.0,ok
+testing_audios,,T3.4,testing_audios/T3/T3.4.mp3,ai,mixer_processed,english,1,8.848897376509723e-05,0.0,ok
+testing_audios,,T4.5,testing_audios/T4/T4.5.mp3,ai,whatsapp_compressed,english,1,0.06937862125264213,0.0,ok

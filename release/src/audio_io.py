@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -10,7 +12,19 @@ import numpy as np
 
 
 TARGET_SAMPLE_RATE = 16000
-SUPPORTED_EXTENSIONS = {".wav", ".flac", ".mp3", ".ogg", ".m4a", ".aac"}
+SUPPORTED_EXTENSIONS = {
+    ".wav",
+    ".flac",
+    ".mp3",
+    ".ogg",
+    ".m4a",
+    ".aac",
+    ".mp4",
+    ".webm",
+    ".mkv",
+    ".mov",
+}
+_VIDEO_EXTENSIONS = {".mp4", ".webm", ".mkv", ".mov"}
 
 
 class AudioLoadError(Exception):
@@ -54,6 +68,41 @@ def _resample(y: np.ndarray, orig_sr: int, target_sr: int) -> np.ndarray:
         return np.interp(x_new, x_old, y).astype(np.float64)
 
 
+def _load_via_ffmpeg(path: Path, target_sample_rate: int) -> tuple[np.ndarray, int]:
+    import soundfile as sf
+
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    tmp_path = tmp.name
+    tmp.close()
+    try:
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(path),
+            "-vn",
+            "-ac",
+            "1",
+            "-ar",
+            str(int(target_sample_rate)),
+            tmp_path,
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if proc.returncode != 0:
+            err = (proc.stderr or proc.stdout or "ffmpeg failed").strip()
+            raise AudioLoadError(f"ffmpeg could not extract audio: {err[:500]}")
+        data, sr = sf.read(tmp_path, always_2d=False)
+        y = _to_mono(np.asarray(data, dtype=np.float64))
+        if sr is None or int(sr) <= 0:
+            raise AudioLoadError("Invalid sample rate from ffmpeg extraction.")
+        return y, int(sr)
+    finally:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+
+
 def normalize_audio(y: np.ndarray) -> np.ndarray:
     y = _to_mono(np.asarray(y, dtype=np.float64))
     peak = np.max(np.abs(y)) if len(y) else 0.0
@@ -86,7 +135,15 @@ def load_audio(path: str, target_sample_rate: int = TARGET_SAMPLE_RATE) -> tuple
             y, sr = librosa.load(str(resolved), sr=None, mono=True)
             y = np.asarray(y, dtype=np.float64)
         except Exception as exc:
-            raise AudioLoadError(f"Could not read audio: {exc}") from exc
+            if resolved.suffix.lower() in _VIDEO_EXTENSIONS:
+                try:
+                    y, sr = _load_via_ffmpeg(resolved, target_sample_rate)
+                except Exception as ff_exc:
+                    raise AudioLoadError(
+                        f"Could not read audio/video container: {ff_exc}"
+                    ) from ff_exc
+            else:
+                raise AudioLoadError(f"Could not read audio: {exc}") from exc
 
     if sr is None or int(sr) <= 0:
         raise AudioLoadError("Invalid sample rate after load.")

@@ -1,0 +1,9 @@
+scope,n,threshold,tp,tn,fp,fn,accuracy,balanced_accuracy,precision,recall,specificity,fpr,fnr,f1,mcc,roc_auc,pr_auc,brier
+train:threshold_050:training_scope_clean_replay_mixer,78,0.5,39,39,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0008301247691673962
+dev:threshold_050:training_scope_clean_replay_mixer,30,0.5,15,15,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0067890402204326015
+test:threshold_050:training_scope_clean_replay_mixer,30,0.5,15,15,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.005643580537959995
+all:threshold_050:training_scope_clean_replay_mixer,138,0.5,69,69,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,0.9999999999999999,0.0031719445996147453
+train:threshold_dev_selected:training_scope_clean_replay_mixer,78,0.73,39,39,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0008301247691673962
+dev:threshold_dev_selected:training_scope_clean_replay_mixer,30,0.73,15,15,0,0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0067890402204326015
+test:threshold_dev_selected:training_scope_clean_replay_mixer,30,0.73,14,15,0,1,0.9666666666666667,0.9666666666666667,1.0,0.9333333333333333,1.0,0.0,0.06666666666666667,0.9655172413793104,0.9354143466934853,1.0,1.0,0.005643580537959995
+all:threshold_dev_selected:training_scope_clean_replay_mixer,138,0.73,68,69,0,1,0.9927536231884058,0.9927536231884058,1.0,0.9855072463768116,1.0,0.0,0.014492753623188406,0.9927007299270073,0.9856107606091623,1.0,0.9999999999999999,0.0031719445996147453

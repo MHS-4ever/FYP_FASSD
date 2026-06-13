@@ -1,0 +1,32 @@
+{
+  "schema_version": "phase6_evidence_calibration_v1",
+  "fitted_at": "2026-06-13T13:54:11.265175+00:00",
+  "fitted_on": "leakage_safe_dev",
+  "sources": {
+    "leakage_predictions": "E:\\FYP\\reports\\release_audit\\leakage_safe_eval_2026-06-13\\current_model_file_predictions.csv",
+    "phase5_segment_predictions": "E:\\FYP\\reports\\release_audit\\phase5_partial_redesign_2026-06-13\\phase5_segment_predictions.csv"
+  },
+  "axes": {
+    "origin": {
+      "low_max": 0.0444,
+      "medium_max": 0.0986,
+      "threshold": 0.92
+    },
+    "replay": {
+      "low_max": 0.5338,
+      "medium_max": 0.9891,
+      "threshold": 0.65
+    },
+    "mixer": {
+      "low_max": 0.2201,
+      "medium_max": 0.9663,
+      "threshold": 0.75
+    },
+    "partial_segment": {
+      "low_max": 0.2638,
+      "medium_max": 0.8139,
+      "threshold": 0.95
+    }
+  },
+  "display_note": "User-facing cards show Low/Medium/High evidence bands. Raw uncalibrated probabilities appear only in technical details."
+}

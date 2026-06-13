@@ -1,0 +1,12 @@
+{
+  "started_at": "2026-06-13T11:06:05.442881+00:00",
+  "finished_at": "2026-06-13T11:16:47.611037+00:00",
+  "feature_modes": [
+    "baseline_16k_acoustic",
+    "dual_16k_plus_native_highband"
+  ],
+  "native_highband_cols": [
+    "native_high_band_energy_ratio",
+    "native_very_high_band_energy_ratio"
+  ]
+}

@@ -1,0 +1,5 @@
+aggregator,threshold,phase7_test_balanced_accuracy,phase7_test_fpr,testing_audios_balanced_accuracy,testing_audios_fpr
+file_mean_ssl,0.92,0.95,0.0,,
+segment_max_prob,0.92,0.85,0.25,,
+segment_top3_mean_prob,0.92,0.8999999999999999,0.15,,
+segment_noisy_or_max,0.92,0.85,0.3,,
