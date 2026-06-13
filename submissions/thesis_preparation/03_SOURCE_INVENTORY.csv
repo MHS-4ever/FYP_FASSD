@@ -1,0 +1,76 @@
+source_id,file_path,file_type,exists_yes_no,thesis_relevance,chapter_usage,key_facts_found,figures_or_tables_found,citation_needed_yes_no,notes
+SRC001,PROJECT_STORY_FROM_DAY_ONE.md,md,yes,high,Ch1 Ch3 Ch4 Ch5,Full project evolution; baseline EER; scope changes; final architecture,,no,Primary narrative document
+SRC002,FASSD - Scope.md,md,yes,medium,Ch1 Ch3,Phase 8 expanded scope — extended work reference only,,no,NOT official scope; see SRC070 and proposal form
+SRC003,README.md,md,yes,medium,Ch1 Ch3,Project overview repo structure setup datasets,,no,Root readme; images folder referenced but missing
+SRC004,reports/COMPLETE_PROJECT_STORY.md,md,yes,medium,Ch3 Ch4,Alternate complete story,,no,Cross-check with SRC001
+SRC005,reports/FULL_PROJECT_DOCUMENTATION.md,md,yes,high,Ch3 Ch4,HybridResNet specs 12 env features Phase 5/6 metrics,,no,Technical reference
+SRC006,reports/PREVIOUS_PIPELINE_WORK.md,md,yes,high,Ch3 Ch4,Phase 1-4 baseline ResNet environmental 81.69% domain mismatch,,no,Historical pipeline
+SRC007,reports/FORENSIC_PRODUCT_ROADMAP.md,md,yes,medium,Ch1 Ch5,Product direction Phase 7 closed Phase 8 multi-axis,,no,Backward compat roadmap
+SRC008,reports/PHASE7_THESIS_RATIONALE.md,md,yes,high,Ch1 Ch2,Why binary REAL/FAKE insufficient research gap,,no,Thesis motivation support
+SRC009,reports/evaluation/comprehensive_evaluation_report.md,md,yes,high,Ch4,Hybrid EER 16.21% AUC 0.9167 multiclass 64.36%,confusion_matrices/*.png; figures/roc_*.png,yes,ASVspoof+RealWorld test eval
+SRC010,data/statistics/unified_dataset_stats.json,json,yes,high,Ch3 Ch4,1893919 samples 73421 speakers PA DF LA RealWorld breakdown,,yes,Cite dataset construction phase
+SRC011,reports/phase7/PHASE7_FINAL_CLOSURE_REPORT.md,md,yes,high,Ch4 Ch5,Phase 7 closed; 7C4-v2 prototype; AASIST rejected,,no,Architecture turning point
+SRC012,reports/phase7/PHASE7_FINAL_STATUS_FREEZE.md,md,yes,high,Ch4,Accepted vs rejected artifact list,,no,Freeze policy
+SRC013,reports/phase7/PHASE7_EXPERIMENT_RESULTS_SUMMARY.md,md,yes,high,Ch4,7C1 7C4-v2 7E AASIST count tables,,no,Master Phase 7 results
+SRC014,reports/phase8/PHASE8_START_HERE.md,md,yes,medium,Ch3 Ch5,Phase 8 multi-axis goal forbidden collapse,,no,Phase 8 entry
+SRC015,reports/phase8/architecture/PHASE8A_ARCHITECTURE_FREEZE.md,md,yes,high,Ch3 Ch4 Ch5,Pipeline diagram rules origin/manipulation parallel,,no,Authoritative architecture
+SRC016,reports/phase8/freeze/phase8g_limitations_and_claims.md,md,yes,high,Ch1 Ch4 Ch5,Allowed/forbidden claims list,,no,Wording authority
+SRC017,reports/phase8/freeze/phase8g_phase9_handoff_plan.md,md,yes,low,Ch3,Phase 9A-9G outline,,no,Brief handoff
+SRC018,reports/phase8/models/phase8e1/phase8e1_training_report.md,md,yes,high,Ch4,8E-1 CV metrics origin/replay/mixer feature sets,phase8e1a/figures/*.png,no,Small dataset caveats
+SRC019,reports/phase8/models/phase8e1a/phase8e1a_review_report.md,md,yes,high,Ch4,Threshold recommendations Brier ECE,,no,Threshold policy
+SRC020,reports/phase9/final_release/phase9g_final_release_report.md,md,yes,high,Ch1 Ch4 Ch5,Phase 9G PASS product name active models,,no,Final demo handoff
+SRC021,reports/phase9/integration_docs/phase9f_known_limitations.md,md,yes,high,Ch4 Ch5,184-file regression partial experimental limits,,no,Honest scope
+SRC022,reports/phase9/integration_docs/phase9f_release_file_map.md,md,yes,medium,Ch3 Appendices,Release folder layout API UI paths,,no,Implementation map
+SRC023,reports/phase9/validation/phase9e_p4b_demo_freeze_validation_report.md,md,yes,high,Ch4,PASS checks naming AASIST reject 8 demo variants,,no,Demo freeze evidence
+SRC024,release/README_RELEASE.md,md,yes,medium,Ch3 Ch4,Phase 9 release status CLI safety rules,,no,Release readme
+SRC025,release/MODEL_REGISTRY.md,md,yes,high,Ch3 Ch4 Ch5,Final model registry thresholds allowed/forbidden use,,no,Release audit packaging
+SRC026,release/config/evidence_calibration.json,json,yes,high,Ch3 Ch4,Low/Medium/High band thresholds per axis,,no,Phase 6 calibration
+SRC027,release/models/origin/origin_file_model__ssl__model_card.md,md,yes,high,Ch3 Ch4,Origin SSL 156 rows threshold 0.92 limitations,,no,Active origin model
+SRC028,release/models/replay/replay_file_model__acoustic__model_card.md,md,yes,high,Ch3 Ch4,Replay acoustic 92 rows threshold 0.65,,no,Replay not AI
+SRC029,release/models/mixer/mixer_file_model__acoustic__model_card.md,md,yes,high,Ch3 Ch4,Mixer acoustic threshold 0.75,,no,Mixer not AI
+SRC030,release/models/partial_fabrication_experimental_p5b/partial_report_contract.json,json,yes,high,Ch3 Ch4 Ch5,Partial wording limitations thresholds,,no,User-facing partial contract
+SRC031,reports/release_audit/phase2_origin_release_2026-06-13/phase2_origin_release_report.md,md,yes,high,Ch4,Origin Phase 2 metrics testing_audios 0.8731 bal-acc,T1.2 T4.1 T4.5 failures table,no,Origin retrain evidence
+SRC032,reports/release_audit/phase3_controlled_experiments_2026-06-13/phase3_controlled_experiments_decision.md,md,yes,high,Ch4 Ch5,Resampling window origin dual-res decisions CLOSE,,no,Negative results for thesis honesty
+SRC033,reports/release_audit/phase4_two_stage_manipulation_v3_2026-06-13/phase4_two_stage_manipulation_v3_decision.md,md,yes,high,Ch4 Ch5,Stage-1 recall 20% STOP not shipped,,no,Failed experiment documented
+SRC034,reports/release_audit/phase5_partial_redesign_2026-06-13/phase5_partial_redesign_decision.md,md,yes,high,Ch4 Ch5,F9 removed oracle 10/10 T4.3 T5_FAB fixed T1.2 spike,,no,Partial redesign success
+SRC035,reports/release_audit/phase6_calibration_2026-06-13/phase6_consistency_report.md,md,yes,medium,Ch4,Gradio PDF JSON band consistency PASS,,no,UI calibration
+SRC036,reports/release_audit/phase7_final_release_2026-06-13/phase7_final_release_report.md,md,yes,high,Ch4 Ch5,Final testing_audios matrix disclaimers old vs new,,no,Strongest final eval summary
+SRC037,reports/release_audit/phase7_final_release_2026-06-13/phase7_final_testing_audios_matrix.md,md,yes,high,Ch4,Axis TP/TN/FP/FN failure table,,no,Thesis Table source
+SRC038,reports/phase7/phase7c1_baseline/results/phase7c1_baseline_category_summary.csv,csv,yes,high,Ch4,Per-category Hybrid baseline counts,,no,Controlled forensic
+SRC039,reports/phase7/phase7c4_calibration_v2/,folder,yes,high,Ch4,7C4-v2 prototype outputs,,no,Historical fusion reference
+SRC040,reports/phase7/phase7e_aasist_experiment/,folder,yes,high,Ch3 Ch4,AASIST plan pretrained fine-tune eval,comparison/*.md,no,Rejected branch
+SRC041,reports/phase9/app/phase9e_p3_8variant_eval/,folder,yes,medium,Ch4 Appendices,184-file eval waveform PNGs per variant,waveform_*.png (184+),no,UI evidence screenshots
+SRC042,reports/phase8/models/phase8e2/figures/,folder,yes,medium,Ch4,Partial fabrication timeline plots,*_timeline.png,no,Segment localization viz
+SRC043,reports/evaluation/figures/,folder,yes,high,Ch4,ROC curves overall/asvspoof/realworld,roc_*.png,yes,Hybrid evaluation
+SRC044,reports/evaluation/confusion_matrices/,folder,yes,high,Ch4,Binary and multiclass CM,overall_*_cm.png,yes,Hybrid evaluation
+SRC045,thesis_layout.pdf,pdf,no,high,All,University template structure formatting rules,,no,NOT FOUND — verify externally
+SRC046,submissions/title defence/Forensic_Acoustics_for_Synthetic_Speech_Detection_Title_Defence.pptx,pptx,yes,high,Ch1 Ch2 Ch3,IST NCCIA collaboration early objectives binary pipeline diagram,block diagram slide,yes,Reconcile with final multi-axis scope; soften auth/AI binary output claims
+SRC047,research_article/,folder,yes,high,Ch2,9 survey/detection papers for literature survey,,yes,See SRC061-069 per file
+SRC061,research_article/1.pdf,pdf,yes,high,Ch2,Audio Deepfake Detection A Survey Yi et al.,,yes,IEEE survey 2023
+SRC062,research_article/2.pdf,pdf,yes,high,Ch2,Audio Deepfake Detection What Has Been Achieved Zhang et al. Sensors 2025,,yes,DOI 10.3390/s25071989
+SRC063,research_article/3.pdf,pdf,yes,medium,Ch2,Multimedia deepfake detection survey Khan et al. Discover Computing 2025,,yes,DOI 10.1007/s10791-025-09550-0
+SRC064,research_article/4.pdf,pdf,yes,high,Ch2,Where are We in Audio Deepfake Detection Li et al.,,yes,TTS VC systematic analysis
+SRC065,research_article/5.pdf,pdf,yes,high,Ch2,Beyond Identity generalizable deepfake detection Ahmadiadli et al.,,yes,Identity leakage theme
+SRC066,research_article/6.pdf,pdf,yes,high,Ch2 Ch3,Forensic deepfake audio segmental speech features Yang et al. arXiv 2505.13847,,yes,Forensic segmental features align with FASSD
+SRC067,research_article/7.pdf,pdf,yes,high,Ch2 Ch4,Deepfake audio ResNeXt spectral features Tahaoglu et al. Knowledge-Based Systems,,yes,ResNet/spectral parallel to project
+SRC068,research_article/8.pdf,pdf,yes,medium,Ch2,Deepfake voice detection speech pause patterns Kulangareth et al.,,yes,Klick Labs JMIR-style paper
+SRC069,research_article/9.pdf,pdf,yes,high,Ch2 Ch3,Improved DeepFake Detection Using Whisper Features Kawa et al. INTERSPEECH,,yes,Whisper front-end; SSL parallel
+SRC048,images/,folder,no,medium,Ch3 Ch4,Workflow diagrams referenced in README,,no,NOT FOUND; use reports figures
+SRC049,release/app_gradio.py,py,yes,low,Ch3,Gradio demo testing interface,,no,Not final submission frontend
+SRC050,release/INTEGRATION_GUIDE.md,md,yes,medium,Ch3 Appendices,Integration instructions,,no,If present
+SRC051,reports/release_audit/FASSD_RELEASE_FAILURE_FORENSIC_AUDIT_2026-06-12.md,md,yes,high,Ch4 Ch5,Pre-audit origin failure motivation for retrain,,no,Release audit context
+SRC052,FASSD - Scope.pre_phase8_scope_update.md,md,yes,low,Ch1,Historical scope before Phase 8,,no,Superseded
+SRC053,reports/phase8/label_schema/phase8a_multi_axis_label_schema.md,md,yes,high,Ch3,Multi-axis label definitions,,no,Schema authority
+SRC054,reports/phase9/integration_docs/phase9f_report_wording_guide.md,md,yes,high,Ch4 Ch5,Report card wording rules,,no,Thesis wording alignment
+SRC055,models_saved/registry/CHECKPOINT_REGISTRY.md,md,yes,medium,Ch3,Checkpoint accept/reject policy,,no,Referenced by Phase 8A
+SRC056,testing_audios/,folder,yes,medium,Ch4 Appendices,External eval audio 25 files,,no,Summarize only; do not scan audio-by-audio
+SRC057,DataSet/English/,folder,yes,medium,Ch3,ASVspoof LA DF PA raw layout,,yes,Licensing citation TBD
+SRC058,data/manifests/,folder,yes,medium,Ch3,Train val test manifests speaker splits,,no,Dataset preparation evidence
+SRC059,reports/phase9/partial_redesign/phase9d_p5f_p2_diagnostics/plots/,folder,yes,medium,Ch4,Partial diagnostic plots by case group,*.png,no,Partial analysis figures
+SRC060,release/sample_outputs/,folder,yes,medium,Ch4 Appendices,Sample JSON MD analysis outputs,,no,Example reports for appendix
+SRC070,submissions/proposal/(IST-Dean-F-18)_S_Project Proposal Form-1.docx,docx,yes,critical,Ch1 Ch3,Official approved scope objectives LCNN deliverable,,no,Primary scope authority; PDF also at same folder
+SRC075,submissions/proposal/(IST-Dean-F-18)_S_Project Proposal Form-1.pdf,pdf,yes,critical,Ch1 Ch3,Official scope PDF copy,,no,Same content as docx
+SRC071,16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md,md,yes,critical,Ch1 Ch3 Ch5,Official vs extended scope deployment framing,,no,Thesis framing guide
+SRC072,14_LITERATURE_REVIEW_REBUILD_STRATEGY.md,md,yes,high,Ch2,Two-layer literature official then extended,,no,Literature rebuild
+SRC073,15_REFERENCE_SELECTION_MATRIX.csv,csv,yes,high,Ch2,Reference-section mapping,,no,Citation matrix
+SRC074,reports/website/PARTNER_INTEGRATION_GUIDE.md,md,yes,high,Ch3 Ch5,Next.js intended final frontend,,no,Demo vs production UI distinction

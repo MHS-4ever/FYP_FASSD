@@ -1,0 +1,23 @@
+ref_id,file_or_source,scope_layer,thesis_section,topic,use_in_thesis,priority,status,notes
+REF001,submissions/proposal/(IST-Dean-F-18)_S_Project Proposal Form-1.docx,official,Ch1 Ch3,Approved scope and objectives,Primary scope authority,critical,verified,PDF copy in same folder
+REF002,research_article/1.pdf,official+extended,Ch2.2 Ch2.4 Ch2.11,Audio deepfake survey Yi et al.,Survey taxonomy and ASVspoof overview,high,verified,Legacy seed PDF
+REF003,research_article/2.pdf,official+extended,Ch2.2 Ch2.11 Ch4.14,What Has Been Achieved Zhang Sensors 2025,Gap analysis and limitations discussion,high,verified,DOI 10.3390/s25071989
+REF004,research_article/3.pdf,extended,Ch2.2 optional,Multimedia deepfake survey Khan,Optional broader context,low,verified,Audio-only thesis may cite briefly
+REF005,research_article/4.pdf,official,Ch1 Ch2.2,TTS VC systematic analysis Li et al.,Motivation threat model,medium,verified,Supports synthetic speech risk
+REF006,research_article/5.pdf,extended,Ch2.11 Ch4.13,Identity leakage generalization Ahmadiadli,Domain mismatch discussion,high,verified,Links to broadcast/testing_audios failures
+REF007,research_article/6.pdf,extended,Ch2.10 Ch3.13,Forensic segmental features Yang arXiv 2505.13847,Partial fabrication / forensic acoustics,high,verified,Aligns with extended partial axis
+REF008,research_article/7.pdf,official+extended,Ch2.5 Ch2.6 Ch4.2,ResNeXt spectral Tahaoglu KBS,Spectral CNN baseline comparison,high,verified,Official log-mel + extension ResNet
+REF009,research_article/8.pdf,extended,Ch2.9 optional,Speech pause patterns Kulangareth,Secondary acoustic cue,low,verified,Optional environmental cue
+REF010,research_article/9.pdf,extended,Ch2.8 Ch3.5,Whisper front-end Kawa INTERSPEECH,SSL embedding parallel — not same model,medium,verified,Compare cautiously to WavLM origin axis
+REF011,ASVspoof 2021 official paper TBD,official,Ch2.4 Ch3.3,ASVspoof 2021 LA DF dataset,Cite dataset usage,critical,missing,Required for proposal alignment
+REF012,AASIST Jung et al. TBD,extended,Ch2.7 Ch4.8,AASIST anti-spoof,Phase 7E experiment context,high,missing,Not in research_article folder
+REF013,wav2vec2 Baevski TBD,extended,Ch2.8 Ch3.5,SSL speech representations,Origin axis background,medium,missing,Release uses WavLM-style embeddings
+REF014,WavLM Chen TBD,extended,Ch2.8,SSL origin model,Origin axis background,medium,missing,Model card references SSL
+REF015,PROJECT_STORY_FROM_DAY_ONE.md,official+extended,Ch3 Ch4,Implementation timeline,Internal evidence not bibliography,high,verified,LCNN baseline EER numbers
+REF016,reports/evaluation/comprehensive_evaluation_report.md,extended,Ch4.6,HybridResNet EER AUC,Extended evaluation results,high,verified,Not official LCNN deliverable alone
+REF017,release/MODEL_REGISTRY.md,extended,Ch3 Ch4,Final multi-axis release,Extended system description,high,verified,Experimental prototype only
+REF018,reports/website/PARTNER_INTEGRATION_GUIDE.md,extended,Ch3 deployment,Next.js frontend architecture,Intended final UI — not Gradio,high,verified,Separate repo D:\FASSD noted in doc
+REF019,release/README_RELEASE.md,extended,Ch3 deployment,Gradio FastAPI demo,Experimental testing interface only,medium,verified,Not final submission frontend
+REF020,16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md,meta,Ch1,Scope framing,Thesis structure guide,critical,verified,Primary framing document
+REF021,submissions/title defence/*.pptx,historical,Ch1 optional,Motivation IST context,Historical only — reconcile with proposal,NCCIA not continuing partner,medium,verified,Do not copy binary-output claims
+REF022,FASSD - Scope.md,extended,Ch1 Ch3,Phase 8 expanded scope,Secondary — extended work reference,medium,verified,Not official proposal scope
