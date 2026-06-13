@@ -37,3 +37,6 @@ data/manifests/train_speaker_independent_with_features.csv
 data/phase7c1/raw/
 reports/phase9/partial_redesign/phase9d_p5_segment_partial_localizer_dataset.csv
 release/gradio_outputs/
+reports/release_audit/phase5_partial_redesign_2026-06-13/phase5_segment_predictions.csv
+code/post_release_supplement/
+reports/post_release_supplement/
