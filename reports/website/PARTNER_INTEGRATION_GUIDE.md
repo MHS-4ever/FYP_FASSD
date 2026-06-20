@@ -1,9 +1,13 @@
 # FASSD — Partner integration guide
 
-This document explains what has been built so far: how the **Next.js website** talks to the **Python inference API**, what the model pipeline does, and how to run everything locally.
+> **⚠️ OUTDATED — Legacy Hybrid ResNet stack.** This document describes an **earlier** integration (binary Hybrid ResNet + `inference_api/`).  
+> **Current production (May–Jun 2026):** Phase 9 multi-axis API + Next.js at https://www.deepfakedetection.dev/ — see **`thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`** (authoritative).  
+> **Website repo:** separate git repository (documented path `D:\FASSD\`) — not the FYP ML repo (`E:\FYP`).
 
-**Last updated:** May 2026  
-**Repo root:** `D:\FASSD`
+This document explains what was built in the **legacy** phase: how the Next.js website talked to a **Hybrid ResNet** inference API.
+
+**Last updated:** May 2026 (superseded for production by Phase 9 deployment doc above)  
+**Repo root:** `D:\FASSD` (separate hosting repository)
 
 ---
 

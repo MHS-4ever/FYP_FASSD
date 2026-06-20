@@ -1,9 +1,10 @@
 # FASSD Project Story From Day One
 
 **Project:** FASSD - Forensic Acoustics for Synthetic Speech Detection  
-**Product-facing name at release:** Deepfake Audio Detector - Local Demo  
+**Product-facing name (public):** deepfakedetection.dev — Forensic Acoustics voice integrity web platform  
+**Backend package name (FYP repo):** Deepfake Audio Detector - Local Demo (Phase 9G release folder label)  
 **Document purpose:** Complete story of the project evolution, scope changes, datasets, architectures, results, limitations, and final forensic product direction.  
-**Status at the end of the project:** Phase 9G local demo/handoff package passed, then a release-audit cycle (Phases 0–7) repaired the origin axis, promoted the Phase 5 partial localizer, added Phase 6 evidence-band wording, and produced the final Phase 7 release matrix. The project is complete as an experimental forensic decision-support prototype, not a court-ready proof system.
+**Status at the end of the project:** Phase 9G local demo/handoff package passed, then a release-audit cycle (Phases 0–7) repaired the origin axis, promoted the Phase 5 partial localizer, added Phase 6 evidence-band wording, and produced the final Phase 7 release matrix. A live Next.js web platform was then built and deployed at [https://www.deepfakedetection.dev/](https://www.deepfakedetection.dev/) with the Phase 9 FastAPI backend on DigitalOcean (full story: `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`). The project is complete as an experimental forensic decision-support prototype, not a court-ready proof system.
 
 ---
 
@@ -1279,8 +1280,10 @@ The final project is complete, but it has explicit limitations.
 5. **AASIST and HybridResNet are not active final decision models.**
    - They are reference/shadow artifacts only.
 
-6. **The release is local/demo oriented.**
-   - It is not an operational deployed system.
+6. **The release remains experimental even when deployed on the web.**
+   - Phase 9G packages a local Gradio/FastAPI demo in `release/`.
+   - A live Next.js web platform was deployed at https://www.deepfakedetection.dev/ with Phase 9 API at api.deepfakedetection.dev (Vercel + DigitalOcean + Firebase). See `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`.
+   - This is still an experimental forensic decision-support demo, not operational legal-evidence or court-ready deployment.
 
 7. **Small accepted Phase 8/9 model datasets limit claims.**
    - Active release model cards explicitly mark the models as experimental prototypes.
@@ -1300,7 +1303,36 @@ The final project is complete, but it has explicit limitations.
 
 The final answer is:
 
-FASSD started as a CNN-based synthetic speech detector using LFCC and log-mel/MFCC-style spectrogram features. It achieved strong ASVspoof-domain performance, especially with a ResNet CNN. But the project goal required environmental and forensic audio evidence, so the dataset and architecture expanded. The system then added real-world broadcast/YouTube/social/podcast data, ASVspoof PA replay coverage, environmental features, and a HybridResNetEnvironmental model. That hybrid model improved the research pipeline but still behaved like a binary model and could not fully represent forensic cases. Controlled forensic testing, HybridResNet fine-tuning, and AASIST experiments proved that a single anti-spoof model was not enough. The final architecture became a multi-axis forensic audio intelligence prototype with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, and report layers. The Phase 9G release delivered the local Gradio/FastAPI demo, and the later release-audit cycle repaired the largest shipped weaknesses: origin was retrained for processed AI, partial localization was redesigned without F9 features, and the UI now uses evidence bands instead of raw confidence-like scores. The final release remains an experimental decision-support demo; its clearest remaining limitations are external replay/mixer generalization, platform-compressed AI, and the need for manual review of all elevated evidence.
+FASSD started as a CNN-based synthetic speech detector using LFCC and log-mel/MFCC-style spectrogram features. It achieved strong ASVspoof-domain performance, especially with a ResNet CNN. But the project goal required environmental and forensic audio evidence, so the dataset and architecture expanded. The system then added real-world broadcast/YouTube/social/podcast data, ASVspoof PA replay coverage, environmental features, and a HybridResNetEnvironmental model. That hybrid model improved the research pipeline but still behaved like a binary model and could not fully represent forensic cases. Controlled forensic testing, HybridResNet fine-tuning, and AASIST experiments proved that a single anti-spoof model was not enough. The final architecture became a multi-axis forensic audio intelligence prototype with separate origin, replay, mixer/channel, partial-fabrication, segment, fusion, and report layers. The Phase 9G release delivered the local Gradio/FastAPI demo, and the later release-audit cycle repaired the largest shipped weaknesses: origin was retrained for processed AI, partial localization was redesigned without F9 features, and the UI now uses evidence bands instead of raw confidence-like scores. The project then added a live Next.js web platform at deepfakedetection.dev connected to the Phase 9 API on DigitalOcean, making the multi-axis evidence system usable through a public dashboard with Firebase auth and history. The final system remains an experimental decision-support demo; its clearest remaining limitations are external replay/mixer generalization, platform-compressed AI, and the need for manual review of all elevated evidence.
+
+---
+
+## 37. Live Web Platform and Production Deployment
+
+After Phase 9G and the release-audit cycle, frontend work turned the Phase 9 backend into a public web product. Full detail is in `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`.
+
+What changed:
+
+- The first website assumed a **binary Hybrid ResNet** API (`REAL` / `FAKE`). The backend evolved to **Phase 9 multi-axis forensic evidence**, so the UI was redesigned as a **voice integrity console** with four evidence cards, real waveform visualization, segment highlights, and manual-review wording.
+- **Production stack:** Next.js 16 on **Vercel** (https://www.deepfakedetection.dev/), Phase 9 FastAPI on a **DigitalOcean** Droplet behind **Caddy** (https://api.deepfakedetection.dev/), **Firebase** Auth + Firestore for user history.
+- **Large-upload fix:** Vercel serverless proxy limit (~4.5 MB) forced **direct browser → DigitalOcean** uploads for `/analyze`; `INFERENCE_PROXY_TARGET` is mirrored to the client in `next.config.mjs`.
+- **Frontend repo path (separate from FYP ML repo):** documented as `D:\FASSD\` with `new backend/release/` vendored Phase 9 API.
+
+Key production issues resolved:
+
+- Missing vendored `phase8f_fusion_rules.py` in release folder
+- CORS for frontend origins on the API
+- Firestore rules not published initially
+- Stale Hybrid ResNet marketing copy updated to Phase 9 pipeline wording
+
+Platform limitations (still experimental):
+
+- Firestore history stores simplified fields, not full Phase 9 JSON
+- No server-side audio retention after analysis
+- Model weights (`.joblib`) uploaded manually to Droplet, not in git
+- UI derives a simplified `isDeepfake` flag for history compatibility
+
+The **primary user-facing software deliverable** is the deployed Next.js web platform at https://www.deepfakedetection.dev/ (separate hosting repository — see `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`). The FYP repo `release/` folder contains the Phase 9 inference backend **source** that was vendored into the website repo for production API deployment.
 
 ---
 
@@ -1345,6 +1377,8 @@ Important project documents and outputs used to reconstruct this story:
 - `reports/release_audit/phase7_final_release_2026-06-13/phase7_final_release_report.md`
 - `release/MODEL_REGISTRY.md`
 - `release/config/evidence_calibration.json`
+- `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`
+- `reports/website/PARTNER_INTEGRATION_GUIDE.md`
 
 ---
 

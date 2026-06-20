@@ -13,8 +13,8 @@ Strict language rules derived from release documentation, Phase 8/9 validation, 
 | Official scope authority | IST proposal form — not `FASSD - Scope.md` alone |
 | Extended work | Phase 7–9 multi-axis system = extensions, not scope replacement |
 | NCCIA | Do **not** present as continuing official partner unless confirmed; use “supervision and external consultation” |
-| Gradio/FastAPI | **Demo/testing interface only** — not final submission application |
-| Next.js frontend | **Intended final user-facing deployment** — state if still in progress |
+| Gradio/FastAPI in FYP `release/` | **Inference backend source / dev artifact** — not the thesis-facing UI |
+| Next.js web platform | **Primary user-facing software deliverable** — **deployed** at https://www.deepfakedetection.dev/ (separate hosting repo) |
 | Approved-scope claims | Allowed when backed by proposal + baseline results (LCNN, EER, software deliverable) |
 | Extended claims | Must use experimental / prototype / decision-support wording |
 
@@ -35,8 +35,8 @@ Strict language rules derived from release documentation, Phase 8/9 validation, 
 | **inconclusive under replay/channel processing** | Origin reliability caveat |
 | **experimental_manual_review_only** | Partial module status |
 | **software-based deepfake speech detection system** | Official proposal deliverable (baseline + extended software stack) |
-| **local experimental demo and testing interface** | Gradio/FastAPI in `release/` |
-| **intended final web-based frontend** | Next.js application (under development if incomplete) |
+| **deployed web-based forensic analysis platform** | https://www.deepfakedetection.dev/ — separate hosting repository |
+| **Phase 9 inference backend source** | `release/` in FYP ML repo — powers production API |
 | **additional forensic-review requirements suggested during supervision and external consultation** | Explaining extensions without NCCIA endorsement |
 | **Deepfake Audio Detector — Local Demo** | Phase 9 release folder name — demo tooling only |
 | **FASSD — Forensic Acoustics for Synthetic Speech Detection** | Academic/thesis project name |
@@ -83,7 +83,7 @@ Strict language rules derived from release documentation, Phase 8/9 validation, 
 | "Detects WhatsApp deepfakes reliably." | "Platform-compressed AI cases remain challenging (e.g. T4.5 false negative in external testing)." |
 | "HybridResNet is the final model." | "HybridResNet is an inactive reference baseline; the release uses separate axis models." |
 | "AASIST improves origin detection." | "AASIST was shadow-tested and rejected for active use due to elevated clean-human false-AI rates." |
-| "Gradio is the final FYP application." | "A Gradio/FastAPI interface was developed for local experimentation, testing, and demonstration; the intended final user-facing deployment is a Next.js web application integrated with the backend inference pipeline." |
+| "Gradio is the final FYP application." | "The primary user-facing software deliverable is the deployed Next.js web application at deepfakedetection.dev (separate hosting repository), integrated with the Phase 9 multi-axis inference API. The FYP repository `release/` folder contains the backend source." |
 | "Developed in partnership with NCCIA." | "Some extended forensic-review requirements were influenced by supervisor feedback and external consultation during the project." |
 | "The scope was changed to multi-axis only." | "The approved scope was extended after implementation revealed real-world forensic limitations." |
 | presenting only leakage-safe metrics as final | Also cite external `testing_audios` failures when citing extended system |
@@ -151,6 +151,7 @@ Include in Abstract, Chapter 1, Chapter 4 discussion, and Chapter 5:
 - [ ] Are external failures mentioned when citing strong internal metrics?  
 - [ ] Is manual review mentioned for elevated indicators?  
 - [ ] Does this imply NCCIA endorsement or continuing partnership?  
-- [ ] Does this describe Gradio as the final application?  
+- [ ] Does this describe the **deployed web platform** as the primary user-facing software deliverable?
+- [ ] Does this avoid centering Gradio/local hosting as the main FYP application story?  
 - [ ] Does this treat `FASSD - Scope.md` as official approved scope without proposal form?  
 - [ ] Are official-scope and extended-scope results clearly separated?  

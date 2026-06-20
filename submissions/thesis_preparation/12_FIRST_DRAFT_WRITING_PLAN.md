@@ -20,7 +20,7 @@ Staged plan to write the thesis chapter by chapter **after** this preparation fo
 |------|--------|
 | **Inputs** | `16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md`, `02_PROJECT_FACTS_MASTER.md`, proposal form summary, `reports/PHASE7_THESIS_RATIONALE.md`, `11_CLAIMS_AND_WORDING_RULES.md` |
 | **Outputs** | Draft Ch. 1 with **official scope/objectives first**, extended boundary second, deployment distinction |
-| **Quality checks** | No NCCIA partnership overclaim; Gradio not called final app; disclaimers seeded |
+| **Quality checks** | No NCCIA partnership overclaim; **web platform** as primary deliverable; disclaimers seeded |
 
 ---
 
@@ -103,8 +103,7 @@ Staged plan to write the thesis chapter by chapter **after** this preparation fo
 
 - Create priority figures from `07_FIGURES_AND_DIAGRAMS_TO_CREATE.md`  
 - Build EndNote library from `09_REFERENCES_RESEARCH_GAP_PLAN.md`  
-- Run Gradio locally for **demo/testing** screenshot only (label as experimental interface)  
-- Capture Next.js UI screenshots if available for **intended final frontend** section  
+- Capture **live web UI** screenshots from https://www.deepfakedetection.dev/ for Ch. 4 §4.12 (landing, dashboard, results, waveform)
 - Supervisor review after Stage 1 and after Stage 5 (results chapter critical)
 
 ---

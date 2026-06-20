@@ -96,8 +96,8 @@ The following work **exceeds the original LCNN/binary proposal** but is supporte
 | Multi-axis forensic architecture | `PHASE8A_ARCHITECTURE_FREEZE.md` | Major scope extension |
 | Separate origin / replay / mixer / partial models | `release/MODEL_REGISTRY.md` | Extended evidence system |
 | Fusion, abstention, manual-review wording | Phase 8F, Phase 9F docs | Extended reporting |
-| **Gradio/FastAPI local demo** | `release/app_gradio.py`, `release/app_fastapi.py` | **Experimental testing/demo interface only** |
-| **Next.js web application frontend** | `reports/website/PARTNER_INTEGRATION_GUIDE.md` | **Intended final user-facing deployment** (under development / separate repo path noted as `D:\FASSD`) |
+| **Phase 9 inference backend source** | `release/` in FYP repo | ML pipeline source vendored into website repo for production API |
+| **Next.js web application (deployed)** | `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md` | **Primary user-facing software deliverable** — live at https://www.deepfakedetection.dev/ (**separate hosting repository**, documented `D:\FASSD\`) |
 | JSON / Markdown / PDF report outputs | `release/sample_outputs/`, Phase 9 docs | Extended reporting |
 | Release audit + evidence-band UI | `reports/release_audit/phase7_final_release_2026-06-13/` | Post-Phase-9 repair cycle |
 
@@ -113,8 +113,9 @@ The following work **exceeds the original LCNN/binary proposal** but is supporte
 - Do **not** overclaim the final extended system as court-ready or production-ready.
 - Use **“experimental forensic audio decision-support prototype”** for the **extended final system**.
 - Use **“software-based deepfake speech detection system”** when referring to the **official deliverable** and baseline achievement.
-- Describe **Gradio/FastAPI** as a **development, demonstration, and testing interface**—not the intended final submission-facing application.
-- Describe the **Next.js application** as the **intended final web-based frontend** integrated with the backend inference/report pipeline; if incomplete at submission, state it as **ongoing deployment work**.
+- Describe the **deployed Next.js web application** at **deepfakedetection.dev** as the **primary user-facing software deliverable**, hosted in a **separate repository** integrated with the Phase 9 inference API.
+- The FYP repo `release/` folder documents the **inference backend source** — cite it for ML/API methodology, not as the main UI story.
+- Do **not** center the thesis on Gradio/local hosting as the final software representation.
 
 ---
 
@@ -130,7 +131,7 @@ The following work **exceeds the original LCNN/binary proposal** but is supporte
 
 ### Deployment wording
 
-> “A lightweight Gradio/FastAPI interface was developed during implementation for local experimentation, testing, and demonstration purposes, while the intended final user-facing deployment architecture is being developed as a Next.js-based web application integrated with the backend inference pipeline.”
+> “The final user-facing software deliverable is a deployed Next.js web application at https://www.deepfakedetection.dev/, hosted in a separate repository and integrated with the Phase 9 multi-axis inference API on DigitalOcean. The FYP repository contains the machine-learning pipeline and inference backend source used to build that API.”
 
 ### NCCIA-safe wording
 
@@ -149,7 +150,7 @@ The following work **exceeds the original LCNN/binary proposal** but is supporte
 | **Ch. 1 — Scope** | Official proposal scope first; boundary to extended development second |
 | **Ch. 1 — Objectives** | Official objectives (§3) first; extended objectives (multi-axis, reports, manual review) second |
 | **Ch. 3 — Methodology** | Evolution from proposed LCNN plan → experiments → extended multi-axis implementation |
-| **Ch. 3 — System design / deployment** | Backend inference/report pipeline; Gradio/FastAPI as demo tooling; Next.js as intended final frontend |
+| **Ch. 3 — System design / deployment** | Phase 9 inference backend; **deployed web platform** (deepfakedetection.dev, separate repo); production API on DigitalOcean |
 | **Ch. 4 — Results** | Official-scope results (baseline LCNN, LFCC/log-mel, EER/AUC) **and** extended-system results (Phase 7–9, release audit) in separate subsections |
 | **Ch. 5 — Future work** | Broader validation of extended forensic modules; completion/integration of Next.js deployment |
 

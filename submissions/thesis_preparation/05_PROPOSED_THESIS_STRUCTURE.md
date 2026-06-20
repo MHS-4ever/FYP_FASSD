@@ -145,9 +145,9 @@ Adapted from the university template for a **computer/audio forensics / machine 
 
 ### 3.2A Deployment Architecture
 - **Backend:** inference + report pipeline (`release/`, FastAPI)  
-- **Gradio/FastAPI (release/):** experimental local demo and **testing interface only**  
-- **Next.js frontend:** intended final user-facing web application (`reports/website/PARTNER_INTEGRATION_GUIDE.md`)  
-- **Thesis rule:** do not present Gradio as final submission application  
+- **Deployed web platform:** https://www.deepfakedetection.dev/ — **primary user-facing deliverable** (separate hosting repo)  
+- **FYP `release/`:** Phase 9 inference backend **source**  
+- **Thesis rule:** center the online web platform, not Gradio/local hosting
 
 ### 3.3 Dataset Collection and Preparation
 - ASVspoof LA/DF/PA integration  

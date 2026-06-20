@@ -15,13 +15,13 @@
 | Department | Computing | Proposal form |
 | **Official deliverable type** | Software system (deepfake speech detection) | Proposal form |
 | Extended system status | Experimental forensic decision-support prototype; not court-ready proof | `release/MODEL_REGISTRY.md`, `16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` |
-| Gradio/FastAPI release name | Deepfake Audio Detector — Local Demo | `reports/phase9/final_release/phase9g_final_release_report.md` — **demo/testing interface only** |
-| Intended final user-facing UI | Next.js web application (frontend) + backend inference API | `reports/website/PARTNER_INTEGRATION_GUIDE.md` |
-| Phase 9G handoff package | phase9g_deepfake_audio_detector_demo_handoff | `reports/phase9/final_release/phase9g_final_release_report.md` |
+| **Primary user-facing software deliverable** | Deployed Next.js web app at **https://www.deepfakedetection.dev/** (separate hosting repository) | `thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md` |
+| FYP backend package label | Deepfake Audio Detector — Local Demo (Phase 9G) | `reports/phase9/final_release/phase9g_final_release_report.md` — **inference backend source** in `E:\FYP\release/` |
+| Production inference API | https://api.deepfakedetection.dev/ | `FRONTEND_AND_DEPLOYMENT_STORY.md` |
 
 **Scope document hierarchy:** Proposal form (official) → `16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` → `PROJECT_STORY_FROM_DAY_ONE.md` → `FASSD - Scope.md` (extended Phase 8 reference, **not** sole official scope).
 
-**Naming caution:** Do not describe Gradio/FastAPI as the final submission-facing application. Phase 9 demo name is for the **local experimental interface** only.
+**Naming caution:** Present **deepfakedetection.dev** as the primary user-facing software deliverable. The FYP `release/` folder is the Phase 9 inference **backend source**, not the main UI story for thesis/defense.
 
 ---
 
@@ -77,8 +77,8 @@
 - Controlled forensic testing, AASIST experiment (rejected as final model)  
 - Multi-axis origin / replay / mixer / partial evidence architecture  
 - Fusion, abstention, evidence-band reports, release audit  
-- **Gradio/FastAPI:** local demo/testing interface only (`release/`)  
-- **Next.js frontend:** intended final user-facing deployment (`reports/website/PARTNER_INTEGRATION_GUIDE.md`)  
+- **Deployed web platform:** https://www.deepfakedetection.dev/ — separate hosting repo (`thesis_working_notes/FRONTEND_AND_DEPLOYMENT_STORY.md`)  
+- **Phase 9 inference backend source:** `release/` in FYP ML repo — powers production API on DigitalOcean  
 - Motivation for extensions: limitations discovered in implementation + additional forensic-review requirements suggested during **supervision and external consultation**  
 
 ### 4C. Out of scope (both official and thesis)
@@ -189,9 +189,9 @@ Audio input → preprocessing/segmentation → parallel feature extraction
 
 | Layer | Role | Thesis framing |
 |-------|------|----------------|
-| Backend inference + reporting | Phase 9 `release/` pipeline, FastAPI in release | Extended implementation core |
-| **Gradio / FastAPI (release/)** | Local **experimentation, testing, demonstration** | **Not** final submission-facing application |
-| **Next.js web frontend** | Intended **final user-facing** deployment UI | Under development; see partner integration guide |
+| Backend inference + reporting | Phase 9 `release/` pipeline → production API on DigitalOcean | Extended implementation core |
+| **Deployed web platform** | https://www.deepfakedetection.dev/ — **primary user-facing deliverable** | Separate hosting repo; `FRONTEND_AND_DEPLOYMENT_STORY.md` |
+| **FYP `release/` folder** | Phase 9 inference backend **source** | Vendored into website repo for Docker deploy |
 | Official proposal deliverable | Software tool for evaluating external test audio | Achieved via baseline + extended software stack |
 
 **Source:** `16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` §10; `reports/website/PARTNER_INTEGRATION_GUIDE.md`; `release/README_RELEASE.md`
@@ -345,7 +345,7 @@ See **`16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` §1–4** for full extract. Summar
 
 ## 20. Extended Work Beyond Proposal
 
-See **`16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` §5–10**. Includes ResNet/Hybrid, multi-axis models, fusion, release audit, Gradio/FastAPI demo tooling, Next.js intended frontend, JSON/PDF reports. Framed as extensions from supervision/external consultation—not formal external deliverables unless confirmed.
+See **`16_OFFICIAL_SCOPE_VS_EXTENDED_WORK.md` §5–10**. Includes ResNet/Hybrid, multi-axis models, fusion, release audit, **deployed web platform**, JSON/PDF reports. Framed as extensions from supervision/external consultation—not formal external deliverables unless confirmed.
 
 ## 21. Literature and Historical Materials
 

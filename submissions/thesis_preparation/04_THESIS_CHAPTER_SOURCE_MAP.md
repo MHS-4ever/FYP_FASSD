@@ -81,7 +81,7 @@ Maps each thesis section to repository evidence, figures, missing information, a
 - **Approved scope and extended boundary:** official LCNN/ASVspoof plan first; Phase 7–9 extensions second
 - **Objectives:** six official objectives; then extended objectives (multi-axis, reports, deployment)
 - **Scope:** software deliverable achieved; extensions documented separately
-- **Deployment:** Gradio/FastAPI = demo/testing; Next.js = intended final frontend
+- **Deployment:** **deepfakedetection.dev** = primary UI; FYP `release/` = backend source; `FRONTEND_AND_DEPLOYMENT_STORY.md` authoritative
 - **Environment / SDGs:** TBD supervisor approval
 - **Thesis outline:** chapter roadmap
 
