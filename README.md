@@ -1,4 +1,6 @@
 # FASSD — Forensic Acoustics for Synthetic Speech Detection
+**Team Member:** Rana Muhammad Areeb
+**Team Member:** Muhammad Hasnain
 
 FASSD is a Final Year Project focused on **deepfake audio detection and forensic audio analysis**. The system is designed to analyze a given audio recording and identify whether it is authentic human speech, AI-generated speech, AI-replaced speech, or a replayed AI voice recording.
 
